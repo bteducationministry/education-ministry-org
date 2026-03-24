@@ -1,0 +1,23 @@
+name: Deploy WordPress Site
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Deploy to environment
+        run: |
+          echo "Deployment configuration for CodeSpring"
+          # CodeSpring deployment steps will be configured here
