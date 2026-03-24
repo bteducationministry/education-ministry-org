@@ -1,0 +1,499 @@
+/*
+ * BT Education Ministry — Funnel-Specific Styles
+ *
+ * Loaded only on funnel pages (start, learn, signup, welcome,
+ * capstone, apply, book-call).
+ *
+ * @package BT_Education_Ministry
+ * @version 1.0.0
+ */
+
+/* ==========================================================================
+   FUNNEL PROGRESS INDICATOR
+   ========================================================================== */
+
+.funnel-progress {
+  background: var(--color-light);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--space-md) 0;
+}
+
+.funnel-progress__steps {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xl);
+  list-style: none;
+  counter-reset: step;
+  margin: 0;
+  padding: 0;
+}
+
+.funnel-progress__step {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm);
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  position: relative;
+}
+
+.funnel-progress__step span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--color-border);
+  color: var(--color-text-secondary);
+  font-weight: 700;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.funnel-progress__step.is-active {
+  color: var(--color-purple);
+  font-weight: 700;
+}
+
+.funnel-progress__step.is-active span {
+  background: var(--color-gold);
+  color: var(--color-purple);
+}
+
+.funnel-progress__step.is-done {
+  color: var(--color-success);
+}
+
+.funnel-progress__step.is-done span {
+  background: var(--color-success);
+  color: var(--color-white);
+}
+
+/* Connector line between steps */
+.funnel-progress__step + .funnel-progress__step::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--space-xl) / 2 - 14px);
+  top: 50%;
+  width: calc(var(--space-xl) - 12px);
+  height: 2px;
+  background: var(--color-border);
+  transform: translateY(-50%);
+}
+
+.funnel-progress__step.is-done + .funnel-progress__step::before,
+.funnel-progress__step.is-active + .funnel-progress__step::before {
+  background: var(--color-success);
+}
+
+/* ==========================================================================
+   FUNNEL TIMELINE (vertical)
+   ========================================================================== */
+
+.funnel-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+  margin-top: var(--space-lg);
+}
+
+.funnel-timeline__item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-lg);
+}
+
+.funnel-timeline__marker {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-purple);
+  color: var(--color-gold);
+  font-family: var(--font-heading);
+  font-size: var(--text-body);
+  font-weight: 700;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.funnel-timeline__item h5 {
+  margin-bottom: var(--space-xs);
+  color: var(--color-purple);
+}
+
+.funnel-timeline__item p {
+  margin-bottom: 0;
+  font-size: var(--text-body-sm);
+}
+
+/* Horizontal variant (used on Learn page timeline) */
+.funnel-timeline--horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.funnel-timeline--horizontal .funnel-timeline__item {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 1;
+  min-width: 180px;
+  max-width: 260px;
+}
+
+/* ==========================================================================
+   FUNNEL CHECKLIST
+   ========================================================================== */
+
+.funnel-checklist {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.funnel-checklist li {
+  position: relative;
+  padding: var(--space-sm) 0 var(--space-sm) 28px;
+  font-size: var(--text-body-sm);
+  color: var(--color-text-secondary);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.funnel-checklist li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--color-success);
+  font-weight: 700;
+}
+
+.funnel-checklist li:last-child {
+  border-bottom: none;
+}
+
+/* Large variant */
+.funnel-checklist--lg li {
+  padding: var(--space-md) 0 var(--space-md) 32px;
+  font-size: var(--text-body);
+}
+
+/* Light variant (on dark bg) */
+.funnel-checklist--light li {
+  color: rgba(255, 255, 255, 0.85);
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+.funnel-checklist--light li::before {
+  color: var(--color-gold);
+}
+
+/* Negative variant (for "without" comparisons) */
+.funnel-checklist--negative li::before {
+  content: '✗';
+  color: var(--color-error);
+}
+
+/* ==========================================================================
+   FUNNEL FORM WRAPPER
+   ========================================================================== */
+
+.funnel-form-wrapper {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl);
+  box-shadow: var(--shadow-md);
+}
+
+.funnel-fieldset {
+  border: none;
+  padding: 0;
+  margin: 0 0 var(--space-xl);
+}
+
+.funnel-fieldset legend {
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  font-weight: 700;
+  color: var(--color-purple);
+  margin-bottom: var(--space-lg);
+  padding-bottom: var(--space-sm);
+  border-bottom: 2px solid var(--color-gold);
+  width: 100%;
+}
+
+/* Checkbox custom */
+.funnel-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-sm);
+  cursor: pointer;
+  font-size: var(--text-body-sm);
+  color: var(--color-text-secondary);
+}
+
+.funnel-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--color-gold);
+  flex-shrink: 0;
+}
+
+/* Required asterisk */
+.required {
+  color: var(--color-error);
+}
+
+/* Form messages */
+.funnel-form-message {
+  margin-top: var(--space-md);
+  padding: var(--space-md);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-body-sm);
+  display: none;
+}
+
+.funnel-form-message.is-success {
+  display: block;
+  background: #e8f5e9;
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.funnel-form-message.is-error {
+  display: block;
+  background: #ffebee;
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+}
+
+.funnel-form-message.is-info {
+  display: block;
+  background: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #1565c0;
+}
+
+/* ==========================================================================
+   FAQ (Capstone page)
+   ========================================================================== */
+
+.funnel-faq {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.funnel-faq__item {
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  transition: box-shadow var(--transition-base);
+}
+
+.funnel-faq__item[open] {
+  box-shadow: var(--shadow-md);
+  border-color: var(--color-gold);
+}
+
+.funnel-faq__question {
+  padding: var(--space-lg);
+  font-family: var(--font-heading);
+  font-size: var(--text-body-lg);
+  font-weight: 600;
+  color: var(--color-purple);
+  cursor: pointer;
+  list-style: none;
+  position: relative;
+  padding-right: 48px;
+}
+
+.funnel-faq__question::-webkit-details-marker {
+  display: none;
+}
+
+.funnel-faq__question::after {
+  content: '+';
+  position: absolute;
+  right: var(--space-lg);
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 24px;
+  color: var(--color-gold);
+  font-weight: 700;
+  transition: transform var(--transition-fast);
+}
+
+.funnel-faq__item[open] .funnel-faq__question::after {
+  content: '−';
+}
+
+.funnel-faq__answer {
+  padding: 0 var(--space-lg) var(--space-lg);
+}
+
+.funnel-faq__answer p {
+  margin-bottom: 0;
+}
+
+/* ==========================================================================
+   CAPSTONE TRUST DIAGRAM
+   ========================================================================== */
+
+.capstone-trust-diagram__center {
+  text-align: center;
+  margin-bottom: var(--space-lg);
+}
+
+.capstone-trust-diagram__node--main {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-md) var(--space-xl);
+  background: linear-gradient(135deg, var(--color-purple) 0%, var(--color-purple-light) 100%);
+  color: var(--color-gold);
+  border-radius: var(--radius-lg);
+  font-family: var(--font-heading);
+  font-size: var(--text-h4);
+  box-shadow: var(--shadow-lg);
+}
+
+.capstone-trust-diagram__node--main span {
+  font-size: 32px;
+}
+
+/* ==========================================================================
+   CALENDLY EMBED WRAPPER
+   ========================================================================== */
+
+.funnel-calendly-embed {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+}
+
+/* ==========================================================================
+   UTILITY HELPERS
+   ========================================================================== */
+
+.mt-xs  { margin-top: var(--space-xs); }
+.mt-sm  { margin-top: var(--space-sm); }
+.mt-md  { margin-top: var(--space-md); }
+.mt-lg  { margin-top: var(--space-lg); }
+.mt-xl  { margin-top: var(--space-xl); }
+.mt-2xl { margin-top: var(--space-2xl); }
+
+.mb-xs  { margin-bottom: var(--space-xs); }
+.mb-sm  { margin-bottom: var(--space-sm); }
+.mb-md  { margin-bottom: var(--space-md); }
+.mb-lg  { margin-bottom: var(--space-lg); }
+
+/* ==========================================================================
+   WPForms Design Override (match theme)
+   ========================================================================== */
+
+.wpforms-container .wpforms-form input[type="text"],
+.wpforms-container .wpforms-form input[type="email"],
+.wpforms-container .wpforms-form input[type="tel"],
+.wpforms-container .wpforms-form input[type="url"],
+.wpforms-container .wpforms-form input[type="date"],
+.wpforms-container .wpforms-form select,
+.wpforms-container .wpforms-form textarea {
+  font-family: var(--font-body) !important;
+  font-size: var(--text-body) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 12px var(--space-md) !important;
+}
+
+.wpforms-container .wpforms-form input:focus,
+.wpforms-container .wpforms-form select:focus,
+.wpforms-container .wpforms-form textarea:focus {
+  border-color: var(--color-gold) !important;
+  box-shadow: 0 0 0 3px rgba(200, 169, 81, 0.15) !important;
+}
+
+.wpforms-container .wpforms-form .wpforms-submit-container button {
+  font-family: var(--font-body) !important;
+  font-weight: 600 !important;
+  background-color: var(--color-gold) !important;
+  color: var(--color-purple) !important;
+  border: 2px solid var(--color-gold) !important;
+  border-radius: var(--radius-md) !important;
+  padding: 14px var(--space-lg) !important;
+  transition: all var(--transition-base) !important;
+}
+
+.wpforms-container .wpforms-form .wpforms-submit-container button:hover {
+  background-color: var(--color-gold-dark) !important;
+  border-color: var(--color-gold-dark) !important;
+  color: var(--color-white) !important;
+}
+
+/* ==========================================================================
+   RESPONSIVE — Tablet
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .funnel-timeline--horizontal {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .funnel-timeline--horizontal .funnel-timeline__item {
+    flex-direction: row;
+    text-align: left;
+    max-width: none;
+  }
+}
+
+/* ==========================================================================
+   RESPONSIVE — Mobile
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .funnel-progress__steps {
+    gap: var(--space-md);
+    font-size: var(--text-caption);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .funnel-progress__step + .funnel-progress__step::before {
+    display: none;
+  }
+
+  .funnel-progress__step span {
+    width: 24px;
+    height: 24px;
+    font-size: 11px;
+  }
+
+  .funnel-form-wrapper {
+    padding: var(--space-lg);
+  }
+
+  .funnel-fieldset legend {
+    font-size: var(--text-h5);
+  }
+
+  .funnel-faq__question {
+    font-size: var(--text-body);
+    padding: var(--space-md);
+    padding-right: 40px;
+  }
+
+  .funnel-faq__answer {
+    padding: 0 var(--space-md) var(--space-md);
+  }
+}

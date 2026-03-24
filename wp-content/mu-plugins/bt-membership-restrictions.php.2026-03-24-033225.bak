@@ -1,0 +1,95 @@
+<?php
+/**
+ * Plugin Name: BT Membership Content Restrictions
+ * Description: Configure content access rules for each membership tier
+ * Version: 1.0
+ * Author: BT Education Ministry
+ */
+
+// Redirect non-members to levels page
+add_filter('pmpro_non_member_text_filter', function($text) {
+    return '<div class="pmpro_message pmpro_error">
+        <p>This content is restricted to members only. Please <a href="' . pmpro_url("levels") . '">choose a membership level</a> to access this content.</p>
+    </div>';
+});
+
+// Set custom redirect for non-members trying to access restricted content
+add_filter('pmpro_login_redirect', function($redirect_to, $request, $user) {
+    // Redirect to account page after login
+    return pmpro_url("account");
+}, 10, 3);
+
+// Add membership level badges to content
+add_filter('the_content', function($content) {
+    if (is_singular() && in_the_loop() && is_main_query()) {
+        $post_id = get_the_ID();
+        $levels = pmpro_getMembershipLevelsForPost($post_id);
+        
+        if (!empty($levels)) {
+            $level_names = array();
+            foreach ($levels as $level) {
+                $level_names[] = $level->name;
+            }
+            
+            $badge = '<div class="bt-membership-badge" style="background: #f0f0f0; padding: 10px; margin-bottom: 20px; border-left: 4px solid #0073aa;">
+                <strong>🔒 Member Content:</strong> This content requires: ' . implode(', ', $level_names) . '
+            </div>';
+            
+            $content = $badge . $content;
+        }
+    }
+    return $content;
+});
+
+// Custom capability mapping for membership levels
+add_filter('pmpro_has_membership_access_filter', function($hasaccess, $post, $user, $levels) {
+    // Steward (Level 4) has access to everything
+    if (pmpro_hasMembershipLevel(4, $user->ID)) {
+        return true;
+    }
+    
+    // Architect (Level 3) has access to Operator and Seeker content
+    if (pmpro_hasMembershipLevel(3, $user->ID)) {
+        $allowed_levels = array(1, 2, 3);
+        foreach ($levels as $level) {
+            if (in_array($level->id, $allowed_levels)) {
+                return true;
+            }
+        }
+    }
+    
+    // Operator (Level 2) has access to Seeker content
+    if (pmpro_hasMembershipLevel(2, $user->ID)) {
+        $allowed_levels = array(1, 2);
+        foreach ($levels as $level) {
+            if (in_array($level->id, $allowed_levels)) {
+                return true;
+            }
+        }
+    }
+    
+    return $hasaccess;
+}, 10, 4);
+
+// Add membership info to user profile
+add_action('show_user_profile', 'bt_show_membership_info');
+add_action('edit_user_profile', 'bt_show_membership_info');
+
+function bt_show_membership_info($user) {
+    $level = pmpro_getMembershipLevelForUser($user->ID);
+    ?>
+    <h3>BT Membership Information</h3>
+    <table class="form-table">
+        <tr>
+            <th>Current Level</th>
+            <td><?php echo $level ? $level->name : 'None'; ?></td>
+        </tr>
+        <?php if ($level && $level->billing_amount > 0): ?>
+        <tr>
+            <th>Billing Amount</th>
+            <td>$<?php echo number_format($level->billing_amount, 2); ?>/<?php echo $level->cycle_period; ?></td>
+        </tr>
+        <?php endif; ?>
+    </table>
+    <?php
+}

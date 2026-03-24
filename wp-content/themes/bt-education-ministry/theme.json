@@ -1,0 +1,208 @@
+{
+  "$schema": "https://schemas.wp.org/wp/6.7/theme.json",
+  "version": 3,
+  "settings": {
+    "appearanceTools": true,
+    "color": {
+      "palette": [
+        { "slug": "primary", "color": "#1A0F2E", "name": "Deep Dark Purple" },
+        { "slug": "accent", "color": "#C8A951", "name": "Gold" },
+        { "slug": "bg-light", "color": "#F7F7F7", "name": "Light Background" },
+        { "slug": "white", "color": "#FFFFFF", "name": "White" },
+        { "slug": "text-primary", "color": "#111111", "name": "Primary Text" },
+        { "slug": "text-secondary", "color": "#666666", "name": "Secondary Text" },
+        { "slug": "accent-dark", "color": "#B8963E", "name": "Gold Dark" },
+        { "slug": "primary-light", "color": "#2D1B4E", "name": "Purple Light" }
+      ],
+      "gradients": [
+        {
+          "slug": "primary-to-dark",
+          "gradient": "linear-gradient(135deg, #1A0F2E 0%, #0D0719 100%)",
+          "name": "Primary to Dark"
+        },
+        {
+          "slug": "gold-shimmer",
+          "gradient": "linear-gradient(135deg, #C8A951 0%, #E0C872 50%, #C8A951 100%)",
+          "name": "Gold Shimmer"
+        }
+      ]
+    },
+    "typography": {
+      "fontFamilies": [
+        {
+          "fontFamily": "'Playfair Display', Georgia, serif",
+          "slug": "heading",
+          "name": "Heading",
+          "fontFace": [
+            {
+              "fontFamily": "Playfair Display",
+              "fontWeight": "400 900",
+              "fontStyle": "normal",
+              "fontDisplay": "swap",
+              "src": ["https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&display=swap"]
+            }
+          ]
+        },
+        {
+          "fontFamily": "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+          "slug": "body",
+          "name": "Body",
+          "fontFace": [
+            {
+              "fontFamily": "Inter",
+              "fontWeight": "300 700",
+              "fontStyle": "normal",
+              "fontDisplay": "swap",
+              "src": ["https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"]
+            }
+          ]
+        }
+      ],
+      "fontSizes": [
+        { "slug": "small", "size": "14px", "name": "Small" },
+        { "slug": "medium", "size": "16px", "name": "Medium" },
+        { "slug": "large", "size": "20px", "name": "Large" },
+        { "slug": "x-large", "size": "32px", "name": "X-Large" },
+        { "slug": "xx-large", "size": "48px", "name": "XX-Large" },
+        { "slug": "xxx-large", "size": "64px", "name": "XXX-Large" }
+      ]
+    },
+    "spacing": {
+      "units": ["px", "rem", "%", "vh", "vw"],
+      "spacingSizes": [
+        { "slug": "4", "size": "4px", "name": "4" },
+        { "slug": "8", "size": "8px", "name": "8" },
+        { "slug": "16", "size": "16px", "name": "16" },
+        { "slug": "24", "size": "24px", "name": "24" },
+        { "slug": "32", "size": "32px", "name": "32" },
+        { "slug": "48", "size": "48px", "name": "48" },
+        { "slug": "64", "size": "64px", "name": "64" },
+        { "slug": "80", "size": "80px", "name": "80" },
+        { "slug": "96", "size": "96px", "name": "96" }
+      ]
+    },
+    "layout": {
+      "contentSize": "1200px",
+      "wideSize": "1440px"
+    },
+    "custom": {
+      "spacing": {
+        "sectionPadding": "96px",
+        "sectionPaddingMobile": "48px",
+        "containerMargin": "120px",
+        "containerMarginMobile": "16px"
+      },
+      "borderRadius": {
+        "button": "12px",
+        "card": "16px",
+        "dashboard": "20px"
+      }
+    }
+  },
+  "styles": {
+    "color": {
+      "background": "#FFFFFF",
+      "text": "#111111"
+    },
+    "typography": {
+      "fontFamily": "var(--wp--preset--font-family--body)",
+      "fontSize": "16px",
+      "lineHeight": "1.5"
+    },
+    "spacing": {
+      "blockGap": "24px"
+    },
+    "elements": {
+      "heading": {
+        "typography": {
+          "fontFamily": "var(--wp--preset--font-family--heading)",
+          "fontWeight": "700"
+        },
+        "color": {
+          "text": "#1A0F2E"
+        }
+      },
+      "h1": {
+        "typography": {
+          "fontSize": "clamp(36px, 5vw, 64px)",
+          "lineHeight": "1.125"
+        }
+      },
+      "h2": {
+        "typography": {
+          "fontSize": "clamp(28px, 4vw, 48px)",
+          "lineHeight": "1.167"
+        }
+      },
+      "h3": {
+        "typography": {
+          "fontSize": "32px",
+          "lineHeight": "1.25"
+        }
+      },
+      "h4": {
+        "typography": {
+          "fontSize": "24px",
+          "lineHeight": "1.333"
+        }
+      },
+      "link": {
+        "color": {
+          "text": "#C8A951"
+        },
+        ":hover": {
+          "typography": {
+            "textDecoration": "underline"
+          }
+        }
+      },
+      "button": {
+        "typography": {
+          "fontSize": "16px",
+          "fontWeight": "500",
+          "fontFamily": "var(--wp--preset--font-family--body)"
+        },
+        "color": {
+          "background": "#C8A951",
+          "text": "#1A0F2E"
+        },
+        "border": {
+          "radius": "12px"
+        },
+        "spacing": {
+          "padding": {
+            "top": "12px",
+            "bottom": "12px",
+            "left": "24px",
+            "right": "24px"
+          }
+        },
+        ":hover": {
+          "color": {
+            "background": "#B8963E",
+            "text": "#1A0F2E"
+          }
+        }
+      }
+    },
+    "blocks": {
+      "core/group": {
+        "spacing": {
+          "padding": {
+            "left": "24px",
+            "right": "24px"
+          }
+        }
+      }
+    }
+  },
+  "templateParts": [
+    { "name": "header", "title": "Header", "area": "header" },
+    { "name": "footer", "title": "Footer", "area": "footer" }
+  ],
+  "customTemplates": [
+    { "name": "page-home", "title": "Homepage", "postTypes": ["page"] },
+    { "name": "page-funnel", "title": "Funnel Page", "postTypes": ["page"] },
+    { "name": "page-full-width", "title": "Full Width", "postTypes": ["page"] }
+  ]
+}

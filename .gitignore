@@ -1,0 +1,17 @@
+wp-content/uploads/
+wp-content/cache/
+wp-content/backup*/
+wp-content/backups/
+wp-content/upgrade/
+*.log
+error_log
+debug.log
+*.tmp
+*.temp
+.DS_Store
+*~
+*.swp
+.env
+.env.local
+node_modules/
+/vendor/
