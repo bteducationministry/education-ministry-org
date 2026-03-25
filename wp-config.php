@@ -7,10 +7,10 @@
  */
 
 // ** Database settings ** //
-define( 'DB_NAME', 'bt_education_local' );
-define( 'DB_USER', 'wp_local_user' );
-define( 'DB_PASSWORD', 'wp_local_pass_2026' );
-define( 'DB_HOST', 'localhost' );
+define( 'DB_NAME', 'bt_education_wp_prod' );
+define( 'DB_USER', 'wp_education' );
+define( 'DB_PASSWORD', 'BTEdPr0d_S3cur3!2026' );
+define( 'DB_HOST', 'prod-db-1' );
 define( 'DB_CHARSET', 'utf8mb4' );
 define( 'DB_COLLATE', '' );
 
