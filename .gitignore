@@ -15,3 +15,7 @@ debug.log
 .env.local
 node_modules/
 /vendor/
+
+# Database backups (exclude auto-backups, keep manual backups)
+database/*.sql
+!database/backup_*.sql
