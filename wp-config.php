@@ -1,54 +1,52 @@
 <?php
-/** BT Education Ministry - Production Configuration */
+/**
+ * WordPress Local Preview Configuration
+ * 
+ * This is a local development configuration.
+ * Production config backed up as wp-config.php.production.bak
+ */
 
-// Database settings
-define('WP_CACHE', true);
-define( 'WPCACHEHOME', '/var/www/educationministry.org/wp-content/plugins/wp-super-cache/' );
-define( 'DB_NAME', 'bt_education_wp_prod' );
-define( 'DB_USER', 'wp_education' );
-define( 'DB_PASSWORD', 'BTEdPr0d_S3cur3!2026' );
-define( 'DB_HOST', 'prod-db-1' );
+// ** Database settings ** //
+define( 'DB_NAME', 'bt_education_local' );
+define( 'DB_USER', 'wp_local_user' );
+define( 'DB_PASSWORD', 'wp_local_pass_2026' );
+define( 'DB_HOST', 'localhost' );
 define( 'DB_CHARSET', 'utf8mb4' );
 define( 'DB_COLLATE', '' );
 
-// Authentication keys and salts
-define('AUTH_KEY',         '--j+^pf0Z5W;@vy}20PHu[UrEAG-~{`[m00wx/bF.Gb*x9Xkj|-+|sA/;/o[eR*7');
-define('SECURE_AUTH_KEY',  '`O/ n&l,x:2e2-e6LL!f{Ju{jH@GgGO6={s}<5Kf*mr>AH8}n&dP^*VkRQ^v32T_');
-define('LOGGED_IN_KEY',    '3R}8^S;#`Y|+O3]0IGCs./T~^8-$hEWq7N>|Z{5%:y0.h, ^ &hTMK=6WxAbKlh5');
-define('NONCE_KEY',        '><&;19+YGu+{y10-8GDP<-O )?b~I>5Q@R7t*Nn.P?R^+>]SYmsG;UV~:+SpKpx[');
-define('AUTH_SALT',        'l$W.;UH{!#OV1G($l|-ks?{P3_dk7PbV}$7}ql%mI$))[#;W=sR(JTj~M8]KzQcR');
-define('SECURE_AUTH_SALT', 'UN%`;O2ju<THCePjy)Fz{(qYUsO8=2bM9/o am!pdeeTyybVs;`42.Ws6rWkdkmf');
-define('LOGGED_IN_SALT',   '#vy/fvqBSBEQ6y+)th*O_pQ)Ti0|6A^X4|$$H]I02Gv05?KC!ie<S{9-V+j=H`S{');
-define('NONCE_SALT',       '2=b=x`dG?!hqZfS2e!}4NSy)!at-T9v=)k(sX<<ss-[sq5wN+S^$=/TSSm_3d` x');
+/**#@+
+ * Authentication unique keys and salts.
+ */
+define('AUTH_KEY',         'put your unique phrase here');
+define('SECURE_AUTH_KEY',  'put your unique phrase here');
+define('LOGGED_IN_KEY',    'put your unique phrase here');
+define('NONCE_KEY',        'put your unique phrase here');
+define('AUTH_SALT',        'put your unique phrase here');
+define('SECURE_AUTH_SALT', 'put your unique phrase here');
+define('LOGGED_IN_SALT',   'put your unique phrase here');
+define('NONCE_SALT',       'put your unique phrase here');
+/**#@-*/
 
+/**
+ * WordPress database table prefix.
+ */
 $table_prefix = 'wp_';
 
-// Site URLs
-define( 'WP_HOME', 'https://educationministry.org' );
-define( 'WP_SITEURL', 'https://educationministry.org' );
-
-// Production settings
-define( 'WP_DEBUG', false );
+/**
+ * For developers: WordPress debugging mode.
+ */
+define( 'WP_DEBUG', true );
+define( 'WP_DEBUG_LOG', true );
 define( 'WP_DEBUG_DISPLAY', false );
-define( 'WP_DEBUG_LOG', false );
-define( 'FS_METHOD', 'direct' );
-define( 'FORCE_SSL_ADMIN', true );
-define( 'WP_MEMORY_LIMIT', '256M' );
-define( 'WP_MAX_MEMORY_LIMIT', '512M' );
-define( 'DISALLOW_FILE_EDIT', true );
 
-// SMTP Configuration
-define( 'WPMS_ON', true );
-define( 'WPMS_SMTP_HOST', 'smtp.hostinger.com' );
-define( 'WPMS_SMTP_PORT', 465 );
-define( 'WPMS_SSL', 'ssl' );
-define( 'WPMS_SMTP_AUTH', true );
-define( 'WPMS_SMTP_USER', 'impact@educationministry.org' );
-define( 'WPMS_SMTP_PASS', 'Trustee23!!' );
-define( 'WPMS_MAIL_FROM', 'impact@educationministry.org' );
-define( 'WPMS_MAIL_FROM_NAME', 'BT Education Ministry' );
+/* Add any custom values between this line and the "stop editing" line. */
 
+/* That's all, stop editing! Happy publishing. */
+
+/** Absolute path to the WordPress directory. */
 if ( ! defined( 'ABSPATH' ) ) {
-    define( 'ABSPATH', __DIR__ . '/' );
+	define( 'ABSPATH', __DIR__ . '/' );
 }
+
+/** Sets up WordPress vars and included files. */
 require_once ABSPATH . 'wp-settings.php';
