@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BT Education Ministry — Faith-Grounded Civic Virtue</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500&family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1A0F2E',
+            'primary-light': '#2D1B4E',
+            accent: '#C8A951',
+            'accent-light': '#D4B96A',
+            'accent-glow': 'rgba(200, 169, 81, 0.15)',
+            surface: '#F7F7F7',
+            'text-secondary': '#666666',
+          },
+          fontFamily: {
+            display: ['"Playfair Display"', 'Georgia', 'serif'],
+            body: ['"Source Sans 3"', 'system-ui', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      min-height: 85vh;
+      overflow: hidden;
+      background-color: #1A0F2E;
+    }
+
+    /* Wrap the image in a container that handles the mask + tint together */
+    .hero-image-wrap {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      /* Mask the entire wrap — fades image AND its tint together as one unit */
+      -webkit-mask-image: linear-gradient(to right, transparent 25%, black 58%);
+      mask-image: linear-gradient(to right, transparent 25%, black 58%);
+    }
+
+    .hero-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: 65% center;
+    }
+
+    /* Purple tint over the image — darkens light sky areas so they blend
+       with the #1A0F2E background when the mask fades them out */
+    .hero-image-tint {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        to right,
+        rgba(26, 15, 46, 0.7) 0%,
+        rgba(26, 15, 46, 0.35) 50%,
+        transparent 80%
+      );
+      pointer-events: none;
+    }
+
+    /* Bottom vignette for grounding */
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(to top, rgba(26,15,46,0.4) 0%, transparent 35%);
+    }
+
+    /* Warm atmospheric glow behind headline */
+    .hero-glow {
+      position: absolute;
+      left: 8%;
+      top: 30%;
+      width: 500px;
+      height: 400px;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(200, 169, 81, 0.07) 0%,
+        rgba(200, 169, 81, 0.03) 40%,
+        transparent 70%
+      );
+      z-index: 2;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      min-height: 85vh;
+      padding: 120px 0 96px;
+    }
+
+    /* Headline typography */
+    .hero-headline {
+      font-family: 'Playfair Display', Georgia, serif;
+      font-weight: 700;
+      font-size: clamp(2.75rem, 5.5vw, 4.5rem);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      text-shadow: 0 2px 40px rgba(26, 15, 46, 0.4);
+    }
+
+    .hero-sub {
+      font-family: 'Source Sans 3', system-ui, sans-serif;
+      font-weight: 300;
+      font-size: clamp(1rem, 1.2vw, 1.2rem);
+      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.85);
+      max-width: 480px;
+    }
+
+    /* CTAs */
+    .btn-gold {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: #C8A951;
+      color: #1A0F2E;
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 600;
+      font-size: 15px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      box-shadow: 0 4px 20px rgba(200, 169, 81, 0.25);
+    }
+    .btn-gold:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 28px rgba(200, 169, 81, 0.35);
+    }
+    .btn-gold:active { transform: translateY(0); }
+    .btn-gold:focus-visible {
+      outline: 2px solid #C8A951;
+      outline-offset: 3px;
+    }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 28px;
+      background: transparent;
+      color: #ffffff;
+      font-family: 'Source Sans 3', sans-serif;
+      font-weight: 500;
+      font-size: 15px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(255,255,255,0.35);
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    }
+    .btn-outline:hover {
+      border-color: rgba(200, 169, 81, 0.6);
+      background: rgba(255,255,255,0.05);
+      transform: translateY(-1px);
+    }
+    .btn-outline:active { transform: translateY(0); }
+    .btn-outline:focus-visible {
+      outline: 2px solid #C8A951;
+      outline-offset: 3px;
+    }
+
+    /* Trust bar */
+    .trust-bar {
+      border-top: 1px solid #e8e5e0;
+      background: #ffffff;
+    }
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: #888;
+    }
+    .trust-icon {
+      width: 16px;
+      height: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* ── Header ── */
+    .site-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      background: rgba(255, 255, 255, 0.95);
+      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(240, 237, 232, 0.8);
+      transition: box-shadow 0.3s ease, padding 0.3s ease;
+    }
+    .site-header.scrolled {
+      box-shadow: 0 1px 12px rgba(26, 15, 46, 0.08);
+    }
+    .nav-link {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 14px;
+      font-weight: 500;
+      color: #1A0F2E;
+      text-decoration: none;
+      padding: 8px 2px;
+      position: relative;
+      transition: color 0.15s ease;
+    }
+    .nav-link:hover { color: #C8A951; }
+    .nav-link:focus-visible {
+      outline: 2px solid #C8A951;
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #C8A951;
+      transition: width 0.2s ease;
+    }
+    .nav-link:hover::after { width: 100%; }
+
+    /* Scroll entrance animation */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-in {
+      animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .delay-1 { animation-delay: 0.15s; opacity: 0; }
+    .delay-2 { animation-delay: 0.3s; opacity: 0; }
+    .delay-3 { animation-delay: 0.5s; opacity: 0; }
+
+    /* ── Mobile hamburger menu ── */
+    .mobile-menu-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      color: #1A0F2E;
+    }
+    .mobile-menu {
+      display: none;
+      position: fixed;
+      top: 72px;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.98);
+      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(16px);
+      z-index: 49;
+      padding: 32px 24px;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      font-family: 'Source Sans 3', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #1A0F2E;
+      text-decoration: none;
+      padding: 14px 0;
+      border-bottom: 1px solid #f0ede8;
+    }
+    .mobile-menu a:last-child { border-bottom: none; }
+    .mobile-menu a:hover { color: #C8A951; }
+
+    /* ── Responsive ── */
+    @media (max-width: 768px) {
+      .mobile-menu-btn { display: block; }
+
+      .hero { min-height: 90vh; }
+      .hero-content { padding: 80px 0 48px; }
+      .hero-image-wrap {
+        -webkit-mask-image: linear-gradient(to right, transparent 10%, black 50%);
+        mask-image: linear-gradient(to right, transparent 10%, black 50%);
+      }
+      .hero-image { object-position: 55% center; }
+
+      /* Tighten section padding on mobile */
+      section { padding-top: 56px !important; padding-bottom: 64px !important; }
+
+      /* Trust bar compact */
+      .trust-bar .flex { gap: 12px !important; }
+      .trust-item { font-size: 10px !important; }
+
+      /* Duality grid — keep side-by-side pairs on mobile */
+      .duality-grid {
+        grid-template-columns: 1fr 1fr !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-headline { font-size: 2.25rem !important; }
+    }
+  </style>
+</head>
+<body class="bg-white">
+
+  <!-- ── Header ── -->
+  <header class="site-header">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 flex items-center justify-between" style="height: 72px;">
+      <!-- Left group: Logo + Nav -->
+      <div class="flex items-center gap-6">
+        <a href="/" class="flex items-center flex-shrink-0" aria-label="BT Education Ministry Home">
+          <img src="assets/logo.svg" alt="Bodhi Tree — BT Education Ministry" class="w-auto" style="height: 52px;" />
+        </a>
+        <nav class="hidden md:flex items-center gap-5" aria-label="Main navigation">
+          <a href="#" class="nav-link">Home</a>
+          <a href="#" class="nav-link">About</a>
+          <a href="#" class="nav-link">Programs</a>
+          <a href="#" class="nav-link">Library</a>
+          <a href="#" class="nav-link">Membership</a>
+          <a href="#" class="nav-link">Donate</a>
+        </nav>
+      </div>
+
+      <!-- Right group: CTA + Login + Hamburger -->
+      <div class="flex items-center gap-4">
+        <a href="/start/" class="btn-gold hidden sm:inline-flex" style="padding: 10px 20px; font-size: 13px;">Start Offer 0</a>
+        <a href="#" class="nav-link hidden sm:inline-block">Login</a>
+        <button class="mobile-menu-btn md:hidden" aria-label="Open menu" onclick="document.getElementById('mobileMenu').classList.toggle('open'); this.setAttribute('aria-expanded', document.getElementById('mobileMenu').classList.contains('open'))">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile menu overlay -->
+  <div id="mobileMenu" class="mobile-menu">
+    <a href="#">Home</a>
+    <a href="#">About</a>
+    <a href="#">Programs</a>
+    <a href="#">Library</a>
+    <a href="#">Membership</a>
+    <a href="#">Donate</a>
+    <a href="/start/" style="margin-top: 16px; text-align: center; background: #C8A951; color: #1A0F2E; border-radius: 10px; padding: 14px; font-weight: 600; border-bottom: none;">Start Offer 0</a>
+    <a href="#" style="text-align: center; color: #888; font-size: 0.95rem; border-bottom: none;">Login</a>
+  </div>
+
+  <!-- ── Hero ── -->
+  <section class="hero" aria-label="Hero" style="margin-top: 64px;">
+    <!-- Image + tint wrapped together, masked as one unit -->
+    <div class="hero-image-wrap" aria-hidden="true">
+      <img
+        src="https://educationministry.org/wp-content/uploads/2026/03/bodhi-tree-hero-road-scaled.png"
+        alt="Bodhi Tree with scripture, shield, and shepherd's staff along a stone path through rolling hills at golden hour"
+        class="hero-image"
+      />
+      <div class="hero-image-tint"></div>
+    </div>
+
+    <!-- Bottom vignette -->
+    <div class="hero-overlay" aria-hidden="true"></div>
+
+    <!-- Subtle gold atmospheric glow behind headline -->
+    <div class="hero-glow" aria-hidden="true"></div>
+
+    <!-- Content -->
+    <div class="hero-content">
+      <div class="max-w-7xl mx-auto px-6 lg:px-10 w-full">
+        <div class="max-w-xl">
+          <!-- Headline -->
+          <h1 class="hero-headline animate-in">
+            Faith-Grounded<br/>Civic Virtue
+          </h1>
+
+          <!-- Sub-headline -->
+          <p class="hero-sub mt-6 animate-in delay-1">
+            Empowering families to build, protect, and preserve their legacy&mdash;from foundational civic awareness to generational stewardship.
+          </p>
+
+          <!-- CTAs -->
+          <div class="flex flex-wrap gap-4 mt-10 animate-in delay-2">
+            <a href="/start/" class="btn-gold">
+              Start Your Journey
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <a href="#challenge" class="btn-outline">Take the Challenge</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Trust Bar ── -->
+  <div class="trust-bar">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex flex-wrap items-center justify-between gap-6">
+      <div class="trust-item">
+        <span class="trust-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8A951" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        </span>
+        Established 2025
+      </div>
+      <div class="trust-item">
+        <span class="trust-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8A951" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </span>
+        Branchburg, New Jersey
+      </div>
+      <div class="trust-item">
+        <span class="trust-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8A951" stroke-width="2"><path d="M3 21h18M3 7v1a3 3 0 006 0V7m0 0V3h12v4a3 3 0 01-6 0"/><path d="M9 21V11h6v10"/></svg>
+        </span>
+        Religious Organization (NAICS 813110)
+      </div>
+      <div class="trust-item">
+        <span class="trust-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#C8A951" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+        </span>
+        Serving Families Through Education
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       Section 2: THE CRISIS — Problem Statement
+       ══════════════════════════════════════════════════════════════ -->
+  <section class="bg-primary" style="padding: 96px 0 104px;">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+
+      <!-- Scripture epigraph -->
+      <p class="font-display text-center mx-auto" style="max-width: 600px; font-size: 1.05rem; font-style: italic; color: rgba(200,169,81,0.7); line-height: 1.6; font-weight: 400;">
+        &ldquo;My people are destroyed for lack of knowledge; because thou hast rejected knowledge, I will also reject thee.&rdquo;
+      </p>
+      <p class="font-body text-center mt-2" style="font-size: 0.78rem; color: rgba(255,255,255,0.3); letter-spacing: 0.04em;">Hosea 4:6</p>
+      <p class="font-body text-center mt-3" style="max-width: 480px; margin-left: auto; margin-right: auto; font-size: 0.88rem; color: rgba(255,255,255,0.45); font-weight: 300; line-height: 1.6;">
+        The lack of knowledge in God and in ourselves.
+      </p>
+
+      <!-- Headline -->
+      <h2 class="font-display text-white text-center mt-10" style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.015em;">
+        Civic Knowledge Was Never Meant<br class="hidden sm:inline"/> to Be This Rare
+      </h2>
+
+      <!-- Intro paragraph -->
+      <p class="font-body text-center mx-auto mt-6" style="max-width: 680px; font-size: 1.05rem; line-height: 1.75; color: rgba(255,255,255,0.7); font-weight: 300;">
+        Throughout history, the strength of a society has been measured by the civic virtue of its people&mdash;their understanding of rights, duties, and governance. Today, that foundation is crumbling.
+      </p>
+
+      <!-- 3 Stat Pillars -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
+
+        <!-- Stat 1: Trust -->
+        <div class="text-center md:text-left">
+          <p class="font-display" style="font-size: 4rem; font-weight: 700; line-height: 1; color: #C8A951;">20%</p>
+          <p class="font-body mt-2" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.5);">Trust in Government</p>
+          <p class="font-body mt-3" style="font-size: 0.95rem; line-height: 1.7; color: rgba(255,255,255,0.65); font-weight: 300;">
+            Only 1 in 5 Americans trust the federal government to do what is right. When the people don't understand how governance works, they disengage&mdash;and that vacuum grows.
+          </p>
+          <p class="font-body mt-3" style="font-size: 0.75rem; color: rgba(255,255,255,0.3); font-style: italic;">Pew Research Center</p>
+        </div>
+
+        <!-- Stat 2: Families -->
+        <div class="text-center md:text-left">
+          <p class="font-display" style="font-size: 4rem; font-weight: 700; line-height: 1; color: #C8A951;">67%</p>
+          <p class="font-body mt-2" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.5);">Families Without a Plan</p>
+          <p class="font-body mt-3" style="font-size: 0.95rem; line-height: 1.7; color: rgba(255,255,255,0.65); font-weight: 300;">
+            Two-thirds of Americans have no estate plan. The traditions of homestead, covenant, and generational knowledge transfer have been replaced by consumer dependency.
+          </p>
+          <p class="font-body mt-3" style="font-size: 0.75rem; color: rgba(255,255,255,0.3); font-style: italic;">Gallup / Caring.com</p>
+        </div>
+
+        <!-- Stat 3: Education -->
+        <div class="text-center md:text-left">
+          <p class="font-display" style="font-size: 4rem; font-weight: 700; line-height: 1; color: #C8A951;">24%</p>
+          <p class="font-body mt-2" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.5);">Students Proficient in Civics</p>
+          <p class="font-body mt-3" style="font-size: 0.95rem; line-height: 1.7; color: rgba(255,255,255,0.65); font-weight: 300;">
+            Only 1 in 4 students can demonstrate basic civic knowledge. The gap between what is required of the people and what the people are taught widens every year.
+          </p>
+          <p class="font-body mt-3" style="font-size: 0.75rem; color: rgba(255,255,255,0.3); font-style: italic;">NAEP Civics Assessment, 2022</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       Section 3: THE INSIGHT — Know God. Know Thyself.
+       ══════════════════════════════════════════════════════════════ -->
+  <section style="padding: 96px 0 104px; background: #ffffff;">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+
+        <!-- Left: Content -->
+        <div>
+          <!-- Scripture epigraph -->
+          <p class="font-display" style="font-size: 0.95rem; font-style: italic; color: rgba(200,169,81,0.8); line-height: 1.6; font-weight: 400;">
+            &ldquo;The heart of the prudent getteth knowledge; and the ear of the wise seeketh knowledge.&rdquo;
+          </p>
+          <p class="font-body mt-1" style="font-size: 0.75rem; color: #bbb; letter-spacing: 0.04em;">Proverbs 18:15</p>
+
+          <h2 class="font-display text-primary mt-6" style="font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.015em;">
+            To Know God<br/>Is to Know Thyself
+          </h2>
+          <p class="font-body mt-2" style="font-size: 1.1rem; color: #C8A951; font-weight: 500; line-height: 1.5;">
+            And to know the difference between your public duty and your private standing.
+          </p>
+
+          <div class="font-body mt-8" style="font-size: 1rem; line-height: 1.8; color: #444; font-weight: 300;">
+            <p>
+              The families who build lasting legacies don't do it through accumulation&mdash;they do it through <strong style="font-weight: 600; color: #1A0F2E;">knowledge and posture</strong>.
+            </p>
+            <p class="mt-4">
+              They understand covenant. They understand stewardship. They understand the distinction between their standing as living heirs in the private and their civic duties in the public.
+            </p>
+            <p class="mt-4">
+              This knowledge isn't hidden&mdash;it's in plain view. Estates and trusts. Constitutional principles. Executor and trustee skills. The operating system God established for families to build, protect, and preserve across generations.
+            </p>
+            <p class="mt-4">
+              But modern society has replaced this foundation with commercial traps and social norms that keep families operating entirely in the public sphere&mdash;unaware that a private posture even exists.
+            </p>
+            <p class="mt-4" style="color: #1A0F2E; font-weight: 400;">
+              BT Education Ministry exists to restore this knowledge. Faith-grounded civic education that teaches you to discern private from public, to steward what God has entrusted to you, and to fulfill your civic duties without surrendering your standing.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right: Pull quote + visual -->
+        <div class="flex flex-col items-center justify-center">
+          <!-- Decorative card with pull quote -->
+          <div style="background: #F7F7F7; border-radius: 16px; padding: 48px 40px; border-left: 4px solid #C8A951; max-width: 440px;">
+            <svg width="32" height="24" viewBox="0 0 32 24" fill="none" aria-hidden="true" style="margin-bottom: 16px;">
+              <path d="M0 24V14.4C0 9.87 1.07 6.27 3.2 3.6C5.33 1.2 8.27 0 12 0v5.6C9.6 6.13 8.13 7.47 7.6 9.6H12V24H0ZM20 24V14.4C20 9.87 21.07 6.27 23.2 3.6C25.33 1.2 28.27 0 32 0v5.6C29.6 6.13 28.13 7.47 27.6 9.6H32V24H20Z" fill="#C8A951" opacity="0.2"/>
+            </svg>
+            <p class="font-display" style="font-size: 1.5rem; font-weight: 600; line-height: 1.35; color: #1A0F2E; font-style: italic;">
+              Estates and trusts are hidden in plain view.
+            </p>
+            <p class="font-body mt-4" style="font-size: 0.9rem; color: #888; line-height: 1.6;">
+              The same civic principles that govern public life&mdash;accountability, stewardship, governance&mdash;are first practiced and secured within your private household.
+            </p>
+          </div>
+
+          <!-- Bodhi tree icon below quote -->
+          <div class="mt-8 flex justify-center" style="opacity: 0.12;">
+            <img src="assets/logo.svg" alt="" aria-hidden="true" style="height: 140px; width: auto;" />
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       Section 4: THE YOUNG CIVIC ENGAGEMENT CHALLENGE
+       ══════════════════════════════════════════════════════════════ -->
+  <section id="challenge" style="padding: 96px 0 104px; background: #F7F7F7;">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 text-center">
+
+      <!-- Scripture epigraph -->
+      <p class="font-display mx-auto" style="max-width: 520px; font-size: 0.95rem; font-style: italic; color: rgba(200,169,81,0.8); line-height: 1.6; font-weight: 400;">
+        &ldquo;Train up a child in the way he should go: and when he is old, he will not depart from it.&rdquo;
+      </p>
+      <p class="font-body mt-1" style="font-size: 0.75rem; color: #bbb; letter-spacing: 0.04em;">Proverbs 22:6</p>
+
+      <!-- Badge -->
+      <p class="font-body mt-8" style="font-size: 0.8rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #C8A951;">Free &middot; Open to Everyone</p>
+
+      <!-- Headline -->
+      <h2 class="font-display text-primary mt-4" style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.015em;">
+        The Young Civic Engagement Challenge
+      </h2>
+
+      <!-- Subheadline -->
+      <p class="font-body mt-3" style="font-size: 1.15rem; color: #C8A951; font-weight: 500;">
+        Step forward. Do your part. Learn what every family should know.
+      </p>
+
+      <!-- Body -->
+      <div class="font-body mx-auto mt-8" style="max-width: 720px; font-size: 1rem; line-height: 1.8; color: #555; font-weight: 300;">
+        <p>
+          Every functioning society requires its people to fulfill a bare minimum of civic duties. Most never do&mdash;because no one taught them what those duties are.
+        </p>
+        <p class="mt-4">
+          The Young Civic Engagement Challenge is a free, structured introduction to civic virtue. It challenges you to step forward, understand your role in your community, and take the first practical steps toward civic engagement.
+        </p>
+        <p class="mt-4">
+          Using the principle of <em style="font-style: italic; color: #1A0F2E; font-weight: 500;">&ldquo;As Above, So Below,&rdquo;</em> you'll discover that the same civic virtues required in public life&mdash;accountability, stewardship, governance&mdash;are first practiced and secured in your private household.
+        </p>
+      </div>
+
+      <!-- What's included — 4 pillars -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-14 text-left">
+        <div style="background: #ffffff; border-radius: 12px; padding: 28px 24px; box-shadow: 0 1px 4px rgba(26,15,46,0.06);">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(200,169,81,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8A951" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 class="font-body" style="font-size: 0.95rem; font-weight: 600; color: #1A0F2E;">Civic Literacy</h3>
+          <p class="font-body mt-2" style="font-size: 0.88rem; line-height: 1.6; color: #777; font-weight: 300;">Your rights, duties, and responsibilities as one of the people.</p>
+        </div>
+
+        <div style="background: #ffffff; border-radius: 12px; padding: 28px 24px; box-shadow: 0 1px 4px rgba(26,15,46,0.06);">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(200,169,81,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8A951" stroke-width="1.5"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+          </div>
+          <h3 class="font-body" style="font-size: 0.95rem; font-weight: 600; color: #1A0F2E;">Scripture-Grounded Principles</h3>
+          <p class="font-body mt-2" style="font-size: 0.88rem; line-height: 1.6; color: #777; font-weight: 300;">Stewardship and accountability rooted in scripture.</p>
+        </div>
+
+        <div style="background: #ffffff; border-radius: 12px; padding: 28px 24px; box-shadow: 0 1px 4px rgba(26,15,46,0.06);">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(200,169,81,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8A951" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/><path d="M2 12h20"/></svg>
+          </div>
+          <h3 class="font-body" style="font-size: 0.95rem; font-weight: 600; color: #1A0F2E;">As Above, So Below</h3>
+          <p class="font-body mt-2" style="font-size: 0.88rem; line-height: 1.6; color: #777; font-weight: 300;">How public duty mirrors private virtue.</p>
+        </div>
+
+        <div style="background: #ffffff; border-radius: 12px; padding: 28px 24px; box-shadow: 0 1px 4px rgba(26,15,46,0.06);">
+          <div style="width: 40px; height: 40px; border-radius: 10px; background: rgba(200,169,81,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 16px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8A951" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><path d="M22 4L12 14.01l-3-3"/></svg>
+          </div>
+          <h3 class="font-body" style="font-size: 0.95rem; font-weight: 600; color: #1A0F2E;">Practical First Steps</h3>
+          <p class="font-body mt-2" style="font-size: 0.88rem; line-height: 1.6; color: #777; font-weight: 300;">Actions you can take today, wherever you are in your journey.</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <div class="mt-12">
+        <a href="/challenge/" class="btn-gold" style="padding: 16px 36px; font-size: 16px;">
+          Accept the Challenge
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <p class="font-body mt-4" style="font-size: 0.85rem; color: #999; font-weight: 300;">Free. No account required to begin.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       Section 5: FREE EDUCATION PILLARS
+       ══════════════════════════════════════════════════════════════ -->
+  <section style="padding: 96px 0 104px; background: #ffffff;">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 text-center">
+
+      <!-- Scripture epigraph -->
+      <p class="font-display mx-auto" style="max-width: 560px; font-size: 0.95rem; font-style: italic; color: rgba(200,169,81,0.8); line-height: 1.6; font-weight: 400;">
+        &ldquo;Wisdom is the principal thing; therefore get wisdom: and with all thy getting get understanding.&rdquo;
+      </p>
+      <p class="font-body mt-1" style="font-size: 0.75rem; color: #bbb; letter-spacing: 0.04em;">Proverbs 4:7</p>
+
+      <h2 class="font-display text-primary mt-8" style="font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.015em;">
+        Start Here<br/><span style="color: #C8A951;">&mdash;</span> Civic Education for Every Family
+      </h2>
+
+      <p class="font-body mx-auto mt-5" style="max-width: 660px; font-size: 1rem; line-height: 1.75; color: #666; font-weight: 300;">
+        Access foundational civic and financial education designed to equip individuals and families with the knowledge to move forward with confidence.
+      </p>
+
+      <!-- 3 Pillar Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-14">
+
+        <!-- Civic Literacy -->
+        <div style="background: #F7F7F7; border-radius: 14px; padding: 36px 28px; text-align: left;">
+          <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(200,169,81,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8A951" stroke-width="1.5">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              <path d="M12 8v4M12 16h.01"/>
+            </svg>
+          </div>
+          <h3 class="font-body" style="font-size: 1.1rem; font-weight: 700; color: #1A0F2E;">Civic Literacy</h3>
+          <p class="font-body mt-3" style="font-size: 0.92rem; line-height: 1.7; color: #666; font-weight: 300;">
+            Understand your rights, duties, and the systems that govern daily life&mdash;from local government to constitutional principles that protect the people.
+          </p>
+        </div>
+
+        <!-- Scripture-Based Learning -->
+        <div style="background: #F7F7F7; border-radius: 14px; padding: 36px 28px; text-align: left;">
+          <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(200,169,81,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8A951" stroke-width="1.5">
+              <path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/>
+            </svg>
+          </div>
+          <h3 class="font-body" style="font-size: 1.1rem; font-weight: 700; color: #1A0F2E;">Scripture-Based Learning</h3>
+          <p class="font-body mt-3" style="font-size: 0.92rem; line-height: 1.7; color: #666; font-weight: 300;">
+            Ground your civic understanding in scriptural principles of stewardship, discipline, and covenant. Faith is the foundation, not an afterthought.
+          </p>
+        </div>
+
+        <!-- Family Empowerment -->
+        <div style="background: #F7F7F7; border-radius: 14px; padding: 36px 28px; text-align: left;">
+          <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(200,169,81,0.1); display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8A951" stroke-width="1.5">
+              <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+              <path d="M9 22V12h6v10"/>
+            </svg>
+          </div>
+          <h3 class="font-body" style="font-size: 1.1rem; font-weight: 700; color: #1A0F2E;">Family Empowerment</h3>
+          <p class="font-body mt-3" style="font-size: 0.92rem; line-height: 1.7; color: #666; font-weight: 300;">
+            Build structure and direction for your household&mdash;practical education your family can apply immediately to protect and preserve your legacy.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- CTA -->
+      <div class="mt-12">
+        <a href="/start/" class="btn-gold" style="padding: 14px 32px; font-size: 15px;">Start Learning &mdash; Free</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       Section 6: AS ABOVE, SO BELOW — The Duality
+       ══════════════════════════════════════════════════════════════ -->
+  <section style="padding: 96px 0 104px; background: #1A0F2E;">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+
+      <div class="text-center">
+        <!-- Scripture epigraph -->
+        <p class="font-display mx-auto" style="max-width: 580px; font-size: 1rem; font-style: italic; color: rgba(200,169,81,0.7); line-height: 1.6; font-weight: 400;">
+          &ldquo;But if any provide not for his own, and specially for those of his own house, he hath denied the faith, and is worse than an infidel.&rdquo;
+        </p>
+        <p class="font-body mt-2" style="font-size: 0.78rem; color: rgba(255,255,255,0.3); letter-spacing: 0.04em;">1 Timothy 5:8</p>
+
+        <h2 class="font-display text-white mt-8" style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.015em;">
+          As Above, So Below
+        </h2>
+        <p class="font-body mt-3" style="font-size: 1.1rem; color: #C8A951; font-weight: 500;">
+          The civic virtues required in public life are first secured in your private household.
+        </p>
+      </div>
+
+      <!-- Duality Grid -->
+      <div class="duality-grid grid grid-cols-1 md:grid-cols-2 gap-0 mt-14" style="max-width: 900px; margin-left: auto; margin-right: auto;">
+
+        <!-- Headers -->
+        <div style="padding: 16px 24px; border-bottom: 1px solid rgba(200,169,81,0.3);">
+          <p class="font-body" style="font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #C8A951;">Public — Above</p>
+        </div>
+        <div style="padding: 16px 24px; border-bottom: 1px solid rgba(200,169,81,0.3); border-left: 1px solid rgba(200,169,81,0.15);">
+          <p class="font-body" style="font-size: 0.75rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #C8A951;">Private — Below</p>
+        </div>
+
+        <!-- Row 1 -->
+        <div style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+          <p class="font-body" style="font-size: 0.95rem; font-weight: 600; color: #ffffff;">Civic Duty</p>
+          <p class="font-body mt-1" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); font-weight: 300;">Accountability to your community</p>
+        </div>
+        <div style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); border-left: 1px solid rgba(200,169,81,0.15);">
+          <p class="font-body" style="font-size: 0.95rem; font-weight: 600; color: #ffffff;">Family Governance</p>
+          <p class="font-body mt-1" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); font-weight: 300;">Accountability to your household</p>
+        </div>
+
+        <!-- Row 2 -->
+        <div style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+          <p class="font-body" style="font-size: 0.95rem; font-weight: 600; color: #ffffff;">Constitutional Rights</p>
+          <p class="font-body mt-1" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); font-weight: 300;">Understanding the law of the land</p>
+        </div>
+        <div style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); border-left: 1px solid rgba(200,169,81,0.15);">
+          <p class="font-body" style="font-size: 0.95rem; font-weight: 600; color: #ffffff;">Covenant Rights</p>
+          <p class="font-body mt-1" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); font-weight: 300;">Understanding God's operating system</p>
+        </div>
+
+        <!-- Row 3 -->
+        <div style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06);">
+          <p class="font-body" style="font-size: 0.95rem; font-weight: 600; color: #ffffff;">Public Stewardship</p>
+          <p class="font-body mt-1" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); font-weight: 300;">Serving in civic roles</p>
+        </div>
+        <div style="padding: 20px 24px; border-bottom: 1px solid rgba(255,255,255,0.06); border-left: 1px solid rgba(200,169,81,0.15);">
+          <p class="font-body" style="font-size: 0.95rem; font-weight: 600; color: #ffffff;">Private Stewardship</p>
+          <p class="font-body mt-1" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); font-weight: 300;">Executor, trustee, living heir</p>
+        </div>
+
+        <!-- Row 4 -->
+        <div style="padding: 20px 24px;">
+          <p class="font-body" style="font-size: 0.95rem; font-weight: 600; color: #ffffff;">Engagement</p>
+          <p class="font-body mt-1" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); font-weight: 300;">Participating in governance</p>
+        </div>
+        <div style="padding: 20px 24px; border-left: 1px solid rgba(200,169,81,0.15);">
+          <p class="font-body" style="font-size: 0.95rem; font-weight: 600; color: #ffffff;">Inheritance</p>
+          <p class="font-body mt-1" style="font-size: 0.85rem; color: rgba(255,255,255,0.5); font-weight: 300;">Building and preserving legacy</p>
+        </div>
+      </div>
+
+      <!-- Closing statement -->
+      <p class="font-body text-center mx-auto mt-12" style="max-width: 640px; font-size: 1rem; line-height: 1.8; color: rgba(255,255,255,0.65); font-weight: 300;">
+        When you master these principles in your private life, your public civic virtue becomes unshakable. This is the education that transforms families&mdash;and through families, transforms communities.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       Section 7: FROM SEEKER TO STEWARD — The Path
+       ══════════════════════════════════════════════════════════════ -->
+  <section style="padding: 96px 0 104px; background: #F7F7F7;">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 text-center">
+
+      <!-- Scripture epigraph -->
+      <p class="font-display mx-auto" style="max-width: 520px; font-size: 0.95rem; font-style: italic; color: rgba(200,169,81,0.8); line-height: 1.6; font-weight: 400;">
+        &ldquo;Moreover it is required in stewards, that a man be found faithful.&rdquo;
+      </p>
+      <p class="font-body mt-1" style="font-size: 0.75rem; color: #bbb; letter-spacing: 0.04em;">1 Corinthians 4:2</p>
+
+      <h2 class="font-display text-primary mt-8" style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.015em;">
+        From Seeker to Steward
+      </h2>
+      <p class="font-body mt-3" style="font-size: 1.05rem; color: #C8A951; font-weight: 500;">
+        A structured progression from learning to leadership
+      </p>
+
+      <!-- 4-Step Journey -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-14">
+
+        <!-- Step 1: Seeker -->
+        <div style="background: #ffffff; border-radius: 14px; padding: 32px 24px; text-align: left; border-top: 3px solid #C8A951;">
+          <p class="font-body" style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #C8A951;">Step 1</p>
+          <h3 class="font-display mt-2" style="font-size: 1.35rem; font-weight: 700; color: #1A0F2E;">Seeker</h3>
+          <p class="font-body mt-1" style="font-size: 0.8rem; font-weight: 600; color: #C8A951; text-transform: uppercase; letter-spacing: 0.05em;">Awareness</p>
+          <p class="font-body mt-3" style="font-size: 0.9rem; line-height: 1.65; color: #666; font-weight: 300;">
+            Understand the systems, your rights, and the foundational principles that govern civic and private life.
+          </p>
+        </div>
+
+        <!-- Step 2: Operator -->
+        <div style="background: #ffffff; border-radius: 14px; padding: 32px 24px; text-align: left; border-top: 3px solid #C8A951;">
+          <p class="font-body" style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #C8A951;">Step 2</p>
+          <h3 class="font-display mt-2" style="font-size: 1.35rem; font-weight: 700; color: #1A0F2E;">Operator</h3>
+          <p class="font-body mt-1" style="font-size: 0.8rem; font-weight: 600; color: #C8A951; text-transform: uppercase; letter-spacing: 0.05em;">Execution</p>
+          <p class="font-body mt-3" style="font-size: 0.9rem; line-height: 1.65; color: #666; font-weight: 300;">
+            Apply structured processes with discipline. Begin implementing civic virtue in your household and community.
+          </p>
+        </div>
+
+        <!-- Step 3: Architect -->
+        <div style="background: #ffffff; border-radius: 14px; padding: 32px 24px; text-align: left; border-top: 3px solid #C8A951;">
+          <p class="font-body" style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #C8A951;">Step 3</p>
+          <h3 class="font-display mt-2" style="font-size: 1.35rem; font-weight: 700; color: #1A0F2E;">Architect</h3>
+          <p class="font-body mt-1" style="font-size: 0.8rem; font-weight: 600; color: #C8A951; text-transform: uppercase; letter-spacing: 0.05em;">Design</p>
+          <p class="font-body mt-3" style="font-size: 0.9rem; line-height: 1.65; color: #666; font-weight: 300;">
+            Build the systems and frameworks that protect and sustain your family's legacy across generations.
+          </p>
+        </div>
+
+        <!-- Step 4: Steward -->
+        <div style="background: #ffffff; border-radius: 14px; padding: 32px 24px; text-align: left; border-top: 3px solid #C8A951;">
+          <p class="font-body" style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #C8A951;">Step 4</p>
+          <h3 class="font-display mt-2" style="font-size: 1.35rem; font-weight: 700; color: #1A0F2E;">Steward</h3>
+          <p class="font-body mt-1" style="font-size: 0.8rem; font-weight: 600; color: #C8A951; text-transform: uppercase; letter-spacing: 0.05em;">Governance</p>
+          <p class="font-body mt-3" style="font-size: 0.9rem; line-height: 1.65; color: #666; font-weight: 300;">
+            Lead, manage, and oversee the long-term structures you've built. Pass the knowledge forward.
+          </p>
+        </div>
+      </div>
+
+      <!-- Closing -->
+      <p class="font-body mt-10" style="font-size: 1rem; color: #555; font-weight: 300;">
+        Begin as a Seeker. The path is free and open to everyone.
+      </p>
+      <p class="font-body mt-4" style="font-size: 0.9rem;">
+        <a href="https://btpma.org" style="color: #C8A951; text-decoration: none; font-weight: 500; border-bottom: 1px solid rgba(200,169,81,0.3);">Ready for structured membership and advanced tools? Visit the Private Ministry Association &rarr;</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       Section 8: TESTIMONIALS
+       ══════════════════════════════════════════════════════════════ -->
+  <section style="padding: 96px 0 104px; background: #ffffff;">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+
+      <h2 class="font-display text-primary text-center" style="font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.015em;">
+        Real Outcomes, Real Impact
+      </h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-14">
+
+        <!-- Testimonial 1 -->
+        <div style="background: #F7F7F7; border-radius: 14px; padding: 36px 28px;">
+          <p class="font-display" style="font-size: 2.5rem; line-height: 1; color: #C8A951; opacity: 0.4;">&ldquo;</p>
+          <p class="font-body" style="font-size: 0.95rem; line-height: 1.7; color: #555; font-style: italic; font-weight: 300; margin-top: -8px;">
+            I had no idea how much I didn't know about my own civic responsibilities. The Challenge opened my eyes&mdash;and the education gave me a foundation I can actually build on.
+          </p>
+          <p class="font-body mt-4" style="font-size: 0.8rem; font-weight: 600; color: #1A0F2E;">&mdash; Seeker, New Jersey</p>
+        </div>
+
+        <!-- Testimonial 2 -->
+        <div style="background: #F7F7F7; border-radius: 14px; padding: 36px 28px;">
+          <p class="font-display" style="font-size: 2.5rem; line-height: 1; color: #C8A951; opacity: 0.4;">&ldquo;</p>
+          <p class="font-body" style="font-size: 0.95rem; line-height: 1.7; color: #555; font-style: italic; font-weight: 300; margin-top: -8px;">
+            Understanding the difference between public and private changed everything for my family. We finally have structure, direction, and a plan.
+          </p>
+          <p class="font-body mt-4" style="font-size: 0.8rem; font-weight: 600; color: #1A0F2E;">&mdash; Operator Member</p>
+        </div>
+
+        <!-- Testimonial 3 -->
+        <div style="background: #F7F7F7; border-radius: 14px; padding: 36px 28px;">
+          <p class="font-display" style="font-size: 2.5rem; line-height: 1; color: #C8A951; opacity: 0.4;">&ldquo;</p>
+          <p class="font-body" style="font-size: 0.95rem; line-height: 1.7; color: #555; font-style: italic; font-weight: 300; margin-top: -8px;">
+            This isn't just education. It's the operating system I was never taught. My children will inherit more than assets&mdash;they'll inherit knowledge.
+          </p>
+          <p class="font-body mt-4" style="font-size: 0.8rem; font-weight: 600; color: #1A0F2E;">&mdash; Architect Member</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       Section 9: START TODAY — Final CTA
+       ══════════════════════════════════════════════════════════════ -->
+  <section style="padding: 96px 0 104px; background: #1A0F2E;">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10 text-center">
+
+      <!-- Scripture epigraph -->
+      <p class="font-display mx-auto" style="max-width: 520px; font-size: 1rem; font-style: italic; color: rgba(200,169,81,0.7); line-height: 1.6; font-weight: 400;">
+        &ldquo;Where there is no vision, the people perish: but he that keepeth the law, happy is he.&rdquo;
+      </p>
+      <p class="font-body mt-2" style="font-size: 0.78rem; color: rgba(255,255,255,0.3); letter-spacing: 0.04em;">Proverbs 29:18</p>
+
+      <h2 class="font-display text-white mt-8" style="font-size: clamp(2rem, 4vw, 3rem); font-weight: 700; line-height: 1.15; letter-spacing: -0.015em;">
+        Start Today
+      </h2>
+      <p class="font-body mt-4" style="font-size: 1.05rem; color: rgba(255,255,255,0.65); font-weight: 300; line-height: 1.6;">
+        Take the first step toward structured education,<br class="hidden sm:inline"/> clarity, and long-term impact.
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-4 mt-10">
+        <a href="/challenge/" class="btn-gold" style="padding: 16px 32px; font-size: 15px;">
+          Start the Civic Engagement Challenge
+        </a>
+        <a href="/start/" class="btn-outline" style="padding: 16px 32px; font-size: 15px;">
+          Explore Free Education
+        </a>
+        <a href="/donate/" class="btn-outline" style="padding: 16px 32px; font-size: 15px;">
+          Donate
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       FOOTER
+       ══════════════════════════════════════════════════════════════ -->
+  <footer style="background: #130A21; padding: 64px 0 32px;">
+    <div class="max-w-7xl mx-auto px-6 lg:px-10">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-10">
+
+        <!-- Brand -->
+        <div>
+          <img src="assets/logo.svg" alt="Bodhi Tree" style="height: 48px; width: auto; filter: brightness(0) invert(1); opacity: 0.7;" />
+          <p class="font-body mt-4" style="font-size: 0.85rem; line-height: 1.7; color: rgba(255,255,255,0.4); font-weight: 300;">
+            Serving families through education and ministry.
+          </p>
+          <p class="font-body mt-3" style="font-size: 0.8rem; color: rgba(255,255,255,0.3); font-weight: 300;">
+            971 US Highway 202 N, Ste N<br/>
+            Branchburg, NJ 08876<br/>
+            Phone: (732) 375-9474
+          </p>
+        </div>
+
+        <!-- Pages -->
+        <div>
+          <h4 class="font-body" style="font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.08em;">Pages</h4>
+          <nav class="mt-4 flex flex-col gap-2" style="font-size: 0.88rem;">
+            <a href="#" style="color: rgba(255,255,255,0.45); text-decoration: none; font-weight: 300;">About</a>
+            <a href="#" style="color: rgba(255,255,255,0.45); text-decoration: none; font-weight: 300;">Programs</a>
+            <a href="#" style="color: rgba(255,255,255,0.45); text-decoration: none; font-weight: 300;">Civic Library</a>
+            <a href="#" style="color: rgba(255,255,255,0.45); text-decoration: none; font-weight: 300;">Donate</a>
+          </nav>
+        </div>
+
+        <!-- Access -->
+        <div>
+          <h4 class="font-body" style="font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.08em;">Access</h4>
+          <nav class="mt-4 flex flex-col gap-2" style="font-size: 0.88rem;">
+            <a href="#" style="color: rgba(255,255,255,0.45); text-decoration: none; font-weight: 300;">Start the Challenge</a>
+            <a href="#" style="color: rgba(255,255,255,0.45); text-decoration: none; font-weight: 300;">Free Education Portal</a>
+            <a href="https://btpma.org" style="color: rgba(255,255,255,0.45); text-decoration: none; font-weight: 300;">Private Ministry Association</a>
+          </nav>
+        </div>
+
+        <!-- Classification -->
+        <div>
+          <h4 class="font-body" style="font-size: 0.85rem; font-weight: 600; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.08em;">Classification</h4>
+          <div class="mt-4 flex flex-col gap-2" style="font-size: 0.85rem; color: rgba(255,255,255,0.35); font-weight: 300;">
+            <p>Religious Organization</p>
+            <p>NAICS 813110</p>
+            <p>SIC Code 8661</p>
+            <p>508(c)(1)(a) Nonprofit</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div style="margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.06);">
+        <p class="font-body text-center" style="font-size: 0.8rem; color: rgba(255,255,255,0.25); font-weight: 300;">
+          Serving families through education and ministry.<br/>
+          &copy; 2025 BT Education Ministry. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Add shadow to header on scroll
+    const header = document.querySelector('.site-header');
+    window.addEventListener('scroll', () => {
+      header.classList.toggle('scrolled', window.scrollY > 20);
+    }, { passive: true });
+  </script>
+</body>
+</html>
