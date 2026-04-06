@@ -1,4 +1,4 @@
-const { useState, useEffect } = React;
+const { useState, useEffect, useRef, useCallback, createContext, useContext } = React;
 
 /* ───── Hash-based Router ───── */
 function useHash() {
@@ -15,6 +15,17 @@ function navigate(path) {
   window.location.hash = path;
   window.scrollTo(0, 0);
 }
+
+/* ───── Signup Modal Context ───── */
+const SignupModalContext = createContext({ open: function(){}, close: function(){} });
+
+function useSignupModal() {
+  return useContext(SignupModalContext);
+}
+
+/* ───── Signup API Config ───── */
+const SIGNUP_ENDPOINT = "https://api.educationministry.org/signup";
+const SIGNUP_TIMEOUT_MS = 10000;
 
 /* ───── Color Tokens ───── */
 const C = {
@@ -154,6 +165,312 @@ const libraryResources = [
   { title:"Tools & Templates Starter Kit", type:"Template", category:"Tools & Templates", access:"free", desc:"A curated collection of worksheets and frameworks to begin structuring your household." },
 ];
 
+/* ═══════ MODAL + SIGNUP FORM ═══════ */
+
+function Modal({ isOpen, onClose, children }) {
+  const overlayRef = useRef(null);
+  const containerRef = useRef(null);
+  const previousFocusRef = useRef(null);
+
+  // Body scroll lock & focus trap
+  useEffect(function() {
+    if (isOpen) {
+      previousFocusRef.current = document.activeElement;
+      document.body.classList.add("modal-body-lock");
+      // Focus first focusable element
+      setTimeout(function() {
+        if (containerRef.current) {
+          var focusable = containerRef.current.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+          if (focusable.length > 0) focusable[0].focus();
+        }
+      }, 100);
+    } else {
+      document.body.classList.remove("modal-body-lock");
+      if (previousFocusRef.current) {
+        previousFocusRef.current.focus();
+      }
+    }
+    return function() {
+      document.body.classList.remove("modal-body-lock");
+    };
+  }, [isOpen]);
+
+  // ESC key handler
+  useEffect(function() {
+    function handleKeyDown(e) {
+      if (e.key === "Escape" && isOpen) onClose();
+      // Focus trap
+      if (e.key === "Tab" && isOpen && containerRef.current) {
+        var focusable = containerRef.current.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+        if (focusable.length === 0) return;
+        var first = focusable[0];
+        var last = focusable[focusable.length - 1];
+        if (e.shiftKey) {
+          if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+        } else {
+          if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+        }
+      }
+    }
+    document.addEventListener("keydown", handleKeyDown);
+    return function() { document.removeEventListener("keydown", handleKeyDown); };
+  }, [isOpen, onClose]);
+
+  // Click overlay to close
+  function handleOverlayClick(e) {
+    if (e.target === overlayRef.current) onClose();
+  }
+
+  return React.createElement("div", {
+    ref: overlayRef,
+    className: "modal-overlay" + (isOpen ? " modal-open" : ""),
+    onClick: handleOverlayClick,
+    role: "dialog",
+    "aria-modal": "true",
+    "aria-label": "Sign up for free civic education"
+  },
+    React.createElement("div", { ref: containerRef, className: "modal-container" },
+      React.createElement("button", {
+        className: "modal-close-btn",
+        onClick: onClose,
+        "aria-label": "Close modal",
+        type: "button"
+      }, "\u2715"),
+      children
+    )
+  );
+}
+
+function Offer0SignupForm({ source, onClose }) {
+  var _s = useState({ firstName: "", lastName: "", email: "", phone: "" });
+  var form = _s[0], setForm = _s[1];
+  var _e = useState({});
+  var errors = _e[0], setErrors = _e[1];
+  var _a = useState(false);
+  var agreed = _a[0], setAgreed = _a[1];
+  var _st = useState("idle"); // idle | loading | success | error
+  var status = _st[0], setStatus = _st[1];
+  var _em = useState("");
+  var errorMsg = _em[0], setErrorMsg = _em[1];
+
+  function handleChange(field, value) {
+    var next = {}; for (var k in form) next[k] = form[k];
+    next[field] = value;
+    setForm(next);
+    // Clear error on change
+    if (errors[field]) {
+      var nextErr = {}; for (var k2 in errors) nextErr[k2] = errors[k2];
+      delete nextErr[field];
+      setErrors(nextErr);
+    }
+  }
+
+  function validate() {
+    var errs = {};
+    if (!form.firstName.trim()) errs.firstName = "First name is required.";
+    if (!form.lastName.trim()) errs.lastName = "Last name is required.";
+    if (!form.email.trim()) {
+      errs.email = "Email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) {
+      errs.email = "Please enter a valid email address.";
+    }
+    if (form.phone.trim() && !/^[\d\s\-\+\(\)\.]{7,20}$/.test(form.phone.trim())) {
+      errs.phone = "Please enter a valid phone number.";
+    }
+    if (!agreed) errs.agreed = "You must agree to the privacy policy.";
+    return errs;
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    var errs = validate();
+    setErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+
+    setStatus("loading");
+    setErrorMsg("");
+
+    var payload = JSON.stringify({
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+      email: form.email.trim(),
+      phone: form.phone.trim() || null,
+      source: source || "offer0"
+    });
+
+    // Timeout via AbortController
+    var controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+    var timeoutId = controller ? setTimeout(function() { controller.abort(); }, SIGNUP_TIMEOUT_MS) : null;
+
+    fetch(SIGNUP_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: payload,
+      signal: controller ? controller.signal : undefined,
+      mode: "cors"
+    })
+    .then(function(res) {
+      clearTimeout(timeoutId);
+      if (!res.ok) throw new Error("Server error (" + res.status + ")");
+      return res.json();
+    })
+    .then(function() {
+      setStatus("success");
+    })
+    .catch(function(err) {
+      clearTimeout(timeoutId);
+      console.error("[Offer0 Signup Error]", err);
+      if (err.name === "AbortError") {
+        setErrorMsg("Request timed out. Please check your connection and try again.");
+      } else {
+        setErrorMsg("Something went wrong. Please try again or contact us at info@educationministry.org.");
+      }
+      setStatus("error");
+    });
+  }
+
+  function handleRetry() {
+    setStatus("idle");
+    setErrorMsg("");
+  }
+
+  // ── Success State ──
+  if (status === "success") {
+    return React.createElement("div", { style: { padding: "48px 40px", textAlign: "center" } },
+      React.createElement("div", { style: { fontSize: "56px", marginBottom: "20px" } }, "\u2705"),
+      React.createElement("h3", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "26px", color: C.purple, margin: "0 0 12px" } }, "You're In!"),
+      React.createElement("p", { style: { fontFamily: "Inter,sans-serif", color: C.textMid, fontSize: "15px", lineHeight: 1.7, marginBottom: "24px" } },
+        "Check your email for next steps. You\u2019ll receive your welcome guide and access to the Young Civic Engagement Challenge shortly."
+      ),
+      React.createElement("div", { style: { background: C.purplePale, padding: "20px", border: "1px solid " + C.purpleLight, marginBottom: "24px", textAlign: "left" } },
+        React.createElement("div", { style: { fontFamily: "Inter,sans-serif", fontSize: "11px", color: C.gold, letterSpacing: "2px", fontWeight: 700, marginBottom: "10px" } }, "WHAT\u2019S NEXT"),
+        React.createElement("div", { style: { display: "flex", gap: "8px", marginBottom: "8px", alignItems: "center" } },
+          React.createElement("span", { style: { color: C.green, fontWeight: 700 } }, "1."),
+          React.createElement("span", { style: { fontFamily: "Inter,sans-serif", color: C.text, fontSize: "13px" } }, "Check your inbox for the welcome email")
+        ),
+        React.createElement("div", { style: { display: "flex", gap: "8px", marginBottom: "8px", alignItems: "center" } },
+          React.createElement("span", { style: { color: C.green, fontWeight: 700 } }, "2."),
+          React.createElement("span", { style: { fontFamily: "Inter,sans-serif", color: C.text, fontSize: "13px" } }, "Begin the Young Civic Engagement Challenge")
+        ),
+        React.createElement("div", { style: { display: "flex", gap: "8px", alignItems: "center" } },
+          React.createElement("span", { style: { color: C.green, fontWeight: 700 } }, "3."),
+          React.createElement("span", { style: { fontFamily: "Inter,sans-serif", color: C.text, fontSize: "13px" } }, "Build your foundation \u2014 at your own pace")
+        )
+      ),
+      React.createElement("button", {
+        onClick: onClose,
+        style: { background: C.purple, color: C.white, padding: "14px 32px", fontFamily: "Inter,sans-serif", fontWeight: 700, fontSize: "14px", borderRadius: "2px", border: "none", cursor: "pointer" }
+      }, "Close")
+    );
+  }
+
+  // ── Error State ──
+  if (status === "error") {
+    return React.createElement("div", { style: { padding: "48px 40px", textAlign: "center" } },
+      React.createElement("div", { style: { fontSize: "56px", marginBottom: "20px" } }, "\u26A0\uFE0F"),
+      React.createElement("h3", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "24px", color: C.purple, margin: "0 0 12px" } }, "Something Went Wrong"),
+      React.createElement("p", { style: { fontFamily: "Inter,sans-serif", color: C.textMid, fontSize: "14px", lineHeight: 1.7, marginBottom: "28px" } }, errorMsg),
+      React.createElement("div", { style: { display: "flex", gap: "12px", justifyContent: "center" } },
+        React.createElement("button", {
+          onClick: handleRetry,
+          style: { background: C.gold, color: C.white, padding: "14px 28px", fontFamily: "Inter,sans-serif", fontWeight: 700, fontSize: "14px", borderRadius: "2px", border: "none", cursor: "pointer" }
+        }, "Try Again"),
+        React.createElement("button", {
+          onClick: onClose,
+          style: { background: "transparent", color: C.purple, border: "2px solid " + C.divider, padding: "14px 28px", fontFamily: "Inter,sans-serif", fontWeight: 600, fontSize: "14px", borderRadius: "2px", cursor: "pointer" }
+        }, "Close")
+      )
+    );
+  }
+
+  // ── Form State (idle / loading) ──
+  var isLoading = status === "loading";
+
+  return React.createElement("div", { style: { padding: "0" } },
+    // Header
+    React.createElement("div", { style: { background: "linear-gradient(135deg, " + C.purple + " 0%, " + C.purpleMid + " 100%)", padding: "36px 40px 28px", textAlign: "center" } },
+      React.createElement("div", { style: { fontFamily: "Inter,sans-serif", fontSize: "10px", color: "#e8d5a0", letterSpacing: "2px", fontWeight: 700, marginBottom: "10px" } }, "FREE \u00B7 OFFER 0 \u00B7 CIVIC CHALLENGE"),
+      React.createElement("h3", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "24px", color: C.white, margin: "0 0 8px", lineHeight: 1.2 } }, "Begin the Young Civic Engagement Challenge"),
+      React.createElement("p", { style: { fontFamily: "Inter,sans-serif", fontSize: "13px", color: "#c8b8e8", lineHeight: 1.5, margin: 0 } }, "Start your journey with structured civic education \u2014 completely free.")
+    ),
+    // Form
+    React.createElement("form", { onSubmit: handleSubmit, style: { padding: "32px 40px 36px" }, noValidate: true },
+      // Name row
+      React.createElement("div", { className: "signup-form-row", style: { display: "flex", gap: "16px" } },
+        React.createElement("div", { className: "signup-form-group", style: { flex: 1 } },
+          React.createElement("label", { htmlFor: "signup-first" }, "First Name *"),
+          React.createElement("input", {
+            id: "signup-first", type: "text", placeholder: "First name",
+            value: form.firstName, disabled: isLoading,
+            className: errors.firstName ? "input-error" : "",
+            onChange: function(e) { handleChange("firstName", e.target.value); }
+          }),
+          errors.firstName && React.createElement("div", { className: "signup-form-error" }, errors.firstName)
+        ),
+        React.createElement("div", { className: "signup-form-group", style: { flex: 1 } },
+          React.createElement("label", { htmlFor: "signup-last" }, "Last Name *"),
+          React.createElement("input", {
+            id: "signup-last", type: "text", placeholder: "Last name",
+            value: form.lastName, disabled: isLoading,
+            className: errors.lastName ? "input-error" : "",
+            onChange: function(e) { handleChange("lastName", e.target.value); }
+          }),
+          errors.lastName && React.createElement("div", { className: "signup-form-error" }, errors.lastName)
+        )
+      ),
+      // Email
+      React.createElement("div", { className: "signup-form-group" },
+        React.createElement("label", { htmlFor: "signup-email" }, "Email Address *"),
+        React.createElement("input", {
+          id: "signup-email", type: "email", placeholder: "you@example.com",
+          value: form.email, disabled: isLoading,
+          className: errors.email ? "input-error" : "",
+          onChange: function(e) { handleChange("email", e.target.value); }
+        }),
+        errors.email && React.createElement("div", { className: "signup-form-error" }, errors.email)
+      ),
+      // Phone
+      React.createElement("div", { className: "signup-form-group" },
+        React.createElement("label", { htmlFor: "signup-phone" }, "Phone (optional)"),
+        React.createElement("input", {
+          id: "signup-phone", type: "tel", placeholder: "(555) 555-5555",
+          value: form.phone, disabled: isLoading,
+          className: errors.phone ? "input-error" : "",
+          onChange: function(e) { handleChange("phone", e.target.value); }
+        }),
+        errors.phone && React.createElement("div", { className: "signup-form-error" }, errors.phone)
+      ),
+      // Privacy checkbox
+      React.createElement("div", { className: "signup-checkbox-group" },
+        React.createElement("input", {
+          id: "signup-privacy", type: "checkbox",
+          checked: agreed, disabled: isLoading,
+          onChange: function(e) { setAgreed(e.target.checked); if (errors.agreed) { var ne = {}; for (var k in errors) ne[k]=errors[k]; delete ne.agreed; setErrors(ne); } }
+        }),
+        React.createElement("label", { htmlFor: "signup-privacy" },
+          "I agree to receive educational materials and understand my data will be handled per our ",
+          React.createElement("span", { style: { color: C.gold, fontWeight: 600, textDecoration: "underline", cursor: "pointer" } }, "privacy policy"),
+          "."
+        )
+      ),
+      errors.agreed && React.createElement("div", { className: "signup-form-error", style: { marginTop: "-16px", marginBottom: "16px" } }, errors.agreed),
+      // Submit button
+      React.createElement("button", {
+        type: "submit",
+        className: "signup-submit-btn",
+        disabled: isLoading
+      }, isLoading ? "Submitting\u2026" : "Start The Challenge \u2014 Free \u2192"),
+      // Trust signals
+      React.createElement("div", { style: { display: "flex", gap: "16px", justifyContent: "center", marginTop: "20px", flexWrap: "wrap" } },
+        React.createElement("span", { style: { fontFamily: "Inter,sans-serif", fontSize: "11px", color: C.textLight } }, "\uD83D\uDD12 Secure & Private"),
+        React.createElement("span", { style: { fontFamily: "Inter,sans-serif", fontSize: "11px", color: C.textLight } }, "\u2709\uFE0F No Spam, Ever"),
+        React.createElement("span", { style: { fontFamily: "Inter,sans-serif", fontSize: "11px", color: C.textLight } }, "\u2714\uFE0F 100% Free")
+      )
+    )
+  );
+}
+
+
 /* ═══════ SHARED COMPONENTS ═══════ */
 
 function TrustBar() {
@@ -164,6 +481,7 @@ function TrustBar() {
 
 function Nav() {
   const hash = useHash();
+  const { open: openSignup } = useSignupModal();
   const current = hash.replace("#","") || "/";
   const navItems = [
     { label:"Home", path:"/" },
@@ -176,7 +494,7 @@ function Nav() {
   return <nav style={{background:C.white,padding:"14px 48px",display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:`1px solid ${C.divider}`,position:"sticky",top:0,zIndex:100,boxShadow:"0 2px 12px rgba(45,27,78,0.07)"}}>
     <div style={{display:"flex",alignItems:"center",gap:"12px",cursor:"pointer"}} onClick={()=>navigate("/")}>
       <div style={{width:"44px",height:"44px",position:"relative",flexShrink:0}}>
-        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:"44px",height:"44px"}}>
+        <svg viewBox="0 0 44 44" fill="none" xmlns="https://www.shutterstock.com/image-vector/stylized-leafy-branch-smooth-curves-600nw-2686681691.jpg" style={{width:"44px",height:"44px"}}>
           <path d="M22 34 Q18 38 14 42" stroke="#5a8a3c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
           <path d="M22 34 Q22 39 22 43" stroke="#5a8a3c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
           <path d="M22 34 Q26 38 30 42" stroke="#5a8a3c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
@@ -208,7 +526,7 @@ function Nav() {
       })}
     </div>
     <div style={{display:"flex",gap:"12px",alignItems:"center"}}>
-      <button onClick={()=>navigate("/")} style={{background:C.purple,color:C.white,padding:"9px 20px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"13px",letterSpacing:"0.5px",borderRadius:"2px",cursor:"pointer",border:"none"}}>Begin Free →</button>
+      <button onClick={()=>openSignup("header-begin-free")} style={{background:C.purple,color:C.white,padding:"9px 20px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"13px",letterSpacing:"0.5px",borderRadius:"2px",cursor:"pointer",border:"none"}}>Begin Free →</button>
       <button style={{background:"transparent",color:C.purple,border:`1.5px solid ${C.divider}`,padding:"9px 18px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"13px",borderRadius:"2px",cursor:"pointer"}}>Login</button>
     </div>
   </nav>;
@@ -273,6 +591,7 @@ function Footer() {
 /* ═══════ HOMEPAGE SECTIONS ═══════ */
 
 function Hero() {
+  const { open: openSignup } = useSignupModal();
   return <div style={{background:`linear-gradient(170deg,#fffdf7 0%,${C.purplePale} 55%,#ede8f5 100%)`,padding:"110px 48px 90px",textAlign:"center",borderBottom:`2px solid ${C.goldBorder}`,position:"relative",overflow:"hidden"}}>
     <div style={{position:"absolute",top:"10%",right:"5%",opacity:0.04,pointerEvents:"none"}}>
       <svg viewBox="0 0 200 200" width="320" height="320" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -294,7 +613,7 @@ function Hero() {
         <span style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.purple}}>grounded in scripture, hidden in plain view.</span>
       </p>
       <div style={{display:"flex",gap:"16px",justifyContent:"center",flexWrap:"wrap",marginBottom:"72px"}}>
-        <button style={{...S.btnPrimary,padding:"16px 36px",fontSize:"15px",display:"flex",alignItems:"center",gap:"10px"}}>
+        <button onClick={()=>openSignup("hero-take-challenge")} style={{...S.btnPrimary,padding:"16px 36px",fontSize:"15px",display:"flex",alignItems:"center",gap:"10px"}}>
           Take the Challenge <span style={{fontSize:"18px"}}>→</span>
         </button>
         <button onClick={()=>navigate("/programs")} style={{...S.btnSecondary,padding:"16px 32px",fontSize:"15px"}}>View the Path</button>
@@ -426,6 +745,7 @@ function RootCause() {
 }
 
 function ThePath() {
+  const { open: openSignup } = useSignupModal();
   const [active,setActive]=useState(0);
   const s=steps[active];
   return <div style={{background:C.bg,padding:"80px 48px",borderBottom:`1px solid ${C.divider}`}}>
@@ -461,7 +781,7 @@ function ThePath() {
         </div>
       </div>
       <div style={{display:"flex",gap:"16px",marginTop:"32px",flexWrap:"wrap"}}>
-        <button style={S.btnPrimary}>Begin as a Seeker — Free</button>
+        <button onClick={()=>openSignup("path-begin-seeker")} style={S.btnPrimary}>Begin as a Seeker — Free</button>
         <button onClick={()=>navigate("/programs")} style={S.btnSecondary}>View Full Curriculum →</button>
       </div>
     </div>
@@ -540,6 +860,7 @@ function HomePage() {
 
 /* ═══════ ABOUT PAGE ═══════ */
 function AboutPage() {
+  const { open: openSignup } = useSignupModal();
   return <React.Fragment>
     <PageHero
       label="ABOUT · BT EDUCATION MINISTRY"
@@ -723,7 +1044,7 @@ function AboutPage() {
         <p style={{fontFamily:"Inter,sans-serif",color:"#b0a8c0",fontSize:"16px",lineHeight:1.8,maxWidth:"500px",margin:"0 auto 32px"}}>Access free education and begin building a structured path forward.</p>
         <div style={{display:"flex",gap:"16px",justifyContent:"center",flexWrap:"wrap"}}>
           <button onClick={()=>navigate("/programs")} style={{background:C.goldBright,color:C.purple,padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"15px",borderRadius:"2px",border:"none",cursor:"pointer"}}>Explore Programs</button>
-          <button onClick={()=>navigate("/")} style={{background:"transparent",color:C.white,border:"2px solid rgba(255,255,255,0.3)",padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"15px",borderRadius:"2px",cursor:"pointer"}}>Start Free Challenge</button>
+          <button onClick={()=>openSignup("about-start-challenge")} style={{background:"transparent",color:C.white,border:"2px solid rgba(255,255,255,0.3)",padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"15px",borderRadius:"2px",cursor:"pointer"}}>Start Free Challenge</button>
         </div>
       </div>
     </div>
@@ -732,6 +1053,7 @@ function AboutPage() {
 
 /* ═══════ PROGRAMS PAGE ═══════ */
 function ProgramsPage() {
+  const { open: openSignup } = useSignupModal();
   const [activeStep, setActiveStep] = useState(0);
   return <React.Fragment>
     <PageHero
@@ -739,6 +1061,7 @@ function ProgramsPage() {
       headline={<span>A Structured Path from<br/>Learning to <span style={{color:C.gold}}>Leadership</span></span>}
       sub="Our programs guide individuals and families from foundational understanding to real-world application, culminating in full stewardship and governance."
       cta="Start as Seeker — Free"
+      ctaAction={()=>openSignup("programs-hero")}
     />
 
     <div style={{padding:"20px 48px 0"}}>
@@ -779,7 +1102,7 @@ function ProgramsPage() {
               <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.purpleMid,letterSpacing:"1px",fontWeight:700,marginBottom:"4px"}}>OUTCOME</div>
               <div style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,fontSize:"15px",fontStyle:"italic"}}>Move from uncertainty → clarity</div>
             </div>
-            <button style={{...S.btnPrimary,marginTop:"24px",width:"100%",textAlign:"center"}}>Start as Seeker — Free</button>
+            <button onClick={()=>openSignup("programs-civic-challenge")} style={{...S.btnPrimary,marginTop:"24px",width:"100%",textAlign:"center"}}>Start as Seeker — Free</button>
           </div>
 
           {/* AEMP */}
@@ -928,7 +1251,7 @@ function ProgramsPage() {
       <div style={S.inner}>
         <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,44px)",color:C.white,margin:"0 0 16px"}}>Start Where You Are.<br/>Build Toward What Matters.</h2>
         <div style={{display:"flex",gap:"16px",justifyContent:"center",flexWrap:"wrap",marginTop:"32px"}}>
-          <button style={{background:C.goldBright,color:C.purple,padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"15px",borderRadius:"2px",border:"none",cursor:"pointer"}}>Start as Seeker — Free</button>
+          <button onClick={()=>openSignup("programs-footer-seeker")} style={{background:C.goldBright,color:C.purple,padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"15px",borderRadius:"2px",border:"none",cursor:"pointer"}}>Start as Seeker — Free</button>
           <button style={{background:"transparent",color:C.white,border:"2px solid rgba(255,255,255,0.3)",padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"15px",borderRadius:"2px",cursor:"pointer"}}>Apply for Capstone</button>
         </div>
       </div>
@@ -938,6 +1261,7 @@ function ProgramsPage() {
 
 /* ═══════ CIVIC LIBRARY PAGE ═══════ */
 function CivicLibraryPage() {
+  const { open: openSignup } = useSignupModal();
   const [search, setSearch] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
   const filters = ["All","Civic Education","Scripture","Financial Literacy","Family Structure","Tools & Templates"];
@@ -954,7 +1278,7 @@ function CivicLibraryPage() {
       headline={<span>Civic Knowledge.<br/>Structured for <span style={{color:C.gold}}>Clarity.</span></span>}
       sub="Explore foundational resources designed to provide insight, direction, and practical understanding. All materials are curated from our private Knowledge Vault."
       cta="Start Your Civic Education Journey"
-      ctaAction={()=>navigate("/")}
+      ctaAction={()=>openSignup("library-hero")}
     />
 
     <div style={{padding:"20px 48px 0"}}>
@@ -1180,6 +1504,7 @@ const membershipFAQ = [
 ];
 
 function MembershipPage() {
+  const { open: openSignup } = useSignupModal();
   const [openFAQ, setOpenFAQ] = useState(null);
   const [hoveredTier, setHoveredTier] = useState(null);
 
@@ -1280,6 +1605,7 @@ function MembershipPage() {
                   letterSpacing: "0.5px", borderRadius: "2px", cursor: "pointer",
                   transition: "all 0.2s",
                 }}
+              onClick={tier.price === "Free" ? ()=>openSignup("membership-tier-free") : undefined}
               >{tier.price === "Free" ? "Start Free →" : `Join ${tier.title} →`}</button>
             </div>;
           })}
@@ -1379,7 +1705,7 @@ function MembershipPage() {
         <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,44px)",color:C.white,margin:"0 0 16px"}}>Start Where You Are.<br/>Grow at Your Own Pace.</h2>
         <p style={{fontFamily:"Inter,sans-serif",color:"#b0a8c0",fontSize:"16px",lineHeight:1.8,maxWidth:"500px",margin:"0 auto 32px"}}>Begin with free civic education. Upgrade when you're ready for deeper tools, guided support, and structured growth.</p>
         <div style={{display:"flex",gap:"16px",justifyContent:"center",flexWrap:"wrap"}}>
-          <button style={{background:C.goldBright,color:C.purple,padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"15px",borderRadius:"2px",border:"none",cursor:"pointer"}}>Start Free as Seeker</button>
+          <button onClick={()=>openSignup("membership-footer-seeker")} style={{background:C.goldBright,color:C.purple,padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"15px",borderRadius:"2px",border:"none",cursor:"pointer"}}>Start Free as Seeker</button>
           <button onClick={()=>navigate("/donate")} style={{background:"transparent",color:C.white,border:"2px solid rgba(255,255,255,0.3)",padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"15px",borderRadius:"2px",cursor:"pointer"}}>Support Our Mission</button>
         </div>
       </div>
@@ -1672,6 +1998,19 @@ function DonatePage() {
 function App() {
   const hash = useHash();
   const route = hash.replace("#","") || "/";
+  const [signupOpen, setSignupOpen] = useState(false);
+  const [signupSource, setSignupSource] = useState("offer0");
+
+  const openSignup = useCallback(function(source) {
+    setSignupSource(source || "offer0");
+    setSignupOpen(true);
+  }, []);
+
+  const closeSignup = useCallback(function() {
+    setSignupOpen(false);
+  }, []);
+
+  const signupCtx = { open: openSignup, close: closeSignup };
 
   let Page;
   switch(route) {
@@ -1683,12 +2022,17 @@ function App() {
     default: Page = HomePage;
   }
 
-  return <div style={{background:C.bg,minHeight:"100vh"}}>
-    <TrustBar/>
-    <Nav/>
-    <Page/>
-    <Footer/>
-  </div>;
+  return <SignupModalContext.Provider value={signupCtx}>
+    <div style={{background:C.bg,minHeight:"100vh"}}>
+      <TrustBar/>
+      <Nav/>
+      <Page/>
+      <Footer/>
+    </div>
+    <Modal isOpen={signupOpen} onClose={closeSignup}>
+      <Offer0SignupForm source={signupSource} onClose={closeSignup}/>
+    </Modal>
+  </SignupModalContext.Provider>;
 }
 
 ReactDOM.render(<App/>, document.getElementById("root"));
