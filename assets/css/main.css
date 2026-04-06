@@ -29,3 +29,34 @@ button:hover {
 ::selection {
     background: #c9a84c33;
 }
+
+/* === Responsive === */
+@media (max-width: 768px) {
+    nav {
+        padding: 12px 20px !important;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    nav > div:nth-child(2) {
+        order: 3;
+        width: 100%;
+        justify-content: center !important;
+        gap: 16px !important;
+        padding-top: 8px;
+        border-top: 1px solid #e8e2d8;
+    }
+    table {
+        font-size: 12px;
+    }
+}
+
+/* === Smooth transitions === */
+html {
+    scroll-behavior: smooth;
+}
+
+/* === Input focus styles === */
+input:focus {
+    border-color: #2d1b4e !important;
+    box-shadow: 0 0 0 3px rgba(45,27,78,0.1);
+}
