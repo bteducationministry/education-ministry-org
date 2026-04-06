@@ -106,7 +106,7 @@ input:focus {
 .modal-container {
     background: #ffffff;
     width: 90%;
-    max-width: 520px;
+    max-width: 580px;
     max-height: 90vh;
     overflow-y: auto;
     border-radius: 4px;
@@ -230,6 +230,26 @@ input:focus {
 }
 .signup-submit-btn:disabled:hover {
     opacity: 1 !important;
+}
+
+/* Select & Textarea styling */
+.signup-form-group select {
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.signup-form-group select:focus {
+    border-color: #2d1b4e !important;
+    box-shadow: 0 0 0 3px rgba(45,27,78,0.1);
+    background: #ffffff;
+    outline: none;
+}
+.signup-form-group textarea {
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.signup-form-group textarea:focus {
+    border-color: #2d1b4e !important;
+    box-shadow: 0 0 0 3px rgba(45,27,78,0.1);
+    background: #ffffff;
+    outline: none;
 }
 
 /* Body scroll lock */

@@ -818,7 +818,7 @@ function CompetencyPillars() {
 }
 
 function Capstone() {
-  const [submitted,setSubmitted]=useState(false);
+  const [capstoneModalOpen,setCapstoneModalOpen]=useState(false);
   return <div style={{background:C.goldPale,padding:"80px 48px",borderTop:`3px solid ${C.goldBorder}`}}>
     <div style={{maxWidth:"800px",margin:"0 auto",textAlign:"center"}}>
       <div style={S.label}>CAPSTONE · ESTATE TRUST DIRECTIVE</div>
@@ -838,16 +838,14 @@ function Capstone() {
             </div>
           ))}
         </div>
-        {!submitted?<div>
-          <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"15px",lineHeight:1.8,marginBottom:"28px"}}>The Capstone is not a product. It is the final expression of ordered love — lawful transfer, protected inheritance, and intentional blessing across generations. Qualification is required.</p>
-          <button onClick={()=>setSubmitted(true)} style={{...S.btnPrimary,padding:"18px 48px",fontSize:"16px"}}>Apply for Capstone Engagement →</button>
-        </div>:<div style={{background:C.purplePale,padding:"28px",borderTop:`2px solid ${C.gold}`}}>
-          <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"22px",color:C.purple,marginBottom:"12px"}}>Application Received</div>
-          <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"14px",lineHeight:1.7}}>Your application has been logged. A qualified advisor will contact you within 3 business days to assess fit and next steps.</p>
-        </div>}
+        <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"15px",lineHeight:1.8,marginBottom:"28px"}}>The Capstone is not a product. It is the final expression of ordered love — lawful transfer, protected inheritance, and intentional blessing across generations. Qualification is required.</p>
+        <button onClick={()=>setCapstoneModalOpen(true)} style={{...S.btnPrimary,padding:"18px 48px",fontSize:"16px"}}>Apply for Capstone Engagement →</button>
       </div>
       <p style={{fontFamily:"Inter,sans-serif",color:C.textLight,fontSize:"12px",lineHeight:1.6}}>BT Education Ministry is a 508(c)(1)(a) faith-based nonprofit. This engagement is educational and ministerial in nature. Not legal advice. Consult qualified legal counsel for estate planning.</p>
     </div>
+    <Modal isOpen={capstoneModalOpen} onClose={()=>setCapstoneModalOpen(false)}>
+      <CapstoneApplicationForm onClose={()=>setCapstoneModalOpen(false)}/>
+    </Modal>
   </div>;
 }
 
@@ -1055,6 +1053,7 @@ function AboutPage() {
 function ProgramsPage() {
   const { open: openSignup } = useSignupModal();
   const [activeStep, setActiveStep] = useState(0);
+  const [capstoneModalOpen, setCapstoneModalOpen] = useState(false);
   return <React.Fragment>
     <PageHero
       label="PROGRAMS · STRUCTURED PROGRESSION"
@@ -1242,7 +1241,7 @@ function ProgramsPage() {
         </div>
         <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"48px",color:C.purple,fontWeight:700,marginBottom:"8px"}}>$55,000</div>
         <div style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.textLight,letterSpacing:"2px",marginBottom:"28px"}}>QUALIFICATION REQUIRED</div>
-        <button style={{...S.btnPrimary,padding:"18px 48px",fontSize:"16px"}}>Apply for Capstone Engagement →</button>
+        <button onClick={()=>setCapstoneModalOpen(true)} style={{...S.btnPrimary,padding:"18px 48px",fontSize:"16px"}}>Apply for Capstone Engagement →</button>
       </div>
     </div>
 
@@ -1252,10 +1251,15 @@ function ProgramsPage() {
         <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,44px)",color:C.white,margin:"0 0 16px"}}>Start Where You Are.<br/>Build Toward What Matters.</h2>
         <div style={{display:"flex",gap:"16px",justifyContent:"center",flexWrap:"wrap",marginTop:"32px"}}>
           <button onClick={()=>openSignup("programs-footer-seeker")} style={{background:C.goldBright,color:C.purple,padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"15px",borderRadius:"2px",border:"none",cursor:"pointer"}}>Start as Seeker — Free</button>
-          <button style={{background:"transparent",color:C.white,border:"2px solid rgba(255,255,255,0.3)",padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"15px",borderRadius:"2px",cursor:"pointer"}}>Apply for Capstone</button>
+          <button onClick={()=>setCapstoneModalOpen(true)} style={{background:"transparent",color:C.white,border:"2px solid rgba(255,255,255,0.3)",padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"15px",borderRadius:"2px",cursor:"pointer"}}>Apply for Capstone</button>
         </div>
       </div>
     </div>
+
+    {/* Capstone Application Modal */}
+    <Modal isOpen={capstoneModalOpen} onClose={()=>setCapstoneModalOpen(false)}>
+      <CapstoneApplicationForm onClose={()=>setCapstoneModalOpen(false)}/>
+    </Modal>
   </React.Fragment>;
 }
 
@@ -1503,10 +1507,417 @@ const membershipFAQ = [
   { q: "How do I qualify for Capstone?", a: "Capstone eligibility is available to Steward-level members who demonstrate readiness for comprehensive estate trust planning. An application and qualification review process is required." },
 ];
 
+/* ═══════ CAPSTONE APPLICATION FORM (multi-step) ═══════ */
+const CAPSTONE_GOALS = [
+  "Estate Trust Design & Asset Protection",
+  "Fiduciary Structuring & Compliance",
+  "Beneficiary & Succession Planning",
+  "Healthcare Directives",
+  "Custom Governance Architecture",
+  "Treasury Alignment & Optimization",
+  "Legacy Documentation",
+  "Family Council Formation",
+];
+
+function CapstoneApplicationForm({ onClose }) {
+  const [step, setStep] = useState(1);
+  const [form, setForm] = useState({
+    firstName: "", lastName: "", email: "", phone: "",
+    estateValue: "", familySize: "", currentMembership: "",
+    primaryGoals: [], additionalGoals: "", timeline: "", referral: ""
+  });
+  const [errors, setErrors] = useState({});
+  const [status, setStatus] = useState("idle"); // idle | loading | success | error
+  const [errorMsg, setErrorMsg] = useState("");
+
+  function update(field, value) {
+    var next = {}; for (var k in form) next[k] = form[k];
+    next[field] = value;
+    setForm(next);
+    if (errors[field]) {
+      var nextErr = {}; for (var k2 in errors) nextErr[k2] = errors[k2];
+      delete nextErr[field];
+      setErrors(nextErr);
+    }
+  }
+
+  function toggleGoal(goal) {
+    var goals = form.primaryGoals.slice();
+    var idx = goals.indexOf(goal);
+    if (idx >= 0) goals.splice(idx, 1);
+    else goals.push(goal);
+    update("primaryGoals", goals);
+  }
+
+  function validateStep(s) {
+    var errs = {};
+    if (s === 1) {
+      if (!form.firstName.trim()) errs.firstName = "First name is required.";
+      if (!form.lastName.trim()) errs.lastName = "Last name is required.";
+      if (!form.email.trim()) errs.email = "Email is required.";
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) errs.email = "Valid email required.";
+      if (!form.phone.trim()) errs.phone = "Phone is required for Capstone.";
+      else if (!/^[\d\s\-\+\(\)\.]{7,20}$/.test(form.phone.trim())) errs.phone = "Valid phone required.";
+    }
+    if (s === 2) {
+      if (!form.estateValue) errs.estateValue = "Please select an estimate.";
+      if (!form.familySize) errs.familySize = "Please select family size.";
+    }
+    if (s === 3) {
+      if (form.primaryGoals.length === 0) errs.primaryGoals = "Select at least one goal.";
+    }
+    return errs;
+  }
+
+  function nextStep() {
+    var errs = validateStep(step);
+    setErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+    setStep(step + 1);
+  }
+
+  function prevStep() { setStep(step - 1); }
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    var errs = validateStep(3);
+    setErrors(errs);
+    if (Object.keys(errs).length > 0) return;
+
+    setStatus("loading");
+    setErrorMsg("");
+
+    var payload = {
+      firstName: form.firstName.trim(),
+      lastName: form.lastName.trim(),
+      email: form.email.trim(),
+      phone: form.phone.trim(),
+      estateValue: form.estateValue,
+      familySize: form.familySize,
+      currentMembership: form.currentMembership,
+      primaryGoals: form.primaryGoals,
+      additionalGoals: form.additionalGoals.trim(),
+      timeline: form.timeline,
+      referral: form.referral.trim(),
+      source: "capstone-application",
+      type: "capstone_application",
+      timestamp: new Date().toISOString()
+    };
+
+    // Dual-action: 1) Email endpoint 2) AEMP /measure
+    var emailReq = fetch(SIGNUP_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      mode: "cors"
+    }).catch(function(err) { console.warn("[Capstone email error]", err); });
+
+    var measureReq = fetch("https://api.educationministry.org/measure", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event: "capstone_application",
+        user: {
+          name: form.firstName.trim() + " " + form.lastName.trim(),
+          email: form.email.trim(),
+          phone: form.phone.trim()
+        },
+        data: {
+          estateValue: form.estateValue,
+          familySize: form.familySize,
+          goals: form.primaryGoals,
+          timeline: form.timeline
+        },
+        timestamp: new Date().toISOString()
+      }),
+      mode: "cors"
+    }).catch(function(err) { console.warn("[Capstone measure error]", err); });
+
+    Promise.all([emailReq, measureReq])
+      .then(function() { setStatus("success"); })
+      .catch(function(err) {
+        console.error("[Capstone submit error]", err);
+        setErrorMsg("Something went wrong. Please try again or contact us at info@educationministry.org.");
+        setStatus("error");
+      });
+  }
+
+  // ── Success ──
+  if (status === "success") {
+    return React.createElement("div", { style: { padding: "48px 40px", textAlign: "center" } },
+      React.createElement("div", { style: { fontSize: "56px", marginBottom: "20px" } }, "👑"),
+      React.createElement("h3", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "28px", color: C.purple, marginBottom: "12px" } }, "Application Received"),
+      React.createElement("p", { style: { fontFamily: "Inter,sans-serif", color: C.textMid, fontSize: "15px", lineHeight: 1.8, marginBottom: "24px" } },
+        "Thank you, " + form.firstName + ". Your Capstone Estate Trust Directive application has been submitted. Our team will review your information and reach out within 2 business days to discuss next steps."),
+      React.createElement("div", { style: { background: C.goldPale, padding: "20px", border: "1px solid " + C.goldBorder, marginBottom: "24px", textAlign: "left" } },
+        React.createElement("div", { style: { fontFamily: "Inter,sans-serif", fontSize: "11px", color: C.gold, fontWeight: 700, letterSpacing: "2px", marginBottom: "12px" } }, "WHAT HAPPENS NEXT"),
+        React.createElement("div", { style: { display: "flex", gap: "8px", marginBottom: "8px" } },
+          React.createElement("span", { style: { color: C.gold, fontWeight: 700 } }, "1."),
+          React.createElement("span", { style: { fontFamily: "Inter,sans-serif", fontSize: "13px", color: C.textMid } }, "Application review by our advisory team")
+        ),
+        React.createElement("div", { style: { display: "flex", gap: "8px", marginBottom: "8px" } },
+          React.createElement("span", { style: { color: C.gold, fontWeight: 700 } }, "2."),
+          React.createElement("span", { style: { fontFamily: "Inter,sans-serif", fontSize: "13px", color: C.textMid } }, "Qualification call scheduled within 2 business days")
+        ),
+        React.createElement("div", { style: { display: "flex", gap: "8px" } },
+          React.createElement("span", { style: { color: C.gold, fontWeight: 700 } }, "3."),
+          React.createElement("span", { style: { fontFamily: "Inter,sans-serif", fontSize: "13px", color: C.textMid } }, "Custom engagement proposal & onboarding")
+        )
+      ),
+      React.createElement("button", { onClick: onClose, style: S.btnSecondary }, "Close")
+    );
+  }
+
+  // ── Error ──
+  if (status === "error") {
+    return React.createElement("div", { style: { padding: "48px 40px", textAlign: "center" } },
+      React.createElement("div", { style: { fontSize: "48px", marginBottom: "16px" } }, "⚠️"),
+      React.createElement("h3", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "24px", color: C.purple, marginBottom: "12px" } }, "Submission Error"),
+      React.createElement("p", { style: { fontFamily: "Inter,sans-serif", color: C.textMid, fontSize: "14px", lineHeight: 1.7, marginBottom: "24px" } }, errorMsg),
+      React.createElement("div", { style: { display: "flex", gap: "12px", justifyContent: "center" } },
+        React.createElement("button", { onClick: function() { setStatus("idle"); setErrorMsg(""); }, style: S.btnPrimary }, "Try Again"),
+        React.createElement("button", { onClick: onClose, style: S.btnSecondary }, "Close")
+      )
+    );
+  }
+
+  // Step indicators
+  var stepIndicator = React.createElement("div", { style: { display: "flex", justifyContent: "center", gap: "8px", marginBottom: "32px" } },
+    [1,2,3].map(function(s) {
+      var active = s === step;
+      var done = s < step;
+      return React.createElement("div", { key: s, style: { display: "flex", alignItems: "center", gap: "8px" } },
+        React.createElement("div", { style: {
+          width: "32px", height: "32px", borderRadius: "50%", display: "flex", alignItems: "center", justifyContent: "center",
+          background: active ? C.purple : done ? C.green : C.bgAlt,
+          color: active || done ? C.white : C.textLight,
+          fontFamily: "Inter,sans-serif", fontSize: "13px", fontWeight: 700,
+          transition: "all 0.3s"
+        } }, done ? "✓" : s),
+        React.createElement("span", { style: { fontFamily: "Inter,sans-serif", fontSize: "12px", color: active ? C.purple : C.textLight, fontWeight: active ? 700 : 400, display: s === 3 ? "inline" : undefined } },
+          s === 1 ? "Personal" : s === 2 ? "Estate" : "Goals"),
+        s < 3 && React.createElement("div", { style: { width: "24px", height: "2px", background: done ? C.green : C.divider } })
+      );
+    })
+  );
+
+  function renderField(label, field, type, placeholder, required) {
+    return React.createElement("div", { className: "signup-form-group" },
+      React.createElement("label", null, label, required && " *"),
+      React.createElement("input", {
+        type: type || "text",
+        placeholder: placeholder || "",
+        value: form[field],
+        onChange: function(e) { update(field, e.target.value); },
+        className: errors[field] ? "input-error" : ""
+      }),
+      errors[field] && React.createElement("div", { className: "signup-form-error" }, errors[field])
+    );
+  }
+
+  function renderSelect(label, field, options, required) {
+    return React.createElement("div", { className: "signup-form-group" },
+      React.createElement("label", null, label, required && " *"),
+      React.createElement("select", {
+        value: form[field],
+        onChange: function(e) { update(field, e.target.value); },
+        style: {
+          width: "100%", padding: "12px 16px", fontFamily: "Inter,sans-serif", fontSize: "14px",
+          border: "1.5px solid " + (errors[field] ? C.red : C.divider), borderRadius: "2px",
+          background: C.bg, color: form[field] ? C.text : C.textLight, outline: "none"
+        }
+      },
+        React.createElement("option", { value: "" }, "Select..."),
+        options.map(function(opt) { return React.createElement("option", { key: opt.value, value: opt.value }, opt.label); })
+      ),
+      errors[field] && React.createElement("div", { className: "signup-form-error" }, errors[field])
+    );
+  }
+
+  // Steps content
+  var stepContent;
+  if (step === 1) {
+    stepContent = React.createElement("div", null,
+      React.createElement("h3", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "22px", color: C.purple, marginBottom: "4px" } }, "Personal Information"),
+      React.createElement("p", { style: { fontFamily: "Inter,sans-serif", fontSize: "13px", color: C.textMid, marginBottom: "24px" } }, "Tell us about yourself so our advisory team can prepare for your consultation."),
+      React.createElement("div", { style: { display: "flex", gap: "16px" } },
+        React.createElement("div", { style: { flex: 1 } }, renderField("First Name", "firstName", "text", "John", true)),
+        React.createElement("div", { style: { flex: 1 } }, renderField("Last Name", "lastName", "text", "Smith", true))
+      ),
+      renderField("Email Address", "email", "email", "john@example.com", true),
+      renderField("Phone Number", "phone", "tel", "(555) 123-4567", true)
+    );
+  } else if (step === 2) {
+    stepContent = React.createElement("div", null,
+      React.createElement("h3", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "22px", color: C.purple, marginBottom: "4px" } }, "Estate Details"),
+      React.createElement("p", { style: { fontFamily: "Inter,sans-serif", fontSize: "13px", color: C.textMid, marginBottom: "24px" } }, "This helps us understand the scope and tailor our approach to your situation."),
+      renderSelect("Estimated Estate Value", "estateValue", [
+        { value: "under-250k", label: "Under $250,000" },
+        { value: "250k-500k", label: "$250,000 – $500,000" },
+        { value: "500k-1m", label: "$500,000 – $1,000,000" },
+        { value: "1m-5m", label: "$1,000,000 – $5,000,000" },
+        { value: "5m-plus", label: "$5,000,000+" },
+        { value: "prefer-not", label: "Prefer not to say" },
+      ], true),
+      renderSelect("Family Size (Household)", "familySize", [
+        { value: "1", label: "1 (Individual)" },
+        { value: "2", label: "2" },
+        { value: "3-4", label: "3–4" },
+        { value: "5-6", label: "5–6" },
+        { value: "7-plus", label: "7+" },
+      ], true),
+      renderSelect("Current Membership Level", "currentMembership", [
+        { value: "none", label: "Not a member" },
+        { value: "seeker", label: "Seeker" },
+        { value: "operator", label: "Operator" },
+        { value: "architect", label: "Architect" },
+        { value: "steward", label: "Steward" },
+      ], false)
+    );
+  } else {
+    stepContent = React.createElement("div", null,
+      React.createElement("h3", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "22px", color: C.purple, marginBottom: "4px" } }, "Your Goals"),
+      React.createElement("p", { style: { fontFamily: "Inter,sans-serif", fontSize: "13px", color: C.textMid, marginBottom: "24px" } }, "Select your primary objectives for the Capstone engagement."),
+      React.createElement("div", { className: "signup-form-group" },
+        React.createElement("label", null, "Primary Goals *"),
+        React.createElement("div", { style: { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" } },
+          CAPSTONE_GOALS.map(function(goal) {
+            var selected = form.primaryGoals.indexOf(goal) >= 0;
+            return React.createElement("button", {
+              key: goal, type: "button",
+              onClick: function() { toggleGoal(goal); },
+              style: {
+                padding: "10px 14px", textAlign: "left",
+                background: selected ? C.purplePale : C.white,
+                border: "1.5px solid " + (selected ? C.purple : C.divider),
+                fontFamily: "Inter,sans-serif", fontSize: "12px", color: selected ? C.purple : C.textMid,
+                cursor: "pointer", borderRadius: "2px", transition: "all 0.2s",
+                fontWeight: selected ? 600 : 400
+              }
+            },
+              React.createElement("span", { style: { marginRight: "6px" } }, selected ? "✓" : "○"),
+              goal
+            );
+          })
+        ),
+        errors.primaryGoals && React.createElement("div", { className: "signup-form-error" }, errors.primaryGoals)
+      ),
+      React.createElement("div", { className: "signup-form-group" },
+        React.createElement("label", null, "Additional Goals or Notes"),
+        React.createElement("textarea", {
+          value: form.additionalGoals,
+          onChange: function(e) { update("additionalGoals", e.target.value); },
+          placeholder: "Describe any specific needs or circumstances...",
+          rows: 3,
+          style: {
+            width: "100%", padding: "12px 16px", fontFamily: "Inter,sans-serif", fontSize: "14px",
+            border: "1.5px solid " + C.divider, borderRadius: "2px", background: C.bg, color: C.text,
+            outline: "none", resize: "vertical"
+          }
+        })
+      ),
+      renderSelect("Preferred Timeline", "timeline", [
+        { value: "asap", label: "As soon as possible" },
+        { value: "1-3-months", label: "Within 1–3 months" },
+        { value: "3-6-months", label: "Within 3–6 months" },
+        { value: "6-12-months", label: "Within 6–12 months" },
+        { value: "exploring", label: "Just exploring options" },
+      ], false),
+      renderField("How did you hear about us?", "referral", "text", "e.g. Church, friend, social media", false)
+    );
+  }
+
+  return React.createElement("form", { onSubmit: step === 3 ? handleSubmit : function(e) { e.preventDefault(); nextStep(); }, style: { padding: "40px" } },
+    React.createElement("div", { style: { textAlign: "center", marginBottom: "8px" } },
+      React.createElement("div", { style: { fontFamily: "Inter,sans-serif", fontSize: "11px", color: C.gold, letterSpacing: "3px", fontWeight: 700, marginBottom: "8px" } }, "CAPSTONE APPLICATION"),
+      React.createElement("h2", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "26px", color: C.purple, margin: "0 0 4px" } }, "Estate Trust Directive"),
+      React.createElement("p", { style: { fontFamily: "Inter,sans-serif", fontSize: "12px", color: C.textLight } }, "Step " + step + " of 3")
+    ),
+    stepIndicator,
+    stepContent,
+    React.createElement("div", { style: { display: "flex", gap: "12px", marginTop: "28px", justifyContent: step > 1 ? "space-between" : "flex-end" } },
+      step > 1 && React.createElement("button", { type: "button", onClick: prevStep, style: { ...S.btnSecondary, padding: "14px 28px" } }, "← Back"),
+      step < 3 && React.createElement("button", { type: "submit", style: { ...S.btnPrimary, padding: "14px 28px" } }, "Continue →"),
+      step === 3 && React.createElement("button", {
+        type: "submit",
+        disabled: status === "loading",
+        style: { ...S.btnPrimary, padding: "14px 28px", opacity: status === "loading" ? 0.7 : 1 }
+      }, status === "loading" ? "Submitting..." : "Submit Application →")
+    )
+  );
+}
+
+
+/* ═══════ STRIPE CHECKOUT PLACEHOLDER ═══════ */
+/*
+ * Stripe Integration Notes:
+ * ─────────────────────────
+ * 1. Set STRIPE_PUBLISHABLE_KEY below to your Stripe publishable key
+ * 2. Create a backend endpoint to generate Stripe Checkout sessions
+ * 3. Wire the StripeCheckout component to redirect to Stripe Checkout
+ * 4. Subscription price IDs needed:
+ *    - Operator: $27/mo  → price_operator_monthly
+ *    - Architect: $97/mo → price_architect_monthly
+ *    - Steward: $197/mo  → price_steward_monthly
+ * 5. For donations, use Stripe Payment Links or custom Checkout sessions
+ */
+var STRIPE_PUBLISHABLE_KEY = ""; // TODO: Add your Stripe publishable key
+
+function StripeCheckout({ tier, onClose }) {
+  const [loading, setLoading] = useState(false);
+
+  function handleCheckout() {
+    if (!STRIPE_PUBLISHABLE_KEY) {
+      alert("Stripe integration coming soon! Our team is finalizing secure payment processing. For immediate assistance, contact us at info@educationministry.org.");
+      return;
+    }
+    setLoading(true);
+    // Future: call backend to create Stripe Checkout session, then redirect
+    // var stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+    // fetch('/api/create-checkout-session', { method: 'POST', body: JSON.stringify({ tier: tier.key }) })
+    //   .then(res => res.json())
+    //   .then(session => stripe.redirectToCheckout({ sessionId: session.id }));
+  }
+
+  return React.createElement("div", { style: { padding: "48px 40px", textAlign: "center" } },
+    React.createElement("div", { style: { fontSize: "48px", marginBottom: "16px" } }, tier.icon || "💳"),
+    React.createElement("h3", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "26px", color: C.purple, marginBottom: "8px" } },
+      "Join " + tier.title),
+    React.createElement("div", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "36px", color: C.gold, fontWeight: 700, marginBottom: "4px" } }, tier.price),
+    React.createElement("div", { style: { fontFamily: "Inter,sans-serif", fontSize: "13px", color: C.textLight, marginBottom: "24px" } }, tier.period || "/month"),
+    React.createElement("div", { style: { background: C.goldPale, padding: "20px", border: "1px solid " + C.goldBorder, marginBottom: "24px", textAlign: "left" } },
+      React.createElement("div", { style: { fontFamily: "Inter,sans-serif", fontSize: "11px", color: C.gold, fontWeight: 700, letterSpacing: "2px", marginBottom: "12px" } }, "INCLUDED"),
+      tier.benefits && tier.benefits.slice(0, 5).map(function(b, i) {
+        return React.createElement("div", { key: i, style: { display: "flex", gap: "8px", marginBottom: "6px" } },
+          React.createElement("span", { style: { color: C.green, fontWeight: 700, fontSize: "13px" } }, "✓"),
+          React.createElement("span", { style: { fontFamily: "Inter,sans-serif", fontSize: "13px", color: C.textMid } }, b)
+        );
+      })
+    ),
+    React.createElement("div", { style: { background: C.bgAlt, padding: "16px 20px", marginBottom: "24px", borderRadius: "2px" } },
+      React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" } },
+        React.createElement("span", { style: { fontSize: "18px" } }, "🔒"),
+        React.createElement("span", { style: { fontFamily: "Inter,sans-serif", fontSize: "13px", color: C.textMid } }, "Secure payment processing via Stripe — coming soon")
+      )
+    ),
+    React.createElement("button", {
+      onClick: handleCheckout,
+      disabled: loading,
+      style: { ...S.btnPrimary, padding: "16px 40px", fontSize: "15px", width: "100%", marginBottom: "12px" }
+    }, loading ? "Processing..." : "Upgrade to " + tier.title + " →"),
+    React.createElement("button", { onClick: onClose, style: { ...S.btnSecondary, padding: "12px 28px" } }, "Maybe Later"),
+    React.createElement("p", { style: { fontFamily: "Inter,sans-serif", fontSize: "11px", color: C.textLight, marginTop: "16px", lineHeight: 1.6 } },
+      "Secure payment processing will be enabled via Stripe. Cancel anytime. 508(c)(1)(a) organization.")
+  );
+}
+
+
 function MembershipPage() {
   const { open: openSignup } = useSignupModal();
   const [openFAQ, setOpenFAQ] = useState(null);
   const [hoveredTier, setHoveredTier] = useState(null);
+  const [capstoneModalOpen, setCapstoneModalOpen] = useState(false);
+  const [stripeModal, setStripeModal] = useState(null); // null or tier object
 
   return <React.Fragment>
     <PageHero
@@ -1605,7 +2016,7 @@ function MembershipPage() {
                   letterSpacing: "0.5px", borderRadius: "2px", cursor: "pointer",
                   transition: "all 0.2s",
                 }}
-              onClick={tier.price === "Free" ? ()=>openSignup("membership-tier-free") : undefined}
+              onClick={tier.price === "Free" ? ()=>openSignup("membership-tier-free") : ()=>setStripeModal(tier)}
               >{tier.price === "Free" ? "Start Free →" : `Join ${tier.title} →`}</button>
             </div>;
           })}
@@ -1623,7 +2034,7 @@ function MembershipPage() {
             <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"16px",lineHeight:1.7,marginBottom:"24px"}}>{capstoneTier.tagline}</p>
             <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"48px",color:C.purple,fontWeight:700,marginBottom:"4px"}}>{capstoneTier.price}</div>
             <div style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.textLight,letterSpacing:"2px",marginBottom:"28px"}}>ONE-TIME · QUALIFICATION REQUIRED</div>
-            <button style={{...S.btnPrimary,padding:"16px 40px",fontSize:"15px"}}>Apply for Capstone →</button>
+            <button onClick={()=>setCapstoneModalOpen(true)} style={{...S.btnPrimary,padding:"16px 40px",fontSize:"15px"}}>Apply for Capstone →</button>
           </div>
           <div>
             <div style={{background:C.white,padding:"32px",boxShadow:"0 4px 24px rgba(45,27,78,0.08)",border:`1px solid ${C.goldBorder}`}}>
@@ -1710,6 +2121,16 @@ function MembershipPage() {
         </div>
       </div>
     </div>
+
+    {/* Capstone Application Modal */}
+    <Modal isOpen={capstoneModalOpen} onClose={()=>setCapstoneModalOpen(false)}>
+      <CapstoneApplicationForm onClose={()=>setCapstoneModalOpen(false)}/>
+    </Modal>
+
+    {/* Stripe Checkout Modal */}
+    <Modal isOpen={!!stripeModal} onClose={()=>setStripeModal(null)}>
+      {stripeModal && <StripeCheckout tier={stripeModal} onClose={()=>setStripeModal(null)}/>}
+    </Modal>
   </React.Fragment>;
 }
 

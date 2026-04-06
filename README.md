@@ -59,7 +59,74 @@ npx serve .
 - **React 17** (CDN, production build)
 - **Babel Standalone** (JSX transformation)
 - **Google Fonts** (Playfair Display, Inter)
+- **Stripe.js v3** (loaded async, for future payment integration)
 - No build step required — opens directly in any modern browser
+
+## Deployment
+
+1. **Static Hosting** — Deploy `index.html`, `assets/`, and all static files to any CDN or static host (Netlify, Vercel, GitHub Pages, Cloudflare Pages, etc.)
+2. **Custom Domain** — Point `educationministry.org` to your hosting provider
+3. **SSL** — Ensure HTTPS is enabled (required for Stripe)
+
+### Environment Checklist
+- [ ] Static files deployed
+- [ ] Custom domain configured with SSL
+- [ ] API endpoints live (`/signup`, `/measure`)
+- [ ] Stripe integration completed (see below)
+
+## Stripe Integration (Setup Guide)
+
+Stripe.js is already loaded in `index.html`. To complete the payment integration:
+
+### 1. Get Stripe Keys
+- Create a Stripe account at [stripe.com](https://stripe.com)
+- Get your **Publishable Key** from the Stripe Dashboard → Developers → API Keys
+
+### 2. Set the Publishable Key
+In `assets/js/app.js`, find and update:
+```javascript
+var STRIPE_PUBLISHABLE_KEY = ""; // ← Add your pk_live_... or pk_test_... key
+```
+
+### 3. Create Backend Endpoints
+You'll need a server-side endpoint to create Checkout Sessions:
+
+```
+POST /api/create-checkout-session
+Body: { tier: "operator" | "architect" | "steward" }
+Returns: { id: "cs_..." }  // Stripe Checkout Session ID
+```
+
+### 4. Create Stripe Products & Prices
+In Stripe Dashboard, create:
+
+| Product | Price ID | Amount |
+|---------|----------|--------|
+| Operator Membership | `price_operator_monthly` | $27/mo |
+| Architect Membership | `price_architect_monthly` | $97/mo |
+| Steward Membership | `price_steward_monthly` | $197/mo |
+
+### 5. Donations
+For the Donate page, options include:
+- **Stripe Payment Links** — Quickest setup, no backend needed
+- **Stripe Checkout Sessions** — More control, requires backend
+- **Stripe Elements** — Embedded form, best UX but most work
+
+### 6. Webhooks
+Set up a webhook endpoint to handle:
+- `checkout.session.completed` — Activate membership
+- `customer.subscription.updated` — Handle tier changes
+- `customer.subscription.deleted` — Handle cancellations
+- `invoice.payment_failed` — Notify user of failed payment
+
+## Capstone Application
+
+The Capstone Application Form is a multi-step form (3 steps: Personal Info → Estate Details → Goals) for the $55,000 Estate Trust Directive service. On submission it:
+
+1. **POSTs to `/signup`** — Sends full application data for email notification
+2. **POSTs to `/measure`** — Sends event payload to AEMP tracking API
+
+Both endpoints are at `https://api.educationministry.org/`. The form handles errors gracefully and shows success confirmation with next steps.
 
 ## License
 
