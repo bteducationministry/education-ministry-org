@@ -170,6 +170,8 @@ function Nav() {
     { label:"About", path:"/about" },
     { label:"Programs", path:"/programs" },
     { label:"Civic Library", path:"/civic-library" },
+    { label:"Membership", path:"/membership" },
+    { label:"Donate", path:"/donate" },
   ];
   return <nav style={{background:C.white,padding:"14px 48px",display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:`1px solid ${C.divider}`,position:"sticky",top:0,zIndex:100,boxShadow:"0 2px 12px rgba(45,27,78,0.07)"}}>
     <div style={{display:"flex",alignItems:"center",gap:"12px",cursor:"pointer"}} onClick={()=>navigate("/")}>
@@ -252,7 +254,7 @@ function Footer() {
       </div>
       {[
         {title:"Programs",links:[{label:"Seeker",path:"/programs"},{label:"Operator",path:"/programs"},{label:"Architect",path:"/programs"},{label:"Steward",path:"/programs"},{label:"Capstone",path:"/programs"}]},
-        {title:"Resources",links:[{label:"Civic Library",path:"/civic-library"},{label:"About",path:"/about"},{label:"Donate",path:"/"},{label:"AEMP",path:"/programs"}]},
+        {title:"Resources",links:[{label:"Civic Library",path:"/civic-library"},{label:"About",path:"/about"},{label:"Membership",path:"/membership"},{label:"Donate",path:"/donate"},{label:"AEMP",path:"/programs"}]},
         {title:"Legal",links:[{label:"Privacy Policy"},{label:"Terms"},{label:"Disclaimer"},{label:"508(c)(1)(a) Status"}]}
       ].map(({title,links})=>(
         <div key={title}>
@@ -1061,6 +1063,611 @@ function CivicLibraryPage() {
   </React.Fragment>;
 }
 
+/* ═══════ MEMBERSHIP PAGE ═══════ */
+
+const membershipTiers = [
+  {
+    key: "seeker", level: "01", title: "Seeker", price: "Free", period: "",
+    tagline: "Begin your journey with foundational civic education.",
+    icon: "🌱",
+    popular: false, premium: false,
+    benefits: [
+      "Access to Young Civic Engagement Challenge",
+      "Basic Civic Library resources",
+      "Scripture & governance foundations",
+      "Community forum access (read-only)",
+      "Monthly newsletter",
+      "Self-paced learning modules",
+    ],
+  },
+  {
+    key: "operator", level: "02", title: "Operator", price: "$47", period: "/month",
+    tagline: "Execute with competence. Administer with integrity.",
+    icon: "⚙️",
+    popular: true, premium: false,
+    benefits: [
+      "Everything in Seeker, plus:",
+      "Full Civic Library access",
+      "Monthly live workshops",
+      "Private community access",
+      "Member dashboard & progress tracking",
+      "Downloadable templates & tools",
+      "Administrative training modules",
+      "Email support",
+    ],
+  },
+  {
+    key: "architect", level: "03", title: "Architect", price: "$147", period: "/month",
+    tagline: "Design legacy structures that outlast you.",
+    icon: "📐",
+    popular: false, premium: false,
+    benefits: [
+      "Everything in Operator, plus:",
+      "Legal templates & frameworks",
+      "Estate planning introduction course",
+      "1-on-1 monthly coaching session",
+      "Entity structure guidance",
+      "Family governance frameworks",
+      "Priority email & chat support",
+      "Quarterly strategy review",
+    ],
+  },
+  {
+    key: "steward", level: "04", title: "Steward", price: "$497", period: "/month",
+    tagline: "Govern for others. Steward with public accountability.",
+    icon: "🏛️",
+    popular: false, premium: true,
+    benefits: [
+      "Everything in Architect, plus:",
+      "Advanced estate planning education",
+      "Family governance architecture",
+      "Fiduciary responsibility training",
+      "Weekly 1-on-1 coaching sessions",
+      "Priority phone & video support",
+      "Custom implementation roadmap",
+      "Capstone eligibility pathway",
+      "Private mastermind group access",
+    ],
+  },
+];
+
+const capstoneTier = {
+  key: "capstone", title: "Capstone", price: "$55,000", period: "one-time",
+  tagline: "The ultimate expression of ordered love — lawful transfer, protected inheritance, and intentional blessing across generations.",
+  icon: "👑",
+  benefits: [
+    "Full Estate Trust Directive service",
+    "Complete fiduciary structuring",
+    "Treasury alignment & optimization",
+    "Beneficiary design & planning",
+    "Healthcare directives",
+    "Custom governance architecture",
+    "Dedicated advisor team",
+    "Lifetime priority support",
+    "Annual review & adjustment sessions",
+    "Legacy documentation & succession plan",
+  ],
+};
+
+const comparisonFeatures = [
+  { feature: "Civic Engagement Challenge", seeker: true, operator: true, architect: true, steward: true, capstone: true },
+  { feature: "Basic Civic Library", seeker: true, operator: true, architect: true, steward: true, capstone: true },
+  { feature: "Full Civic Library", seeker: false, operator: true, architect: true, steward: true, capstone: true },
+  { feature: "Monthly Workshops", seeker: false, operator: true, architect: true, steward: true, capstone: true },
+  { feature: "Private Community", seeker: false, operator: true, architect: true, steward: true, capstone: true },
+  { feature: "Member Dashboard", seeker: false, operator: true, architect: true, steward: true, capstone: true },
+  { feature: "Templates & Tools", seeker: false, operator: true, architect: true, steward: true, capstone: true },
+  { feature: "Legal Templates", seeker: false, operator: false, architect: true, steward: true, capstone: true },
+  { feature: "Estate Planning Intro", seeker: false, operator: false, architect: true, steward: true, capstone: true },
+  { feature: "1-on-1 Coaching", seeker: false, operator: false, architect: "Monthly", steward: "Weekly", capstone: "Dedicated" },
+  { feature: "Entity Structure Guidance", seeker: false, operator: false, architect: true, steward: true, capstone: true },
+  { feature: "Advanced Estate Planning", seeker: false, operator: false, architect: false, steward: true, capstone: true },
+  { feature: "Family Governance Frameworks", seeker: false, operator: false, architect: false, steward: true, capstone: true },
+  { feature: "Priority Support", seeker: false, operator: false, architect: "Email/Chat", steward: "Phone/Video", capstone: "Dedicated Team" },
+  { feature: "Capstone Eligibility", seeker: false, operator: false, architect: false, steward: true, capstone: "—" },
+  { feature: "Full Estate Trust Directive", seeker: false, operator: false, architect: false, steward: false, capstone: true },
+  { feature: "Custom Governance Architecture", seeker: false, operator: false, architect: false, steward: false, capstone: true },
+];
+
+const membershipFAQ = [
+  { q: "Can I start for free?", a: "Yes. The Seeker tier is completely free and gives you access to the Young Civic Engagement Challenge and foundational civic education resources. No credit card required." },
+  { q: "How does the progression system work?", a: "Our membership follows a structured progression: Seeker → Operator → Architect → Steward → Capstone. Each level builds on the previous, moving you from learning to applying to building to governing. You advance when you're ready." },
+  { q: "Can I upgrade or downgrade at any time?", a: "Yes. You can upgrade your membership tier at any time. When you upgrade, you immediately gain access to all benefits of the new tier. You can also downgrade at the end of any billing cycle." },
+  { q: "What is the Capstone tier?", a: "The Capstone ($55,000) is not a subscription — it's a one-time engagement for qualified members seeking comprehensive Estate Trust Directive services. It includes full estate trust design, fiduciary structuring, and custom governance architecture. Qualification is required." },
+  { q: "Is this a religious organization?", a: "BT Education Ministry is a 508(c)(1)(a) faith-based nonprofit. Our education is grounded in scriptural principles of governance, stewardship, and civic virtue, applied practically to real-life civic and financial literacy." },
+  { q: "Are payments tax-deductible?", a: "As a 508(c)(1)(a) organization, contributions and membership payments may be tax-deductible. Consult your tax advisor for guidance specific to your situation." },
+  { q: "How do I qualify for Capstone?", a: "Capstone eligibility is available to Steward-level members who demonstrate readiness for comprehensive estate trust planning. An application and qualification review process is required." },
+];
+
+function MembershipPage() {
+  const [openFAQ, setOpenFAQ] = useState(null);
+  const [hoveredTier, setHoveredTier] = useState(null);
+
+  return <React.Fragment>
+    <PageHero
+      label="MEMBERSHIP · STRUCTURED PROGRESSION"
+      headline={<span>Grow at Your Pace.<br/>Build with <span style={{color:C.gold}}>Purpose.</span></span>}
+      sub="From foundational civic education to full estate trust planning — choose the level of depth, support, and structure that fits your journey."
+      cta="Start Free as Seeker"
+      ctaAction={()=>document.getElementById('tier-cards') && document.getElementById('tier-cards').scrollIntoView({behavior:'smooth'})}
+      ctaSecondary="Compare All Tiers"
+      ctaSecondaryAction={()=>document.getElementById('comparison-table') && document.getElementById('comparison-table').scrollIntoView({behavior:'smooth'})}
+    />
+
+    <div style={{padding:"20px 48px 0"}}>
+      <div style={S.inner}><Breadcrumb items={[{label:"Home",path:"/"},{label:"Membership"}]}/></div>
+    </div>
+
+    {/* Progression Overview */}
+    <div style={S.section}>
+      <div style={S.inner}>
+        <div style={S.label}>THE PROGRESSION</div>
+        <h2 style={S.h2}>A Path Designed for Growth</h2>
+        <p style={{...S.body,marginBottom:"40px"}}>Our membership system mirrors a structured journey: from awareness to execution, from design to governance. Each tier unlocks deeper tools, richer content, and more personal guidance.</p>
+        <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"0",flexWrap:"wrap"}}>
+          {[
+            {label:"Seeker",sub:"Awareness",icon:"🌱",color:C.gold},
+            {label:"Operator",sub:"Execution",icon:"⚙️",color:C.purpleMid},
+            {label:"Architect",sub:"Design",icon:"📐",color:C.purpleMid},
+            {label:"Steward",sub:"Governance",icon:"🏛️",color:C.gold},
+            {label:"Capstone",sub:"Legacy",icon:"👑",color:C.gold},
+          ].map((item,i,arr)=>(
+            <React.Fragment key={i}>
+              <div style={{background:C.white,padding:"20px 24px",textAlign:"center",minWidth:"120px",boxShadow:"0 2px 12px rgba(45,27,78,0.06)",borderTop:`3px solid ${item.color}`,transition:"transform 0.2s"}}>
+                <div style={{fontSize:"28px",marginBottom:"8px"}}>{item.icon}</div>
+                <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"15px",color:C.purple,fontWeight:700}}>{item.label}</div>
+                <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:item.color,fontWeight:700,marginTop:"4px",letterSpacing:"1px"}}>{item.sub.toUpperCase()}</div>
+              </div>
+              {i<arr.length-1 && <div style={{fontFamily:"Inter,sans-serif",fontSize:"20px",color:C.goldBright,padding:"0 6px",fontWeight:700}}>→</div>}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Tier Cards */}
+    <div id="tier-cards" style={S.sectionAlt}>
+      <div style={{maxWidth:"1100px",margin:"0 auto"}}>
+        <div style={{textAlign:"center",marginBottom:"48px"}}>
+          <div style={S.label}>CHOOSE YOUR TIER</div>
+          <h2 style={{...S.h2,textAlign:"center"}}>Membership That Grows With You</h2>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(4, 1fr)",gap:"20px",alignItems:"stretch"}}>
+          {membershipTiers.map((tier,i)=>{
+            const isHovered = hoveredTier === tier.key;
+            const isPremium = tier.premium;
+            return <div
+              key={tier.key}
+              onMouseEnter={()=>setHoveredTier(tier.key)}
+              onMouseLeave={()=>setHoveredTier(null)}
+              style={{
+                background: isPremium ? `linear-gradient(170deg, ${C.purple} 0%, #1a0f30 100%)` : C.white,
+                padding: "36px 28px",
+                boxShadow: isHovered ? "0 12px 40px rgba(45,27,78,0.18)" : "0 2px 12px rgba(45,27,78,0.06)",
+                borderTop: `4px solid ${isPremium ? C.goldBright : C.gold}`,
+                display: "flex", flexDirection: "column",
+                transition: "all 0.3s ease",
+                transform: isHovered ? "translateY(-6px)" : "translateY(0)",
+                position: "relative",
+              }}
+            >
+              {tier.popular && <div style={{position:"absolute",top:"-14px",left:"50%",transform:"translateX(-50)",background:C.goldBright,color:C.purple,padding:"4px 16px",fontFamily:"Inter,sans-serif",fontSize:"10px",fontWeight:700,letterSpacing:"1px"}}>MOST POPULAR</div>}
+              <div style={{fontSize:"36px",marginBottom:"12px"}}>{tier.icon}</div>
+              <div style={{fontFamily:"Inter,sans-serif",fontSize:"10px",color:isPremium?"#e8d5a0":C.gold,letterSpacing:"2px",fontWeight:700,marginBottom:"8px"}}>LEVEL {tier.level}</div>
+              <h3 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"26px",color:isPremium?C.white:C.purple,margin:"0 0 8px"}}>{tier.title}</h3>
+              <div style={{marginBottom:"16px"}}>
+                <span style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"36px",color:isPremium?C.goldBright:C.purple,fontWeight:700}}>{tier.price}</span>
+                {tier.period && <span style={{fontFamily:"Inter,sans-serif",fontSize:"14px",color:isPremium?"#b0a8c0":C.textLight}}>{tier.period}</span>}
+              </div>
+              <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:isPremium?"#d8d0e8":C.textMid,fontSize:"13px",lineHeight:1.6,marginBottom:"24px"}}>{tier.tagline}</p>
+              <div style={{flex:1}}>
+                {tier.benefits.map((b,j)=>(
+                  <div key={j} style={{display:"flex",gap:"10px",marginBottom:"10px",alignItems:"flex-start"}}>
+                    <span style={{color:isPremium?"#e8d5a0":C.green,fontSize:"14px",fontWeight:700,marginTop:"2px"}}>{b.startsWith("Everything")?"↑":"✓"}</span>
+                    <span style={{fontFamily:"Inter,sans-serif",color:isPremium?"#d8d0e8":C.text,fontSize:"13px",lineHeight:1.5}}>{b}</span>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={()=>{}}
+                style={{
+                  marginTop:"24px", width:"100%", textAlign:"center",
+                  background: tier.price === "Free" ? C.purple : isPremium ? C.goldBright : "transparent",
+                  color: tier.price === "Free" ? C.white : isPremium ? C.purple : C.purple,
+                  border: tier.price === "Free" || isPremium ? "none" : `2px solid ${C.purple}`,
+                  padding: "14px 24px",
+                  fontFamily: "Inter,sans-serif", fontWeight: 700, fontSize: "13px",
+                  letterSpacing: "0.5px", borderRadius: "2px", cursor: "pointer",
+                  transition: "all 0.2s",
+                }}
+              >{tier.price === "Free" ? "Start Free →" : `Join ${tier.title} →`}</button>
+            </div>;
+          })}
+        </div>
+      </div>
+    </div>
+
+    {/* Capstone Tier - Special */}
+    <div style={{background:C.goldPale,padding:"80px 48px",borderTop:`3px solid ${C.goldBorder}`}}>
+      <div style={{maxWidth:"900px",margin:"0 auto"}}>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"40px",alignItems:"center"}}>
+          <div>
+            <div style={S.label}>CAPSTONE · PREMIUM ENGAGEMENT</div>
+            <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,44px)",color:C.purple,margin:"0 0 12px",lineHeight:1.2}}>Estate Trust<br/><span style={{color:C.gold}}>Directive</span></h2>
+            <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"16px",lineHeight:1.7,marginBottom:"24px"}}>{capstoneTier.tagline}</p>
+            <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"48px",color:C.purple,fontWeight:700,marginBottom:"4px"}}>{capstoneTier.price}</div>
+            <div style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.textLight,letterSpacing:"2px",marginBottom:"28px"}}>ONE-TIME · QUALIFICATION REQUIRED</div>
+            <button style={{...S.btnPrimary,padding:"16px 40px",fontSize:"15px"}}>Apply for Capstone →</button>
+          </div>
+          <div>
+            <div style={{background:C.white,padding:"32px",boxShadow:"0 4px 24px rgba(45,27,78,0.08)",border:`1px solid ${C.goldBorder}`}}>
+              <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"2px",fontWeight:700,marginBottom:"20px"}}>WHAT'S INCLUDED</div>
+              {capstoneTier.benefits.map((b,j)=>(
+                <div key={j} style={{display:"flex",gap:"10px",marginBottom:"12px",alignItems:"flex-start"}}>
+                  <span style={{color:C.gold,fontSize:"14px",fontWeight:700,marginTop:"2px"}}>✓</span>
+                  <span style={{fontFamily:"Inter,sans-serif",color:C.text,fontSize:"13px",lineHeight:1.5}}>{b}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Comparison Table */}
+    <div id="comparison-table" style={S.section}>
+      <div style={{maxWidth:"1100px",margin:"0 auto"}}>
+        <div style={{textAlign:"center",marginBottom:"40px"}}>
+          <div style={S.label}>FULL COMPARISON</div>
+          <h2 style={{...S.h2,textAlign:"center"}}>Compare All Tiers</h2>
+        </div>
+        <div style={{background:C.white,boxShadow:"0 2px 12px rgba(45,27,78,0.06)",overflow:"auto"}}>
+          <table style={{width:"100%",borderCollapse:"collapse",fontFamily:"Inter,sans-serif",minWidth:"700px"}}>
+            <thead>
+              <tr style={{background:C.purple}}>
+                <th style={{padding:"16px 20px",textAlign:"left",color:"#e8d5a0",fontSize:"11px",letterSpacing:"1px",fontWeight:700}}>FEATURE</th>
+                {["Seeker","Operator","Architect","Steward","Capstone"].map(t=>(
+                  <th key={t} style={{padding:"16px 14px",textAlign:"center",color:"#e8d5a0",fontSize:"11px",letterSpacing:"1px",fontWeight:700}}>{t.toUpperCase()}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {comparisonFeatures.map((row,i)=>(
+                <tr key={i} style={{borderBottom:`1px solid ${C.divider}`,background:i%2===0?C.bg:C.white}}>
+                  <td style={{padding:"12px 20px",fontSize:"13px",color:C.text,fontWeight:600}}>{row.feature}</td>
+                  {["seeker","operator","architect","steward","capstone"].map(tier=>{
+                    const val = row[tier];
+                    const display = val === true ? "✓" : val === false ? "—" : val;
+                    const color = val === true ? C.green : val === false ? C.textLight : C.purpleMid;
+                    return <td key={tier} style={{padding:"12px 14px",fontSize:"12px",color,textAlign:"center",fontWeight:val===true?700:400}}>{display}</td>;
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    {/* FAQ */}
+    <div style={S.sectionAlt}>
+      <div style={S.inner}>
+        <div style={{textAlign:"center",marginBottom:"40px"}}>
+          <div style={S.label}>FREQUENTLY ASKED QUESTIONS</div>
+          <h2 style={{...S.h2,textAlign:"center"}}>Common Questions About Membership</h2>
+        </div>
+        {membershipFAQ.map((faq,i)=>(
+          <div key={i} style={{background:C.white,marginBottom:"8px",boxShadow:"0 1px 6px rgba(45,27,78,0.04)",overflow:"hidden",transition:"all 0.3s"}}>
+            <div
+              onClick={()=>setOpenFAQ(openFAQ===i?null:i)}
+              style={{padding:"20px 28px",cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}
+            >
+              <span style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"16px",color:C.purple,fontWeight:700}}>{faq.q}</span>
+              <span style={{fontFamily:"Inter,sans-serif",fontSize:"20px",color:C.gold,fontWeight:700,transition:"transform 0.3s",transform:openFAQ===i?"rotate(45deg)":"rotate(0)"}}> + </span>
+            </div>
+            {openFAQ===i && <div style={{padding:"0 28px 20px"}}>
+              <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"14px",lineHeight:1.8,margin:0}}>{faq.a}</p>
+            </div>}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    {/* CTA */}
+    <div style={{background:C.purple,padding:"80px 48px",textAlign:"center"}}>
+      <div style={S.inner}>
+        <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,44px)",color:C.white,margin:"0 0 16px"}}>Start Where You Are.<br/>Grow at Your Own Pace.</h2>
+        <p style={{fontFamily:"Inter,sans-serif",color:"#b0a8c0",fontSize:"16px",lineHeight:1.8,maxWidth:"500px",margin:"0 auto 32px"}}>Begin with free civic education. Upgrade when you're ready for deeper tools, guided support, and structured growth.</p>
+        <div style={{display:"flex",gap:"16px",justifyContent:"center",flexWrap:"wrap"}}>
+          <button style={{background:C.goldBright,color:C.purple,padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"15px",borderRadius:"2px",border:"none",cursor:"pointer"}}>Start Free as Seeker</button>
+          <button onClick={()=>navigate("/donate")} style={{background:"transparent",color:C.white,border:"2px solid rgba(255,255,255,0.3)",padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"15px",borderRadius:"2px",cursor:"pointer"}}>Support Our Mission</button>
+        </div>
+      </div>
+    </div>
+  </React.Fragment>;
+}
+
+
+/* ═══════ DONATE PAGE ═══════ */
+
+const donationLevels = [
+  { amount: 25, label: "Seed", desc: "Supports one family's civic education materials" },
+  { amount: 50, label: "Foundation", desc: "Funds a workshop for 5 families" },
+  { amount: 100, label: "Builder", desc: "Provides full curriculum access for 10 families" },
+  { amount: 250, label: "Champion", desc: "Sponsors a Young Civic Engagement Challenge cohort" },
+  { amount: 500, label: "Architect", desc: "Enables advanced estate planning education" },
+];
+
+const donorRecognitionTiers = [
+  { name: "Bronze", min: 25, max: 99, icon: "🥉", color: "#cd7f32", perks: ["Name in monthly newsletter", "Digital thank-you certificate"] },
+  { name: "Silver", min: 100, max: 499, icon: "🥈", color: "#a8a8a8", perks: ["All Bronze benefits", "Quarterly impact report", "Donor badge on community profile"] },
+  { name: "Gold", min: 500, max: 2499, icon: "🥇", color: C.goldBright, perks: ["All Silver benefits", "Annual recognition event invite", "Direct line to leadership team"] },
+  { name: "Platinum", min: 2500, max: null, icon: "💎", color: C.purpleMid, perks: ["All Gold benefits", "Named scholarship sponsorship", "Private strategy session", "Legacy wall recognition"] },
+];
+
+const impactStats = [
+  { stat: "1,200+", label: "Families served through civic education" },
+  { stat: "85%", label: "Report improved civic understanding" },
+  { stat: "340+", label: "Workshop sessions completed" },
+  { stat: "$0", label: "Cost to Seeker-level families" },
+];
+
+const donateTestimonials = [
+  { quote: "This ministry gave our family the structure we didn't even know we were missing. Our children now understand governance, stewardship, and why it all matters.", name: "The Williams Family", location: "Newark, NJ" },
+  { quote: "For the first time, I feel like I have a map — not just for finances, but for how to pass something real to my kids.", name: "Marcus T.", location: "Atlanta, GA" },
+  { quote: "The civic education here is unlike anything I've found in public schools or even churches. It's practical, biblical, and built to last.", name: "Sandra & David R.", location: "Houston, TX" },
+];
+
+function DonatePage() {
+  const [selectedAmount, setSelectedAmount] = useState(100);
+  const [customAmount, setCustomAmount] = useState("");
+  const [isCustom, setIsCustom] = useState(false);
+  const [isMonthly, setIsMonthly] = useState(false);
+  const [formData, setFormData] = useState({ name: "", email: "" });
+  const [submitted, setSubmitted] = useState(false);
+
+  const effectiveAmount = isCustom ? (parseInt(customAmount) || 0) : selectedAmount;
+
+  const currentDonorTier = donorRecognitionTiers.find(t =>
+    effectiveAmount >= t.min && (t.max === null || effectiveAmount <= t.max)
+  ) || null;
+
+  return <React.Fragment>
+    <PageHero
+      label="DONATE · SUPPORT THE MISSION"
+      headline={<span>Invest in Families.<br/>Build Civic <span style={{color:C.gold}}>Virtue.</span></span>}
+      sub="Your gift supports free and low-cost civic education for families who need it most — grounded in scripture, built with structure, delivered with purpose."
+      cta="Give Now"
+      ctaAction={()=>document.getElementById('donate-form') && document.getElementById('donate-form').scrollIntoView({behavior:'smooth'})}
+    />
+
+    <div style={{padding:"20px 48px 0"}}>
+      <div style={S.inner}><Breadcrumb items={[{label:"Home",path:"/"},{label:"Donate"}]}/></div>
+    </div>
+
+    {/* Why Give */}
+    <div style={S.section}>
+      <div style={S.inner}>
+        <div style={S.label}>WHY GIVE</div>
+        <h2 style={S.h2}>Your Generosity Builds What Lasts</h2>
+        <p style={{...S.body,marginBottom:"40px"}}>BT Education Ministry exists to provide structured civic education to needy and low-income families. Every dollar supports materials, workshops, tools, and direct ministry — equipping families to build with order, not just effort.</p>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:"16px"}}>
+          {impactStats.map((item,i)=>(
+            <div key={i} style={{background:C.white,padding:"28px",textAlign:"center",boxShadow:"0 2px 12px rgba(45,27,78,0.06)",borderTop:`3px solid ${C.gold}`}}>
+              <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"36px",color:C.purple,fontWeight:700,lineHeight:1}}>{item.stat}</div>
+              <div style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.textMid,marginTop:"8px",lineHeight:1.5}}>{item.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Impact Section */}
+    <div style={S.sectionAlt}>
+      <div style={S.inner}>
+        <div style={S.label}>YOUR IMPACT</div>
+        <h2 style={S.h2}>What Your Gift Accomplishes</h2>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px",marginTop:"32px"}}>
+          {donationLevels.map((level,i)=>(
+            <div key={i} style={{background:C.white,padding:"28px",display:"flex",gap:"20px",alignItems:"center",boxShadow:"0 2px 12px rgba(45,27,78,0.06)",borderLeft:`4px solid ${C.gold}`}}>
+              <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"32px",color:C.purple,fontWeight:700,minWidth:"70px"}}>${level.amount}</div>
+              <div>
+                <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"16px",color:C.purple,fontWeight:700,marginBottom:"4px"}}>{level.label}</div>
+                <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"13px",lineHeight:1.6,margin:0}}>{level.desc}</p>
+              </div>
+            </div>
+          ))}
+          <div style={{background:C.purplePale,padding:"28px",display:"flex",gap:"20px",alignItems:"center",border:`1px solid ${C.purpleLight}`,borderLeft:`4px solid ${C.purpleMid}`}}>
+            <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"28px",color:C.purple,fontWeight:700,minWidth:"70px"}}>Custom</div>
+            <div>
+              <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"16px",color:C.purple,fontWeight:700,marginBottom:"4px"}}>Your Choice</div>
+              <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"13px",lineHeight:1.6,margin:0}}>Every gift — large or small — furthers our mission of civic education</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {/* Donation Form */}
+    <div id="donate-form" style={S.section}>
+      <div style={S.inner}>
+        {!submitted ? <React.Fragment>
+          <div style={{textAlign:"center",marginBottom:"40px"}}>
+            <div style={S.label}>MAKE YOUR GIFT</div>
+            <h2 style={{...S.h2,textAlign:"center"}}>Support Faith-Grounded Civic Education</h2>
+          </div>
+
+          <div style={{background:C.white,padding:"48px",boxShadow:"0 4px 24px rgba(45,27,78,0.08)",maxWidth:"640px",margin:"0 auto"}}>
+            {/* Monthly vs One-Time Toggle */}
+            <div style={{display:"flex",justifyContent:"center",marginBottom:"32px"}}>
+              <div style={{display:"inline-flex",background:C.bgAlt,padding:"4px",gap:"0"}}>
+                <button onClick={()=>setIsMonthly(false)} style={{padding:"10px 28px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"13px",letterSpacing:"0.5px",border:"none",cursor:"pointer",background:!isMonthly?C.purple:"transparent",color:!isMonthly?C.white:C.textMid,transition:"all 0.2s"}}>One-Time</button>
+                <button onClick={()=>setIsMonthly(true)} style={{padding:"10px 28px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"13px",letterSpacing:"0.5px",border:"none",cursor:"pointer",background:isMonthly?C.purple:"transparent",color:isMonthly?C.white:C.textMid,transition:"all 0.2s"}}>Monthly</button>
+              </div>
+            </div>
+
+            {/* Amount Selection */}
+            <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"2px",fontWeight:700,marginBottom:"16px"}}>SELECT AMOUNT</div>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:"12px",marginBottom:"16px"}}>
+              {donationLevels.map(level=>(
+                <button key={level.amount} onClick={()=>{setSelectedAmount(level.amount);setIsCustom(false);}} style={{
+                  padding:"16px",textAlign:"center",
+                  background:!isCustom && selectedAmount===level.amount ? C.purple : C.white,
+                  color:!isCustom && selectedAmount===level.amount ? C.white : C.purple,
+                  border:`2px solid ${!isCustom && selectedAmount===level.amount ? C.purple : C.divider}`,
+                  fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"18px",cursor:"pointer",
+                  borderRadius:"2px",transition:"all 0.2s",
+                }}>
+                  ${level.amount}
+                  <div style={{fontFamily:"Inter,sans-serif",fontSize:"10px",fontWeight:500,marginTop:"4px",color:!isCustom && selectedAmount===level.amount?"#d8d0e8":C.textLight}}>{level.label}</div>
+                </button>
+              ))}
+              <button onClick={()=>setIsCustom(true)} style={{
+                padding:"16px",textAlign:"center",
+                background:isCustom ? C.purple : C.white,
+                color:isCustom ? C.white : C.purple,
+                border:`2px solid ${isCustom ? C.purple : C.divider}`,
+                fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"14px",cursor:"pointer",
+                borderRadius:"2px",transition:"all 0.2s",
+              }}>Custom Amount</button>
+            </div>
+            {isCustom && <div style={{marginBottom:"20px"}}>
+              <input
+                type="number"
+                placeholder="Enter amount"
+                value={customAmount}
+                onChange={e=>setCustomAmount(e.target.value)}
+                style={{width:"100%",padding:"14px 20px",fontFamily:"Inter,sans-serif",fontSize:"18px",fontWeight:700,border:`1.5px solid ${C.divider}`,borderRadius:"2px",outline:"none",color:C.purple}}
+              />
+            </div>}
+
+            {/* Donor Tier Preview */}
+            {currentDonorTier && <div style={{background:C.goldPale,padding:"16px 20px",marginBottom:"24px",border:`1px solid ${C.goldBorder}`,display:"flex",alignItems:"center",gap:"12px"}}>
+              <span style={{fontSize:"24px"}}>{currentDonorTier.icon}</span>
+              <div>
+                <div style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.gold,fontWeight:700,letterSpacing:"1px"}}>{currentDonorTier.name.toUpperCase()} DONOR</div>
+                <div style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.textMid}}>Your {isMonthly?"monthly ":""}gift of ${effectiveAmount} qualifies you for {currentDonorTier.name} recognition</div>
+              </div>
+            </div>}
+
+            {/* Form Fields */}
+            <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"2px",fontWeight:700,marginBottom:"16px",marginTop:"24px"}}>YOUR INFORMATION</div>
+            <div style={{marginBottom:"16px"}}>
+              <input
+                type="text" placeholder="Full Name"
+                value={formData.name}
+                onChange={e=>setFormData({...formData, name:e.target.value})}
+                style={{width:"100%",padding:"14px 20px",fontFamily:"Inter,sans-serif",fontSize:"14px",border:`1.5px solid ${C.divider}`,borderRadius:"2px",outline:"none",color:C.text}}
+              />
+            </div>
+            <div style={{marginBottom:"24px"}}>
+              <input
+                type="email" placeholder="Email Address"
+                value={formData.email}
+                onChange={e=>setFormData({...formData, email:e.target.value})}
+                style={{width:"100%",padding:"14px 20px",fontFamily:"Inter,sans-serif",fontSize:"14px",border:`1.5px solid ${C.divider}`,borderRadius:"2px",outline:"none",color:C.text}}
+              />
+            </div>
+
+            {/* Summary */}
+            <div style={{background:C.bgAlt,padding:"20px",marginBottom:"24px"}}>
+              <div style={{display:"flex",justifyContent:"space-between",marginBottom:"8px"}}>
+                <span style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"14px"}}>Donation Amount</span>
+                <span style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,fontSize:"18px",fontWeight:700}}>${effectiveAmount}</span>
+              </div>
+              <div style={{display:"flex",justifyContent:"space-between"}}>
+                <span style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"14px"}}>Frequency</span>
+                <span style={{fontFamily:"Inter,sans-serif",color:C.purple,fontSize:"14px",fontWeight:700}}>{isMonthly?"Monthly":"One-Time"}</span>
+              </div>
+            </div>
+
+            <button
+              onClick={()=>setSubmitted(true)}
+              style={{...S.btnPrimary,width:"100%",textAlign:"center",padding:"18px",fontSize:"16px"}}
+            >Complete Donation →</button>
+
+            {/* Tax Info */}
+            <p style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.textLight,textAlign:"center",marginTop:"16px",lineHeight:1.6}}>
+              BT Education Ministry is a 508(c)(1)(a) faith-based nonprofit. Your donation may be tax-deductible. Consult your tax advisor. Secure payment processing will be enabled via Stripe.
+            </p>
+          </div>
+        </React.Fragment> : <div style={{textAlign:"center",maxWidth:"600px",margin:"0 auto"}}>
+          <div style={{fontSize:"64px",marginBottom:"20px"}}>🌿</div>
+          <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,40px)",color:C.purple,margin:"0 0 16px"}}>Thank You for Your Generosity</h2>
+          <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"16px",lineHeight:1.8,marginBottom:"24px"}}>Your {isMonthly?"monthly ":""}gift of ${effectiveAmount} will directly support civic education for families who need it most. A confirmation will be sent to your email.</p>
+          <div style={{background:C.goldPale,padding:"20px",border:`1px solid ${C.goldBorder}`,marginBottom:"32px"}}>
+            <div style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.gold,fontWeight:700,letterSpacing:"1px"}}>508(c)(1)(a) TAX-DEDUCTIBLE GIFT</div>
+            <p style={{fontFamily:"Inter,sans-serif",fontSize:"13px",color:C.textMid,margin:"8px 0 0"}}>A receipt for your records will be emailed within 24 hours.</p>
+          </div>
+          <button onClick={()=>{setSubmitted(false);setFormData({name:"",email:""});}} style={S.btnSecondary}>Make Another Gift</button>
+        </div>}
+      </div>
+    </div>
+
+    {/* Donor Recognition Tiers */}
+    <div style={S.sectionAlt}>
+      <div style={S.inner}>
+        <div style={{textAlign:"center",marginBottom:"40px"}}>
+          <div style={S.label}>DONOR RECOGNITION</div>
+          <h2 style={{...S.h2,textAlign:"center"}}>Every Gift Is Honored</h2>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(4, 1fr)",gap:"16px"}}>
+          {donorRecognitionTiers.map((tier,i)=>(
+            <div key={i} style={{background:C.white,padding:"28px",boxShadow:"0 2px 12px rgba(45,27,78,0.06)",borderTop:`4px solid ${tier.color}`,textAlign:"center"}}>
+              <div style={{fontSize:"36px",marginBottom:"8px"}}>{tier.icon}</div>
+              <h3 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"20px",color:C.purple,margin:"0 0 6px"}}>{tier.name}</h3>
+              <div style={{fontFamily:"Inter,sans-serif",fontSize:"13px",color:C.gold,fontWeight:700,marginBottom:"16px"}}>
+                ${tier.min}{tier.max ? `–$${tier.max}` : "+"}
+              </div>
+              {tier.perks.map((p,j)=>(
+                <div key={j} style={{display:"flex",gap:"8px",marginBottom:"8px",alignItems:"flex-start",textAlign:"left"}}>
+                  <span style={{color:tier.color,fontSize:"12px",fontWeight:700,marginTop:"2px"}}>✓</span>
+                  <span style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"12px",lineHeight:1.5}}>{p}</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* Testimonials */}
+    <div style={S.section}>
+      <div style={S.inner}>
+        <div style={{textAlign:"center",marginBottom:"40px"}}>
+          <div style={S.label}>FAMILIES IMPACTED</div>
+          <h2 style={{...S.h2,textAlign:"center"}}>Stories of Transformation</h2>
+        </div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"20px"}}>
+          {donateTestimonials.map((t,i)=>(
+            <div key={i} style={{background:C.white,padding:"32px",boxShadow:"0 2px 12px rgba(45,27,78,0.06)",borderTop:`3px solid ${C.gold}`,display:"flex",flexDirection:"column"}}>
+              <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"32px",color:C.goldBorder,marginBottom:"12px"}}>"</div>
+              <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"15px",lineHeight:1.7,flex:1,margin:"0 0 20px"}}>{t.quote}</p>
+              <div>
+                <div style={{fontFamily:"Inter,sans-serif",color:C.purple,fontSize:"14px",fontWeight:700}}>{t.name}</div>
+                <div style={{fontFamily:"Inter,sans-serif",color:C.textLight,fontSize:"12px"}}>{t.location}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    {/* CTA */}
+    <div style={{background:C.purple,padding:"80px 48px",textAlign:"center"}}>
+      <div style={S.inner}>
+        <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,44px)",color:C.white,margin:"0 0 16px"}}>Your Gift Builds<br/>What Money Alone Cannot.</h2>
+        <p style={{fontFamily:"Inter,sans-serif",color:"#b0a8c0",fontSize:"16px",lineHeight:1.8,maxWidth:"500px",margin:"0 auto 32px"}}>Civic virtue. Family structure. Ordered inheritance. These are built through education — and your generosity makes it possible.</p>
+        <div style={{display:"flex",gap:"16px",justifyContent:"center",flexWrap:"wrap"}}>
+          <button onClick={()=>document.getElementById('donate-form') && document.getElementById('donate-form').scrollIntoView({behavior:'smooth'})} style={{background:C.goldBright,color:C.purple,padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"15px",borderRadius:"2px",border:"none",cursor:"pointer"}}>Give Now</button>
+          <button onClick={()=>navigate("/membership")} style={{background:"transparent",color:C.white,border:"2px solid rgba(255,255,255,0.3)",padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"15px",borderRadius:"2px",cursor:"pointer"}}>Explore Membership</button>
+        </div>
+      </div>
+    </div>
+  </React.Fragment>;
+}
+
+
 /* ═══════ ROUTER + APP ═══════ */
 function App() {
   const hash = useHash();
@@ -1071,6 +1678,8 @@ function App() {
     case "/about": Page = AboutPage; break;
     case "/programs": Page = ProgramsPage; break;
     case "/civic-library": Page = CivicLibraryPage; break;
+    case "/membership": Page = MembershipPage; break;
+    case "/donate": Page = DonatePage; break;
     default: Page = HomePage;
   }
 
