@@ -1,0 +1,455 @@
+const { useState } = React;
+
+const C = {
+  bg:       "#faf9f6",
+  bgAlt:    "#f3f0ea",
+  bgCard:   "#ffffff",
+  purple:   "#2d1b4e",
+  purpleMid:"#4a3070",
+  purpleLight:"#ede8f5",
+  purplePale:"#f7f4fc",
+  gold:     "#b8860b",
+  goldBright:"#c9a84c",
+  goldPale: "#fdf6e3",
+  goldBorder:"#e8d5a0",
+  text:     "#1a1a2e",
+  textMid:  "#4a4460",
+  textLight:"#7a7090",
+  white:    "#ffffff",
+  green:    "#2e7d52",
+  red:      "#c0392b",
+  divider:  "#e8e2d8",
+};
+
+const steps = [
+  { key:"seeker", level:"01", title:"Seeker", price:"Free",
+    tagline:"Wisdom begins with structure, not sentiment.",
+    desc:"Recognize the order under which healthy building occurs. Civic literacy begins here — not with activism, but with understanding how law, governance, and inheritance function.",
+    ot:"Deut. 4:5–8", nt:"Luke 14:28–30", civic:"Literacy & Foresight",
+    otQ:"Observe them carefully, for this will show your wisdom and understanding to the nations.",
+    ntQ:"Suppose one of you wants to build a tower. Will he not first sit down and estimate the cost?" },
+  { key:"operator", level:"02", title:"Operator", price:"$27/mo",
+    tagline:"Stewardship is proven in administration.",
+    desc:"Faithfulness begins with competent handling of what is already entrusted. Household systems, records, budgets, and responsibilities — administered with integrity.",
+    ot:"Deut. 19:14", nt:"Luke 16:10–12", civic:"Integrity & Administration",
+    otQ:"Do not move your neighbor's boundary marker set up by your predecessors.",
+    ntQ:"Whoever can be trusted with very little can also be trusted with much." },
+  { key:"architect", level:"03", title:"Architect", price:"$97/mo",
+    tagline:"Legacy requires design, not hope.",
+    desc:"A mature household structures succession, witnesses transfers, and plans for continuity. The daughters of Zelophehad made a lawful claim. Ruth's redemption was witnessed at the gate.",
+    ot:"Num. 27:1–11", nt:"Gal. 4:1–2", civic:"Lawful Succession",
+    otQ:"Why should our father's name disappear from his clan? Give us property among our father's relatives.",
+    ntQ:"The heir is subject to guardians and trustees until the time set by his father." },
+  { key:"steward", level:"04", title:"Steward", price:"$197/mo",
+    tagline:"Public trust is part of spiritual maturity.",
+    desc:"Stewardship is fiduciary. It includes accountability before God and credibility before people. Govern for others, not only self.",
+    ot:"Ruth 4:1–12", nt:"2 Cor. 8:20–21", civic:"Public Accountability",
+    otQ:"Boaz said to the elders and all the people, 'You are witnesses today.'",
+    ntQ:"We are taking pains to do what is right, not only in the eyes of the Lord but also in the eyes of man." },
+];
+
+const personas = [
+  { label:"Overtime Worker", icon:"👷",
+    has:["Consistent income","Strong work ethic","Family responsibility"],
+    lacks:["Legal map for assets","Succession plan","Civic framework"],
+    ot:"1 Tim. 5:8", nt:"Titus 3:14",
+    quote:"He provides. But provision without structure leaves the next generation exposed." },
+  { label:"Dual Income Family", icon:"👨\u200d👩\u200d👧",
+    has:["Two incomes","High responsibility","Community presence"],
+    lacks:["Transfer planning","Entity protection","Governance design"],
+    ot:"Num. 36:1–12", nt:"Luke 16:10–12",
+    quote:"They built together. But without order, what they built cannot be passed on intact." },
+  { label:"First-Gen Builder", icon:"🏗️",
+    has:["Asset growth","Entrepreneurial drive","Vision for legacy"],
+    lacks:["Protection architecture","Legal literacy","Succession structure"],
+    ot:"Ruth 4:1–12", nt:"Gal. 4:1–2",
+    quote:"First generation builds. Without structure, the second generation inherits confusion." },
+];
+
+const pillars = [
+  { icon:"⚖️", title:"Civic Literacy", ot:"Deut. 4:5–8", nt:"Luke 14:28–30",
+    quote:"Statutes and judgments as public wisdom before the nations.",
+    body:"Understand how law, governance, and civic institutions function — not as abstract theory, but as the operating system of ordered community life.",
+    modules:["Constitutional foundations","Local governance structures","Civic rights and duties","Public accountability systems"] },
+  { icon:"🏛️", title:"Financial Structure", ot:"Deut. 19:14", nt:"Luke 16:10–12",
+    quote:"Do not move your neighbor's boundary marker.",
+    body:"Boundaries are not metaphors. They are legal instruments. Learn to establish, protect, and transfer financial order across generations.",
+    modules:["Household budgeting systems","Asset protection basics","Entity structures","Intergenerational transfer planning"] },
+  { icon:"📜", title:"Legal Foundations", ot:"Num. 27:1–11 · Ruth 4:1–12", nt:"Gal. 4:1–2",
+    quote:"Inheritance was ordered, witnessed, and law-shaped.",
+    body:"The daughters of Zelophehad did not petition emotionally. They made a lawful claim. Ruth's redemption was witnessed at the gate. Legal literacy is biblical literacy.",
+    modules:["Inheritance law basics","Trust instruments overview","Estate planning fundamentals","Witness and documentation standards"] },
+  { icon:"🌿", title:"Governance & Stewardship", ot:"Lev. 25:23–28", nt:"1 Cor. 4:1–2 · 2 Cor. 8:20–21",
+    quote:"Stewards must be found faithful — before God and before men.",
+    body:"Governance is not management. It is accountable administration of what has been entrusted. Public integrity is part of spiritual maturity.",
+    modules:["Family governance frameworks","Fiduciary responsibility","Charitable alignment","Legacy and succession design"] },
+];
+
+const breakdownTabs = {
+  national: {
+    label:"National", ot:"Deut. 27:17", nt:"Acts 6:1–7",
+    otQ:"Cursed is anyone who moves their neighbor's boundary stone.",
+    ntQ:"Choose seven men of good repute, full of the Spirit and of wisdom.",
+    body:"When shared civic norms erode, the boundary markers of public life shift. Institutions lose legitimacy. Communities lose the shared grammar of governance. The result is not chaos — it is drift. Families operate without a map.",
+    stat:"Only 17% of Americans express high trust in federal institutions." },
+  community: {
+    label:"Community", ot:"Deut. 19:14", nt:"2 Cor. 8:20–21",
+    otQ:"Do not move your neighbor's boundary marker set up by your predecessors.",
+    ntQ:"We are taking pains to do what is right, not only in the eyes of the Lord but also in the eyes of man.",
+    body:"At the community level, weak civic formation produces weak accountability. When neighbors do not understand governance, they cannot hold local institutions to account. Public integrity requires public literacy.",
+    stat:"Fewer than 1 in 4 adults can name all three branches of government." },
+  household: {
+    label:"Household", ot:"Num. 36:1–12", nt:"1 Tim. 5:4, 8",
+    otQ:"Every daughter who inherits land must marry someone from the clan of her father's tribe.",
+    ntQ:"Anyone who does not provide for their own household has denied the faith.",
+    body:"At the household level, the absence of civic and legal literacy means families work hard but build without durable structure. Income without order. Values without transfer mechanism. Effort without succession.",
+    stat:"68% of Americans have no estate plan. Most have no legal framework for transfer." },
+};
+
+function TrustBar() {
+  return <div style={{background:C.purple,color:"#e8d5a0",padding:"9px 24px",textAlign:"center",fontSize:"11px",fontFamily:"Inter,sans-serif",letterSpacing:"1.5px",fontWeight:600}}>
+    508(c)(1)(a) FAITH-BASED NONPROFIT · CIVIC EDUCATION · ESTATE TRUST PLANNING · EDUCATIONMINISTRY.ORG
+  </div>;
+}
+
+function Nav() {
+  return <nav style={{background:C.white,padding:"14px 48px",display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:`1px solid ${C.divider}`,position:"sticky",top:0,zIndex:100,boxShadow:"0 2px 12px rgba(45,27,78,0.07)"}}>
+    {/* Logo */}
+    <div style={{display:"flex",alignItems:"center",gap:"12px"}}>
+      <div style={{width:"44px",height:"44px",position:"relative",flexShrink:0}}>
+        <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg" style={{width:"44px",height:"44px"}}>
+          {/* Roots */}
+          <path d="M22 34 Q18 38 14 42" stroke="#5a8a3c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+          <path d="M22 34 Q22 39 22 43" stroke="#5a8a3c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+          <path d="M22 34 Q26 38 30 42" stroke="#5a8a3c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+          <path d="M22 34 Q16 37 12 40" stroke="#5a8a3c" strokeWidth="1.2" strokeLinecap="round" fill="none"/>
+          <path d="M22 34 Q28 37 32 40" stroke="#5a8a3c" strokeWidth="1.2" strokeLinecap="round" fill="none"/>
+          {/* Trunk */}
+          <rect x="20.5" y="20" width="3" height="14" rx="1.5" fill="#5a8a3c"/>
+          {/* Canopy leaves */}
+          <ellipse cx="22" cy="14" rx="10" ry="8" fill="#6aaa44" opacity="0.9"/>
+          <ellipse cx="14" cy="17" rx="7" ry="5.5" fill="#5a9a38" opacity="0.85"/>
+          <ellipse cx="30" cy="17" rx="7" ry="5.5" fill="#5a9a38" opacity="0.85"/>
+          <ellipse cx="22" cy="10" rx="7" ry="6" fill="#7aba54" opacity="0.9"/>
+          <ellipse cx="16" cy="13" rx="5" ry="4" fill="#6aaa44" opacity="0.8"/>
+          <ellipse cx="28" cy="13" rx="5" ry="4" fill="#6aaa44" opacity="0.8"/>
+          {/* Highlight dots */}
+          <circle cx="19" cy="11" r="1.5" fill="#9ad870" opacity="0.7"/>
+          <circle cx="25" cy="9" r="1.2" fill="#9ad870" opacity="0.6"/>
+          <circle cx="14" cy="16" r="1" fill="#9ad870" opacity="0.5"/>
+        </svg>
+      </div>
+      <div>
+        <div style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,fontSize:"15px",fontWeight:700,letterSpacing:"0.5px",lineHeight:1.1}}>BODHI TREE</div>
+        <div style={{fontFamily:"Inter,sans-serif",color:C.textLight,fontSize:"10px",letterSpacing:"1.5px",fontWeight:600}}>EDUCATION MINISTRY</div>
+      </div>
+    </div>
+    {/* Nav Links */}
+    <div style={{display:"flex",gap:"28px",fontFamily:"Inter,sans-serif",fontSize:"13px",color:C.textMid,alignItems:"center"}}>
+      {["Home","About","Programs","Civic Library"].map(item=><span key={item} style={{cursor:"pointer",fontWeight:500,letterSpacing:"0.2px"}}>{item}</span>)}
+    </div>
+    {/* Right actions */}
+    <div style={{display:"flex",gap:"12px",alignItems:"center"}}>
+      <button style={{background:C.purple,color:C.white,padding:"9px 20px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"13px",letterSpacing:"0.5px",borderRadius:"2px"}}>Begin Free →</button>
+      <button style={{background:"transparent",color:C.purple,border:`1.5px solid ${C.divider}`,padding:"9px 18px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"13px",borderRadius:"2px"}}>Login</button>
+    </div>
+  </nav>;
+}
+
+function Hero() {
+  return <div style={{background:`linear-gradient(170deg,#fffdf7 0%,${C.purplePale} 55%,#ede8f5 100%)`,padding:"110px 48px 90px",textAlign:"center",borderBottom:`2px solid ${C.goldBorder}`,position:"relative",overflow:"hidden"}}>
+    {/* Subtle background tree watermark */}
+    <div style={{position:"absolute",top:"10%",right:"5%",opacity:0.04,pointerEvents:"none"}}>
+      <svg viewBox="0 0 200 200" width="320" height="320" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <ellipse cx="100" cy="70" rx="60" ry="50" fill="#2d1b4e"/>
+        <ellipse cx="65" cy="90" rx="40" ry="30" fill="#2d1b4e"/>
+        <ellipse cx="135" cy="90" rx="40" ry="30" fill="#2d1b4e"/>
+        <rect x="94" y="110" width="12" height="60" rx="6" fill="#2d1b4e"/>
+        <path d="M100 170 Q85 185 70 195" stroke="#2d1b4e" strokeWidth="6" strokeLinecap="round" fill="none"/>
+        <path d="M100 170 Q100 185 100 198" stroke="#2d1b4e" strokeWidth="6" strokeLinecap="round" fill="none"/>
+        <path d="M100 170 Q115 185 130 195" stroke="#2d1b4e" strokeWidth="6" strokeLinecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div style={{position:"relative",zIndex:1}}>
+      <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.textLight,letterSpacing:"3px",marginBottom:"28px",fontWeight:600}}>EDUCATIONMINISTRY.ORG · CIVIC FORMATION · ESTATE ORDER</div>
+      {/* Pre-headline hook */}
+      <div style={{background:C.white,border:`1px solid ${C.goldBorder}`,display:"inline-block",padding:"10px 24px",marginBottom:"32px",boxShadow:"0 2px 12px rgba(45,27,78,0.07)"}}>
+        <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"clamp(14px,1.8vw,18px)",margin:0,lineHeight:1.5}}>
+          "You were taught to be a good citizen.<br/>You were never taught to be a free people."
+        </p>
+      </div>
+      <h1 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(38px,6vw,76px)",color:C.purple,margin:"0 0 16px",lineHeight:1.08,fontWeight:700}}>
+        Faith Grounded<br/><span style={{color:C.gold}}>Civic Virtue</span>
+      </h1>
+      <p style={{fontFamily:"Inter,sans-serif",fontSize:"clamp(15px,1.6vw,19px)",color:C.textMid,maxWidth:"640px",margin:"0 auto 40px",lineHeight:1.8,fontWeight:400}}>
+        The civic education that builds and preserves families across generations —<br/>
+        <span style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.purple}}>grounded in scripture, hidden in plain view.</span>
+      </p>
+      <div style={{display:"flex",gap:"16px",justifyContent:"center",flexWrap:"wrap",marginBottom:"72px"}}>
+        <button style={{background:C.purple,color:C.white,padding:"16px 36px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"15px",letterSpacing:"0.5px",borderRadius:"2px",display:"flex",alignItems:"center",gap:"10px"}}>
+          Take the Challenge <span style={{fontSize:"18px"}}>→</span>
+        </button>
+        <button style={{background:"transparent",color:C.purple,border:`2px solid ${C.purple}`,padding:"16px 32px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"15px",borderRadius:"2px"}}>View the Path</button>
+      </div>
+      {/* Stats row */}
+      <div style={{display:"flex",gap:"0",justifyContent:"center",flexWrap:"wrap",maxWidth:"700px",margin:"0 auto"}}>
+        {[{stat:"17%",label:"Public trust in institutions"},{stat:"22%",label:"Civic proficiency, U.S. adults"},{stat:"30%",label:"Religious attendance decline"}].map(({stat,label},i,arr)=>(
+          <div key={stat} style={{textAlign:"center",padding:"0 40px",borderRight:i<arr.length-1?`1px solid ${C.divider}`:"none"}}>
+            <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"44px",color:C.purple,fontWeight:700,lineHeight:1}}>{stat}</div>
+            <div style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.textLight,letterSpacing:"0.3px",maxWidth:"120px",margin:"6px auto 0",lineHeight:1.4}}>{label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>;
+}
+
+function Breakdown() {
+  const [tab,setTab]=useState("national");
+  const a=breakdownTabs[tab];
+  return <div style={{background:C.bgAlt,padding:"80px 48px",borderBottom:`1px solid ${C.divider}`}}>
+    <div style={{maxWidth:"920px",margin:"0 auto"}}>
+      <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"3px",marginBottom:"12px",fontWeight:700}}>THE BREAKDOWN</div>
+      <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,46px)",color:C.purple,margin:"0 0 12px",lineHeight:1.2}}>When Boundaries Move,<br/>Families Lose More Than Property</h2>
+      <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"17px",marginBottom:"40px",maxWidth:"600px"}}>The crisis facing families is deeper than economics. It is a crisis of order.</p>
+      <div style={{display:"flex",gap:"8px",marginBottom:"36px",flexWrap:"wrap"}}>
+        {Object.entries(breakdownTabs).map(([key,val])=>(
+          <button key={key} onClick={()=>setTab(key)} style={{background:tab===key?C.purple:"transparent",color:tab===key?C.white:C.purple,border:`1.5px solid ${C.purple}`,padding:"10px 24px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"13px",letterSpacing:"1px",borderRadius:"2px"}}>{val.label.toUpperCase()}</button>
+        ))}
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px"}}>
+        <div style={{background:C.white,padding:"32px",borderLeft:`4px solid ${C.gold}`,boxShadow:"0 2px 12px rgba(45,27,78,0.06)"}}>
+          <div style={{fontFamily:"Inter,sans-serif",fontSize:"10px",color:C.gold,letterSpacing:"2px",marginBottom:"12px",fontWeight:700}}>OLD TESTAMENT · ESTATE ORDER · {a.ot}</div>
+          <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.text,fontSize:"16px",lineHeight:1.7,margin:"0 0 12px"}}>"{a.otQ}"</p>
+          <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,fontWeight:600}}>{a.ot}</div>
+        </div>
+        <div style={{background:C.white,padding:"32px",borderLeft:`4px solid ${C.purpleMid}`,boxShadow:"0 2px 12px rgba(45,27,78,0.06)"}}>
+          <div style={{fontFamily:"Inter,sans-serif",fontSize:"10px",color:C.purpleMid,letterSpacing:"2px",marginBottom:"12px",fontWeight:700}}>NEW TESTAMENT · TRUST ORDER · {a.nt}</div>
+          <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.text,fontSize:"16px",lineHeight:1.7,margin:"0 0 12px"}}>"{a.ntQ}"</p>
+          <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.purpleMid,fontWeight:600}}>{a.nt}</div>
+        </div>
+      </div>
+      <div style={{background:C.white,padding:"32px",marginTop:"20px",borderTop:`3px solid ${C.gold}`,boxShadow:"0 2px 12px rgba(45,27,78,0.06)"}}>
+        <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"16px",lineHeight:1.8,margin:"0 0 16px"}}>{a.body}</p>
+        <div style={{fontFamily:"Inter,sans-serif",fontSize:"14px",color:C.purple,fontWeight:700}}>{a.stat}</div>
+      </div>
+    </div>
+  </div>;
+}
+
+function RealLives() {
+  const [active,setActive]=useState(0);
+  const p=personas[active];
+  return <div style={{background:C.bg,padding:"80px 48px",borderBottom:`1px solid ${C.divider}`}}>
+    <div style={{maxWidth:"920px",margin:"0 auto"}}>
+      <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"3px",marginBottom:"12px",fontWeight:700}}>REAL LIVES · SAME OUTCOME</div>
+      <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,44px)",color:C.purple,margin:"0 0 12px"}}>Good People Can Still Be<br/>Structurally Exposed</h2>
+      <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"17px",marginBottom:"40px"}}>"Anyone who does not provide for their own household has denied the faith." — 1 Tim. 5:8</p>
+      <div style={{display:"flex",gap:"12px",marginBottom:"32px",flexWrap:"wrap"}}>
+        {personas.map((per,i)=>(
+          <button key={i} onClick={()=>setActive(i)} style={{background:active===i?C.purple:"transparent",color:active===i?C.white:C.purple,border:`1.5px solid ${C.purple}`,padding:"10px 20px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"13px",borderRadius:"2px"}}>{per.icon} {per.label}</button>
+        ))}
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px"}}>
+        <div>
+          <div style={{background:C.white,padding:"28px",marginBottom:"16px",boxShadow:"0 2px 12px rgba(45,27,78,0.06)",borderTop:`3px solid ${C.gold}`}}>
+            <div style={{fontFamily:"Inter,sans-serif",fontSize:"10px",color:C.green,letterSpacing:"2px",marginBottom:"16px",fontWeight:700}}>WHAT THEY HAVE</div>
+            {p.has.map((item,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:"10px",marginBottom:"10px"}}><span style={{color:C.green,fontSize:"16px",fontWeight:700}}>✓</span><span style={{fontFamily:"Inter,sans-serif",color:C.text,fontSize:"14px"}}>{item}</span></div>)}
+          </div>
+          <div style={{background:C.white,padding:"28px",boxShadow:"0 2px 12px rgba(45,27,78,0.06)",borderTop:"3px solid #c0392b"}}>
+            <div style={{fontFamily:"Inter,sans-serif",fontSize:"10px",color:C.red,letterSpacing:"2px",marginBottom:"16px",fontWeight:700}}>WHAT IS MISSING</div>
+            {p.lacks.map((item,i)=><div key={i} style={{display:"flex",alignItems:"center",gap:"10px",marginBottom:"10px"}}><span style={{color:C.red,fontSize:"16px",fontWeight:700}}>✗</span><span style={{fontFamily:"Inter,sans-serif",color:C.text,fontSize:"14px"}}>{item}</span></div>)}
+          </div>
+        </div>
+        <div style={{background:C.purplePale,padding:"36px",display:"flex",flexDirection:"column",justifyContent:"space-between",border:`1px solid ${C.purpleLight}`}}>
+          <div>
+            <div style={{fontSize:"52px",marginBottom:"16px"}}>{p.icon}</div>
+            <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.purple,fontSize:"19px",lineHeight:1.7,marginBottom:"32px"}}>"{p.quote}"</p>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px"}}>
+            <div style={{background:C.white,padding:"16px",borderTop:`2px solid ${C.gold}`}}>
+              <div style={{fontFamily:"Inter,sans-serif",fontSize:"9px",color:C.gold,letterSpacing:"2px",marginBottom:"6px",fontWeight:700}}>OT · ESTATE ORDER</div>
+              <div style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,fontSize:"13px",fontWeight:700}}>{p.ot}</div>
+            </div>
+            <div style={{background:C.white,padding:"16px",borderTop:`2px solid ${C.purpleMid}`}}>
+              <div style={{fontFamily:"Inter,sans-serif",fontSize:"9px",color:C.purpleMid,letterSpacing:"2px",marginBottom:"6px",fontWeight:700}}>NT · TRUST ORDER</div>
+              <div style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,fontSize:"13px",fontWeight:700}}>{p.nt}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>;
+}
+
+function RootCause() {
+  return <div style={{background:C.bgAlt,padding:"80px 48px",borderBottom:`1px solid ${C.divider}`}}>
+    <div style={{maxWidth:"920px",margin:"0 auto"}}>
+      <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"3px",marginBottom:"12px",fontWeight:700}}>ROOT CAUSE</div>
+      <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,44px)",color:C.purple,margin:"0 0 12px"}}>What Disappeared Was Not<br/>Religion Alone. It Was Governance.</h2>
+      <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"17px",marginBottom:"48px",maxWidth:"600px"}}>The Bible trains households to preserve inheritance and administer trust faithfully.</p>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px",marginBottom:"24px"}}>
+        <div style={{background:C.white,padding:"36px",borderTop:`4px solid ${C.gold}`,boxShadow:"0 2px 12px rgba(45,27,78,0.06)"}}>
+          <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"2px",marginBottom:"20px",fontWeight:700}}>OLD TESTAMENT · ESTATE ORDER</div>
+          <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"14px",lineHeight:1.8,marginBottom:"24px"}}>Inheritance was not casual. It was ordered, witnessed, and law-shaped. Boundaries were protected by covenant. Succession was governed by statute. Transfer required witnesses at the gate.</p>
+          {[{ref:"Lev. 25:23–34",desc:"Land, redemption, and limits on alienation"},{ref:"Num. 27:1–11",desc:"Lawful inheritance claims — Zelophehad's daughters"},{ref:"Num. 36:1–12",desc:"Preserving inheritance order within structure"},{ref:"Ruth 4:1–12",desc:"Transfer, redemption, witnesses at the gate"},{ref:"Deut. 19:14",desc:"Boundary protection as covenant obligation"}].map(({ref,desc})=>(
+            <div key={ref} style={{display:"flex",gap:"12px",marginBottom:"12px",alignItems:"flex-start"}}>
+              <span style={{color:C.gold,fontFamily:"Playfair Display,Georgia,serif",fontSize:"13px",minWidth:"110px",fontWeight:700}}>{ref}</span>
+              <span style={{fontFamily:"Inter,sans-serif",color:C.textLight,fontSize:"13px"}}>{desc}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{background:C.white,padding:"36px",borderTop:`4px solid ${C.purpleMid}`,boxShadow:"0 2px 12px rgba(45,27,78,0.06)"}}>
+          <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.purpleMid,letterSpacing:"2px",marginBottom:"20px",fontWeight:700}}>NEW TESTAMENT · TRUST ORDER</div>
+          <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"14px",lineHeight:1.8,marginBottom:"24px"}}>The New Testament deepens the logic of stewardship, trusteeship, and accountable administration. Entrusted things require faithful administration and public integrity.</p>
+          {[{ref:"Gal. 4:1–2",desc:"Heirs under guardians and trustees"},{ref:"Luke 16:10–12",desc:"Faithful in another's property"},{ref:"1 Cor. 4:1–2",desc:"Stewards must be found faithful"},{ref:"2 Cor. 8:20–21",desc:"Honorable before God and men"},{ref:"Heb. 9:15–17",desc:"Inheritance and testament logic"}].map(({ref,desc})=>(
+            <div key={ref} style={{display:"flex",gap:"12px",marginBottom:"12px",alignItems:"flex-start"}}>
+              <span style={{color:C.purpleMid,fontFamily:"Playfair Display,Georgia,serif",fontSize:"13px",minWidth:"110px",fontWeight:700}}>{ref}</span>
+              <span style={{fontFamily:"Inter,sans-serif",color:C.textLight,fontSize:"13px"}}>{desc}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{background:C.purple,padding:"28px 36px",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"16px"}}>
+        <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"18px",color:C.white,fontWeight:700,maxWidth:"600px"}}>Civic Virtue = Public Honesty + Household Order + Faithful Transfer</div>
+        <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:"#e8d5a0",letterSpacing:"1px",fontWeight:700}}>THE SYNTHESIS</div>
+      </div>
+    </div>
+  </div>;
+}
+
+function ThePath() {
+  const [active,setActive]=useState(0);
+  const s=steps[active];
+  return <div style={{background:C.bg,padding:"80px 48px",borderBottom:`1px solid ${C.divider}`}}>
+    <div style={{maxWidth:"920px",margin:"0 auto"}}>
+      <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"3px",marginBottom:"12px",fontWeight:700}}>THE PATH · STRUCTURED PROGRESSION</div>
+      <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,44px)",color:C.purple,margin:"0 0 40px"}}>A Structured Path Forward</h2>
+      <div style={{display:"flex",gap:"8px",marginBottom:"40px",flexWrap:"wrap"}}>
+        {steps.map((st,i)=>(
+          <button key={i} onClick={()=>setActive(i)} style={{background:active===i?C.purple:C.white,color:active===i?C.white:C.purple,border:`1.5px solid ${active===i?C.purple:C.divider}`,padding:"12px 20px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"13px",letterSpacing:"0.5px",borderRadius:"2px",boxShadow:active===i?"none":"0 1px 4px rgba(45,27,78,0.08)"}}>{st.level} {st.title}</button>
+        ))}
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px"}}>
+        <div style={{background:C.purplePale,padding:"36px",borderLeft:`4px solid ${C.gold}`,border:`1px solid ${C.purpleLight}`}}>
+          <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"2px",marginBottom:"8px",fontWeight:700}}>LEVEL {s.level}</div>
+          <h3 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"34px",color:C.purple,margin:"0 0 6px"}}>{s.title}</h3>
+          <div style={{fontFamily:"Inter,sans-serif",fontSize:"14px",color:C.gold,marginBottom:"20px",fontWeight:700}}>{s.price}</div>
+          <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"16px",lineHeight:1.6,marginBottom:"20px"}}>"{s.tagline}"</p>
+          <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"14px",lineHeight:1.8,marginBottom:"28px"}}>{s.desc}</p>
+          <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"1px",marginBottom:"6px",fontWeight:700}}>CIVIC OUTCOME</div>
+          <div style={{fontFamily:"Inter,sans-serif",color:C.purple,fontSize:"14px",fontWeight:700}}>{s.civic}</div>
+        </div>
+        <div style={{display:"flex",flexDirection:"column",gap:"16px"}}>
+          <div style={{background:C.white,padding:"28px",borderTop:`3px solid ${C.gold}`,flex:1,boxShadow:"0 2px 12px rgba(45,27,78,0.06)"}}>
+            <div style={{fontFamily:"Inter,sans-serif",fontSize:"10px",color:C.gold,letterSpacing:"2px",marginBottom:"12px",fontWeight:700}}>OLD TESTAMENT · ESTATE ORDER · {s.ot}</div>
+            <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.text,fontSize:"15px",lineHeight:1.7,margin:"0 0 8px"}}>"{s.otQ}"</p>
+            <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,fontWeight:600}}>{s.ot}</div>
+          </div>
+          <div style={{background:C.white,padding:"28px",borderTop:`3px solid ${C.purpleMid}`,flex:1,boxShadow:"0 2px 12px rgba(45,27,78,0.06)"}}>
+            <div style={{fontFamily:"Inter,sans-serif",fontSize:"10px",color:C.purpleMid,letterSpacing:"2px",marginBottom:"12px",fontWeight:700}}>NEW TESTAMENT · TRUST ORDER · {s.nt}</div>
+            <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.text,fontSize:"15px",lineHeight:1.7,margin:"0 0 8px"}}>"{s.ntQ}"</p>
+            <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.purpleMid,fontWeight:600}}>{s.nt}</div>
+          </div>
+        </div>
+      </div>
+      <div style={{display:"flex",gap:"16px",marginTop:"32px",flexWrap:"wrap"}}>
+        <button style={{background:C.purple,color:C.white,padding:"14px 32px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"14px",borderRadius:"2px"}}>Begin as a Seeker — Free</button>
+        <button style={{background:"transparent",color:C.purple,border:`2px solid ${C.purple}`,padding:"14px 32px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"14px",borderRadius:"2px"}}>View Full Curriculum →</button>
+      </div>
+    </div>
+  </div>;
+}
+
+function CompetencyPillars() {
+  const [active,setActive]=useState(null);
+  return <div style={{background:C.bgAlt,padding:"80px 48px",borderBottom:`1px solid ${C.divider}`}}>
+    <div style={{maxWidth:"920px",margin:"0 auto"}}>
+      <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"3px",marginBottom:"12px",fontWeight:700}}>COMPETENCY PILLARS</div>
+      <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,44px)",color:C.purple,margin:"0 0 12px"}}>What You Will Learn</h2>
+      <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"16px",marginBottom:"48px",maxWidth:"600px",lineHeight:1.7}}>Each pillar is grounded in both biblical order and civic application. Click any pillar to expand the full framework.</p>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"16px"}}>
+        {pillars.map((p,i)=>(
+          <div key={i} onClick={()=>setActive(active===i?null:i)} style={{background:active===i?C.purple:C.white,padding:"28px",cursor:"pointer",borderLeft:`4px solid ${active===i?C.goldBright:C.gold}`,transition:"all 0.2s",boxShadow:"0 2px 12px rgba(45,27,78,0.07)"}}>
+            <div style={{fontSize:"28px",marginBottom:"12px"}}>{p.icon}</div>
+            <h3 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"20px",color:active===i?C.white:C.purple,margin:"0 0 8px"}}>{p.title}</h3>
+            <div style={{display:"flex",gap:"12px",marginBottom:"12px",flexWrap:"wrap"}}>
+              <span style={{fontFamily:"Inter,sans-serif",fontSize:"10px",color:active===i?"#e8d5a0":C.gold,letterSpacing:"1px",fontWeight:700}}>{p.ot}</span>
+              <span style={{fontFamily:"Inter,sans-serif",fontSize:"10px",color:active===i?"#c8b8e8":C.purpleMid,letterSpacing:"1px"}}>{p.nt}</span>
+            </div>
+            <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:active===i?"#e8e0f0":C.textMid,fontSize:"13px",lineHeight:1.6,margin:"0 0 8px"}}>"{p.quote}"</p>
+            {active===i&&<div style={{marginTop:"16px",borderTop:"1px solid rgba(255,255,255,0.2)",paddingTop:"16px"}}>
+              <p style={{fontFamily:"Inter,sans-serif",color:"#d8d0e8",fontSize:"14px",lineHeight:1.7,marginBottom:"16px"}}>{p.body}</p>
+              <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:"#e8d5a0",letterSpacing:"1px",fontWeight:700,marginBottom:"10px"}}>CORE MODULES</div>
+              {p.modules.map((m,j)=><div key={j} style={{display:"flex",gap:"8px",marginBottom:"8px",alignItems:"center"}}><span style={{color:"#e8d5a0",fontSize:"14px"}}>→</span><span style={{fontFamily:"Inter,sans-serif",color:"#e8e0f0",fontSize:"13px"}}>{m}</span></div>)}
+            </div>}
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>;
+}
+
+function Capstone() {
+  const [submitted,setSubmitted]=useState(false);
+  return <div style={{background:C.goldPale,padding:"80px 48px",borderTop:`3px solid ${C.goldBorder}`}}>
+    <div style={{maxWidth:"800px",margin:"0 auto",textAlign:"center"}}>
+      <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"3px",marginBottom:"16px",fontWeight:700}}>CAPSTONE · ESTATE TRUST DIRECTIVE</div>
+      <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,52px)",color:C.purple,margin:"0 0 16px",lineHeight:1.2}}>Set in Order<br/><span style={{color:C.gold}}>What Must Outlive You</span></h2>
+      <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"18px",marginBottom:"8px",lineHeight:1.6}}>"The land must not be sold permanently, because the land is mine and you reside in my land as foreigners and strangers."</p>
+      <p style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.gold,letterSpacing:"2px",marginBottom:"32px",fontWeight:600}}>— LEVITICUS 25:23 · OT ESTATE ORDER</p>
+      <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"16px",marginBottom:"8px",lineHeight:1.6}}>"In the case of a will, it is necessary to prove the death of the one who made it, because a will is in force only when somebody has died."</p>
+      <p style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.purpleMid,letterSpacing:"2px",marginBottom:"48px",fontWeight:600}}>— HEBREWS 9:16–17 · NT TRUST ORDER</p>
+      <div style={{background:C.white,border:`1px solid ${C.goldBorder}`,padding:"48px",marginBottom:"40px",boxShadow:"0 4px 24px rgba(45,27,78,0.08)"}}>
+        <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(36px,6vw,64px)",color:C.purple,fontWeight:700,marginBottom:"8px"}}>$55,000</div>
+        <div style={{fontFamily:"Inter,sans-serif",fontSize:"13px",color:C.textLight,letterSpacing:"2px",marginBottom:"32px"}}>ESTATE TRUST DIRECTIVE · QUALIFICATION REQUIRED</div>
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"16px",marginBottom:"32px",textAlign:"left"}}>
+          {[{ref:"Lev. 25:23–28",label:"Land & Redemption Order"},{ref:"Num. 36:1–12",label:"Inheritance Preservation"},{ref:"1 Cor. 4:1–2",label:"Faithful Administration"}].map(({ref,label})=>(
+            <div key={ref} style={{background:C.purplePale,padding:"16px",borderTop:`2px solid ${C.gold}`}}>
+              <div style={{fontFamily:"Playfair Display,Georgia,serif",color:C.gold,fontSize:"12px",marginBottom:"6px",fontWeight:700}}>{ref}</div>
+              <div style={{fontFamily:"Inter,sans-serif",color:C.purple,fontSize:"12px"}}>{label}</div>
+            </div>
+          ))}
+        </div>
+        {!submitted?<div>
+          <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"15px",lineHeight:1.8,marginBottom:"28px"}}>The Capstone is not a product. It is the final expression of ordered love — lawful transfer, protected inheritance, and intentional blessing across generations. Qualification is required.</p>
+          <button onClick={()=>setSubmitted(true)} style={{background:C.purple,color:C.white,padding:"18px 48px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"16px",letterSpacing:"0.5px",borderRadius:"2px"}}>Apply for Capstone Engagement →</button>
+        </div>:<div style={{background:C.purplePale,padding:"28px",borderTop:`2px solid ${C.gold}`}}>
+          <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"22px",color:C.purple,marginBottom:"12px"}}>Application Received</div>
+          <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"14px",lineHeight:1.7}}>Your application has been logged. A qualified advisor will contact you within 3 business days to assess fit and next steps.</p>
+        </div>}
+      </div>
+      <p style={{fontFamily:"Inter,sans-serif",color:C.textLight,fontSize:"12px",lineHeight:1.6}}>BT Education Ministry is a 508(c)(1)(a) faith-based nonprofit. This engagement is educational and ministerial in nature. Not legal advice. Consult qualified legal counsel for estate planning.</p>
+    </div>
+  </div>;
+}
+
+function Footer() {
+  return <div style={{background:C.purple,padding:"56px 48px 32px"}}>
+    <div style={{maxWidth:"920px",margin:"0 auto",display:"grid",gridTemplateColumns:"2fr 1fr 1fr 1fr",gap:"40px",marginBottom:"40px"}}>
+      <div>
+        <div style={{fontFamily:"Playfair Display,Georgia,serif",color:"#e8d5a0",fontSize:"20px",fontWeight:700,marginBottom:"12px"}}>BT Education Ministry</div>
+        <p style={{fontFamily:"Inter,sans-serif",color:"#b0a8c0",fontSize:"13px",lineHeight:1.7,marginBottom:"16px"}}>Faith-grounded civic education for needy and low-income families. 508(c)(1)(a) nonprofit.</p>
+        <div style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:"#c8b8e8",fontSize:"13px"}}>"Civic virtue begins where biblical order governs inheritance, stewardship, and public trust."</div>
+      </div>
+      {[{title:"Programs",links:["Seeker","Operator","Architect","Steward","Capstone"]},{title:"Resources",links:["Civic Library","About","Donate","AEMP"]},{title:"Legal",links:["Privacy Policy","Terms","Disclaimer","508(c)(1)(a) Status"]}].map(({title,links})=>(
+        <div key={title}>
+          <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:"#e8d5a0",letterSpacing:"2px",marginBottom:"16px",fontWeight:700}}>{title.toUpperCase()}</div>
+          {links.map(link=><div key={link} style={{fontFamily:"Inter,sans-serif",color:"#9a8abf",fontSize:"13px",marginBottom:"8px",cursor:"pointer"}}>{link}</div>)}
+        </div>
+      ))}
+    </div>
+    <div style={{maxWidth:"920px",margin:"0 auto",borderTop:"1px solid rgba(255,255,255,0.1)",paddingTop:"24px",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"12px"}}>
+      <div style={{fontFamily:"Inter,sans-serif",color:"#7a6a9a",fontSize:"12px"}}>© 2025 BT Education Ministry · educationministry.org · All rights reserved</div>
+      <div style={{fontFamily:"Inter,sans-serif",color:"#7a6a9a",fontSize:"12px"}}>508(c)(1)(a) · Faith-Based Nonprofit · Not Legal Advice</div>
+    </div>
+  </div>;
+}
+
+function App() {
+  return <div style={{background:C.bg,minHeight:"100vh"}}>
+    <TrustBar/><Nav/><Hero/><Breakdown/><RealLives/><RootCause/><ThePath/><CompetencyPillars/><Capstone/><Footer/>
+  </div>;
+}
+
+ReactDOM.render(<App/>, document.getElementById("root"));
