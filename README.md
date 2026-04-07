@@ -31,10 +31,12 @@ Education Ministry is a **508(c)(1)(a) nonprofit** faith-based civic education p
 ```
 education-ministry-org/
 ├── index.html                  # Main website (React SPA)
+├── CNAME                       # Custom domain config (educationministry.org)
+├── DEPLOYMENT.md               # DNS & deployment guide
 ├── assets/
 │   ├── images/                 # Hero images, logo, mockups
-│   ├── css/                    # Stylesheets (future extraction)
-│   └── js/                     # Scripts (future extraction)
+│   ├── css/                    # Stylesheets
+│   └── js/                     # Scripts
 ├── docs/                       # Design specs & research papers
 │   ├── Education Ministry .org - Website Design - Master Skill AI Prompt*.pdf
 │   ├── Header Navigation and Hero.pdf
@@ -64,13 +66,34 @@ npx serve .
 
 ## Deployment
 
-1. **Static Hosting** — Deploy `index.html`, `assets/`, and all static files to any CDN or static host (Netlify, Vercel, GitHub Pages, Cloudflare Pages, etc.)
-2. **Custom Domain** — Point `educationministry.org` to your hosting provider
-3. **SSL** — Ensure HTTPS is enabled (required for Stripe)
+The site is hosted on **GitHub Pages** with a custom domain.
+
+- **Live URL:** [https://educationministry.org](https://educationministry.org)
+- **GitHub Pages:** `bteducationministry.github.io/education-ministry-org`
+- **Custom Domain:** Configured via `CNAME` file in the repository root
+
+### Custom Domain Setup
+
+The repository includes a `CNAME` file pointing to `educationministry.org`. For full DNS configuration instructions, see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
+
+#### Required DNS Records
+
+| Type | Name | Value |
+|------|------|-------|
+| A | `@` | `185.199.108.153` |
+| A | `@` | `185.199.109.153` |
+| A | `@` | `185.199.110.153` |
+| A | `@` | `185.199.111.153` |
+| CNAME | `www` | `bteducationministry.github.io` |
+
+> DNS propagation may take 24–48 hours. See [DEPLOYMENT.md](DEPLOYMENT.md) for troubleshooting and HTTPS setup.
 
 ### Environment Checklist
-- [ ] Static files deployed
-- [ ] Custom domain configured with SSL
+- [x] Static files deployed (GitHub Pages)
+- [x] CNAME file configured for custom domain
+- [ ] DNS records configured at domain registrar
+- [ ] HTTPS enforced in GitHub Pages settings
+- [ ] Custom domain verified and live
 - [ ] API endpoints live (`/signup`, `/measure`)
 - [ ] Stripe integration completed (see below)
 
