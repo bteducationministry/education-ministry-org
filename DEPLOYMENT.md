@@ -1,158 +1,118 @@
-# Deployment Guide — educationministry.org
+# Deployment Guide — app.educationministry.org
 
-This guide covers configuring the custom domain **educationministry.org** for the Education Ministry website hosted on GitHub Pages.
+## Architecture Overview
 
-## Current Setup
+```
+educationministry.org          → WordPress (main site, content management)
+app.educationministry.org      → GitHub Pages (React SPA, this repository)
+api.educationministry.org      → Backend API (signup, measure, payments)
+platform.btpma.org             → External login platform
+```
 
-- **Repository:** `bteducationministry/education-ministry-org`
-- **GitHub Pages URL:** `bteducationministry.github.io/education-ministry-org`
-- **Target Custom Domain:** `educationministry.org`
+## DNS Configuration
 
----
+### Required DNS Records
 
-## Step 1: DNS Configuration
+At your domain registrar (for `educationministry.org`), configure:
 
-At your domain registrar (e.g., GoDaddy, Namecheap, Cloudflare, Google Domains), configure the following DNS records for `educationministry.org`:
+| Type | Name | Value | Purpose |
+|------|------|-------|---------|
+| CNAME | `app` | `bteducationministry.github.io` | React SPA subdomain |
+| A | `@` | *(WordPress host IP)* | Main WordPress site |
+| CNAME | `www` | *(WordPress host)* | www redirect |
+| CNAME | `api` | *(API server host)* | Backend API |
 
-### A Records (Apex Domain)
+> **Note:** The A records for `@` should point to your WordPress hosting provider, not GitHub Pages. Only the `app` subdomain uses GitHub Pages.
 
-Add **four** A records pointing the root domain to GitHub Pages servers:
+### DNS Propagation
 
-| Type | Name | Value |
-|------|------|-------|
-| A | `@` | `185.199.108.153` |
-| A | `@` | `185.199.109.153` |
-| A | `@` | `185.199.110.153` |
-| A | `@` | `185.199.111.153` |
-
-> **Note:** The `@` symbol represents the root/apex domain (`educationministry.org`). Some registrars may require you to leave the "Name" field blank instead.
-
-### CNAME Record (www Subdomain)
-
-Add a CNAME record so `www.educationministry.org` resolves correctly:
-
-| Type | Name | Value |
-|------|------|-------|
-| CNAME | `www` | `bteducationministry.github.io` |
-
-> This ensures visitors who type `www.educationministry.org` are redirected properly.
-
-### Optional: AAAA Records (IPv6)
-
-For IPv6 support, you may also add these AAAA records:
-
-| Type | Name | Value |
-|------|------|-------|
-| AAAA | `@` | `2606:50c0:8000::153` |
-| AAAA | `@` | `2606:50c0:8001::153` |
-| AAAA | `@` | `2606:50c0:8002::153` |
-| AAAA | `@` | `2606:50c0:8003::153` |
-
----
-
-## Step 2: Verify DNS Propagation
-
-After updating DNS records, propagation may take **24–48 hours** (though it often completes within a few hours).
-
-You can verify propagation using:
+After adding/changing DNS records:
 
 ```bash
-# Check A records
-dig educationministry.org +short
-# Expected: 185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153
+# Check CNAME resolution
+dig app.educationministry.org CNAME
 
-# Check CNAME record
-dig www.educationministry.org +short
+# Check if it resolves to GitHub Pages
+nslookup app.educationministry.org
+
 # Expected: bteducationministry.github.io
-
-# Alternative: use nslookup
-nslookup educationministry.org
 ```
 
-Or use an online tool like [dnschecker.org](https://dnschecker.org) to check global propagation.
+Propagation typically takes 15 minutes to 48 hours depending on TTL settings.
 
----
+## GitHub Pages Setup
 
-## Step 3: Enable HTTPS in GitHub Pages Settings
+### Step 1: Repository Settings
 
-1. Go to the repository settings:
-   **https://github.com/bteducationministry/education-ministry-org/settings/pages**
+1. Go to **Settings → Pages** in the GitHub repository
+2. Source: **Deploy from a branch**
+3. Branch: `main` / `/ (root)`
+4. Custom domain: `app.educationministry.org`
 
-2. Under **"Custom domain"**, verify that `educationministry.org` is shown.
+### Step 2: CNAME File
 
-3. Check the **"Enforce HTTPS"** checkbox.
-   - If the checkbox is grayed out, wait for DNS propagation to complete and GitHub to provision the SSL certificate (this can take up to 24 hours after DNS is configured).
-   - GitHub uses Let's Encrypt to automatically provision and renew SSL certificates.
-
-4. Verify the site loads at:
-   - `https://educationministry.org` ✓
-   - `https://www.educationministry.org` ✓
-   - `http://educationministry.org` → should redirect to HTTPS ✓
-
----
-
-## Step 4: Verify the CNAME File
-
-The repository root contains a `CNAME` file with the content:
+The repository includes a `CNAME` file containing:
 
 ```
-educationministry.org
+app.educationministry.org
 ```
 
-> **Important:** Do not delete this file. GitHub Pages uses it to associate the custom domain with the repository. If it's removed, the custom domain setting will be cleared.
+> **Important:** Do not delete this file. GitHub Pages uses it to route the custom domain. If the file is removed, the custom domain setting will be cleared.
 
----
+### Step 3: HTTPS
+
+1. After DNS propagates, go to **Settings → Pages**
+2. Check **Enforce HTTPS**
+3. GitHub will automatically provision an SSL certificate via Let's Encrypt
+4. Certificate provisioning may take up to 24 hours after DNS verification
+
+## Configuration
+
+The React SPA uses `assets/js/config.js` for environment-aware configuration. In production, all values are pre-configured for `app.educationministry.org`. No environment variables or build steps are needed.
+
+To update production configuration (e.g., adding a Stripe key):
+
+1. Edit `assets/js/config.js`
+2. Update the `production` config object
+3. Commit and push to `main`
+4. GitHub Pages will automatically deploy
 
 ## Troubleshooting
 
-### Site not loading after DNS changes
-- DNS propagation can take 24–48 hours. Be patient.
-- Verify your DNS records are correct using `dig` or [dnschecker.org](https://dnschecker.org).
+### Site shows 404
 
-### "Enforce HTTPS" is grayed out
-- GitHub needs to provision an SSL certificate. This requires DNS to be fully propagated first.
-- Wait a few hours after DNS propagation and try again.
-- If it's still grayed out after 24 hours, try removing and re-adding the custom domain in the repository settings.
+- Verify `CNAME` file exists in the repository root and contains `app.educationministry.org`
+- Check GitHub Pages settings show the correct custom domain
+- Ensure DNS CNAME record points to `bteducationministry.github.io`
 
-### 404 error on custom domain
-- Ensure the `CNAME` file exists in the repository root.
-- Ensure GitHub Pages is enabled in repository settings and set to deploy from the correct branch.
+### SSL Certificate not provisioning
 
-### Mixed content warnings
-- Ensure all resources (images, scripts, stylesheets) use HTTPS or protocol-relative URLs.
-- The site uses CDN-hosted React, Babel, Google Fonts, and Stripe.js — all served over HTTPS.
+- DNS must fully propagate before GitHub can issue a certificate
+- Remove and re-add the custom domain in GitHub Pages settings
+- Wait up to 24 hours for Let's Encrypt to issue the certificate
 
----
+### Site loads but shows wrong content
 
-## DNS Configuration Summary
+- Clear browser cache (GitHub Pages uses aggressive caching)
+- Check that the `main` branch has the latest changes
+- Verify the GitHub Pages deployment completed (check Actions tab)
 
-```
-# A Records (required)
-educationministry.org.    A    185.199.108.153
-educationministry.org.    A    185.199.109.153
-educationministry.org.    A    185.199.110.153
-educationministry.org.    A    185.199.111.153
+### Hash routing not working
 
-# CNAME Record (required)
-www.educationministry.org.    CNAME    bteducationministry.github.io.
+The SPA uses hash-based routing (`#/about`, `#/programs`, etc.). This works with GitHub Pages without any server configuration. If routes break:
 
-# AAAA Records (optional, for IPv6)
-educationministry.org.    AAAA    2606:50c0:8000::153
-educationministry.org.    AAAA    2606:50c0:8001::153
-educationministry.org.    AAAA    2606:50c0:8002::153
-educationministry.org.    AAAA    2606:50c0:8003::153
-```
+- Ensure `index.html` is the only HTML file at the root
+- Verify the hash router in `app.js` is processing `window.location.hash`
 
----
+## Deployment Checklist
 
-## API Subdomain (Future)
-
-The application references `https://api.educationministry.org/` for backend endpoints (`/signup`, `/measure`). When the API backend is deployed, you'll need an additional DNS record:
-
-| Type | Name | Value |
-|------|------|-------|
-| A or CNAME | `api` | *(Your API server IP or hostname)* |
-
----
-
-© 2026 Bodhi Tree Education Ministry. All rights reserved.
+- [ ] DNS CNAME record: `app` → `bteducationministry.github.io`
+- [ ] GitHub Pages enabled on `main` branch
+- [ ] Custom domain set to `app.educationministry.org`
+- [ ] HTTPS enforced
+- [ ] SSL certificate provisioned
+- [ ] Site loads correctly at `https://app.educationministry.org`
+- [ ] All routes work (`#/about`, `#/programs`, etc.)
+- [ ] Signup form submits to API
+- [ ] Login link points to correct platform URL
+- [ ] Images load correctly

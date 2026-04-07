@@ -1,6 +1,17 @@
-# Education Ministry — educationministry.org
+# Education Ministry — React SPA (app.educationministry.org)
 
 > **Faith-Grounded Civic Virtue** — The civic education that builds and preserves families across generations, grounded in scripture, hidden in plain view.
+
+## Architecture
+
+This project uses a **dual-platform architecture**:
+
+| Platform | Domain | Purpose |
+|----------|--------|---------|
+| **WordPress** | `educationministry.org` | Main site — content management, blog, SEO pages |
+| **React SPA** | `app.educationministry.org` | Member portal — applications, interactive features, membership |
+
+This repository contains the **React SPA** deployed to the `app` subdomain via GitHub Pages.
 
 ## About
 
@@ -22,7 +33,7 @@ Education Ministry is a **508(c)(1)(a) nonprofit** faith-based civic education p
 
 ## Design System
 
-- **Color Palette:** Deep Dark Purple (`#1a1a2e`), Gold (`#c9a84c`), White/Light Gray (`#faf9f6`)
+- **Color Palette:** Deep Dark Purple (`#2d1b4e`), Gold (`#c9a84c`), White/Light Gray (`#faf9f6`)
 - **Typography:** Playfair Display (serif headlines), Inter (sans-serif body)
 - **Approach:** Clean, minimal, high-trust, mobile-first
 
@@ -30,23 +41,29 @@ Education Ministry is a **508(c)(1)(a) nonprofit** faith-based civic education p
 
 ```
 education-ministry-org/
-├── index.html                  # Main website (React SPA)
-├── CNAME                       # Custom domain config (educationministry.org)
+├── index.html                  # SPA entry point
+├── CNAME                       # GitHub Pages subdomain (app.educationministry.org)
 ├── DEPLOYMENT.md               # DNS & deployment guide
+├── README.md                   # This file
 ├── assets/
-│   ├── images/                 # Hero images, logo, mockups
-│   ├── css/                    # Stylesheets
-│   └── js/                     # Scripts
-├── docs/                       # Design specs & research papers
-│   ├── Education Ministry .org - Website Design - Master Skill AI Prompt*.pdf
-│   ├── Header Navigation and Hero.pdf
-│   └── Declining Civic Engagement*.pdf
-└── README.md
+│   ├── css/
+│   │   └── main.css            # Global styles
+│   ├── js/
+│   │   ├── config.js           # Environment-aware configuration
+│   │   └── app.js              # React application
+│   └── images/
+│       ├── bodhi-tree-logo-header.png
+│       └── vFinal Heritage Bodhi Tree Hero Image Only.png
+└── docs/                       # Design specs & reference materials
+    ├── Education Ministry .org - Website Design - Master Skill AI Prompt*.pdf
+    ├── Header Navigation and Hero.pdf
+    ├── Hero Content Mockup and Header Menu Navigation.png
+    └── Declining Civic Engagement*.pdf
 ```
 
 ## Getting Started
 
-This is a static single-page application built with React (via CDN). Simply open `index.html` in a browser or serve it with any static file server:
+This is a static single-page application built with React (via CDN). No build step required.
 
 ```bash
 # Using Python
@@ -56,105 +73,94 @@ python3 -m http.server 8000
 npx serve .
 ```
 
+Open `http://localhost:8000` in your browser. The configuration system will auto-detect the `development` environment.
+
+## Configuration
+
+All configurable values are centralized in `assets/js/config.js`. The system auto-detects the environment based on hostname:
+
+| Environment | Hostname Pattern | API Base URL |
+|-------------|-----------------|--------------|
+| **production** | `app.educationministry.org` | `https://api.educationministry.org` |
+| **staging** | `staging-app.*` | `https://staging-api.educationministry.org` |
+| **development** | `localhost` / `127.0.0.1` | `http://localhost:3001` |
+
+### Configurable Values
+
+- `API_BASE_URL` — Backend API base URL
+- `APP_DOMAIN` — Current app domain
+- `MAIN_SITE_URL` — WordPress main site URL
+- `PLATFORM_LOGIN_URL` — External login platform URL
+- `CONTACT_EMAIL` — Support contact email
+- `STRIPE_PUBLISHABLE_KEY` — Stripe key (empty until integration)
+- `COPYRIGHT_YEAR` — Footer copyright year
+- `ORG_NAME` / `ORG_LEGAL` / `ORG_DOMAIN` — Organization identifiers
+- `DEBUG` — Enables verbose logging (auto-on in dev/staging)
+
+### Manual Environment Override
+
+Set `window.__ENV__` before config.js loads to force an environment:
+
+```html
+<script>window.__ENV__ = "staging";</script>
+<script src="assets/js/config.js"></script>
+```
+
 ## Technology
 
 - **React 17** (CDN, production build)
 - **Babel Standalone** (JSX transformation)
 - **Google Fonts** (Playfair Display, Inter)
 - **Stripe.js v3** (loaded async, for future payment integration)
-- No build step required — opens directly in any modern browser
+- No build step — opens directly in any modern browser
 
 ## Deployment
 
-The site is hosted on **GitHub Pages** with a custom domain.
+### Live Setup
 
-- **Live URL:** [https://educationministry.org](https://educationministry.org)
 - **GitHub Pages:** `bteducationministry.github.io/education-ministry-org`
-- **Custom Domain:** Configured via `CNAME` file in the repository root
+- **Subdomain:** `app.educationministry.org` (configured via `CNAME` file)
+- **Main site:** WordPress at `educationministry.org`
 
-### Custom Domain Setup
-
-The repository includes a `CNAME` file pointing to `educationministry.org`. For full DNS configuration instructions, see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
-
-#### Required DNS Records
-
-| Type | Name | Value |
-|------|------|-------|
-| A | `@` | `185.199.108.153` |
-| A | `@` | `185.199.109.153` |
-| A | `@` | `185.199.110.153` |
-| A | `@` | `185.199.111.153` |
-| CNAME | `www` | `bteducationministry.github.io` |
-
-> DNS propagation may take 24–48 hours. See [DEPLOYMENT.md](DEPLOYMENT.md) for troubleshooting and HTTPS setup.
+For complete DNS and deployment instructions, see **[DEPLOYMENT.md](DEPLOYMENT.md)**.
 
 ### Environment Checklist
+
 - [x] Static files deployed (GitHub Pages)
-- [x] CNAME file configured for custom domain
-- [ ] DNS records configured at domain registrar
+- [x] CNAME configured for `app.educationministry.org`
+- [x] Environment-aware configuration system
+- [ ] DNS CNAME record: `app` → `bteducationministry.github.io`
 - [ ] HTTPS enforced in GitHub Pages settings
-- [ ] Custom domain verified and live
 - [ ] API endpoints live (`/signup`, `/measure`)
-- [ ] Stripe integration completed (see below)
+- [ ] Stripe publishable key set in `config.js`
 
-## Stripe Integration (Setup Guide)
+## Stripe Integration
 
-Stripe.js is already loaded in `index.html`. To complete the payment integration:
+Stripe.js is loaded in `index.html`. To activate payments:
 
-### 1. Get Stripe Keys
-- Create a Stripe account at [stripe.com](https://stripe.com)
-- Get your **Publishable Key** from the Stripe Dashboard → Developers → API Keys
+1. Set `STRIPE_PUBLISHABLE_KEY` in `assets/js/config.js` (production config)
+2. Create backend endpoints for Checkout Sessions
+3. Create Stripe Products & Prices (Operator $97/mo, Architect $298/mo, Steward $599/mo)
+4. Set up webhooks for subscription lifecycle events
 
-### 2. Set the Publishable Key
-In `assets/js/app.js`, find and update:
-```javascript
-var STRIPE_PUBLISHABLE_KEY = ""; // ← Add your pk_live_... or pk_test_... key
-```
+See the Stripe integration comments in `app.js` for detailed implementation notes.
 
-### 3. Create Backend Endpoints
-You'll need a server-side endpoint to create Checkout Sessions:
+## Maintenance
 
-```
-POST /api/create-checkout-session
-Body: { tier: "operator" | "architect" | "steward" }
-Returns: { id: "cs_..." }  // Stripe Checkout Session ID
-```
+### Updating Configuration
 
-### 4. Create Stripe Products & Prices
-In Stripe Dashboard, create:
+Edit `assets/js/config.js` — all environment-specific values are in one place. No need to search through `app.js`.
 
-| Product | Price ID | Amount |
-|---------|----------|--------|
-| Operator Membership | `price_operator_monthly` | $97/mo |
-| Architect Membership | `price_architect_monthly` | $298/mo |
-| Steward Membership | `price_steward_monthly` | $599/mo |
+### Adding New Pages
 
-### 5. Donations
-For the Donate page, options include:
-- **Stripe Payment Links** — Quickest setup, no backend needed
-- **Stripe Checkout Sessions** — More control, requires backend
-- **Stripe Elements** — Embedded form, best UX but most work
+1. Add route handling in the hash router section of `app.js`
+2. Create the page component
+3. Add navigation entry to `navItems` array
 
-### 6. Webhooks
-Set up a webhook endpoint to handle:
-- `checkout.session.completed` — Activate membership
-- `customer.subscription.updated` — Handle tier changes
-- `customer.subscription.deleted` — Handle cancellations
-- `invoice.payment_failed` — Notify user of failed payment
+### Updating Content
 
-## Capstone Application
-
-The Capstone Application Form is a multi-step form (3 steps: Personal Info → Estate Details → Goals) for the Estate Trust Directive service. On submission it:
-
-1. **POSTs to `/signup`** — Sends full application data for email notification
-2. **POSTs to `/measure`** — Sends event payload to AEMP tracking API
-
-Both endpoints are at `https://api.educationministry.org/`. The form handles errors gracefully and shows success confirmation with next steps.
+Content is defined as data structures at the top of `app.js` (personas, pillars, membership tiers, etc.). Update the data objects to change content without touching component logic.
 
 ## License
 
 © 2026 Bodhi Tree Education Ministry. All rights reserved.
-
----
-
-*"The civic education that builds and preserves families across generations — grounded in scripture, hidden in plain view."*

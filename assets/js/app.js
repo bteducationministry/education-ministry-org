@@ -23,8 +23,8 @@ function useSignupModal() {
   return useContext(SignupModalContext);
 }
 
-/* ───── Signup API Config ───── */
-const SIGNUP_ENDPOINT = "https://api.educationministry.org/signup";
+/* ───── Signup API Config (from AppConfig) ───── */
+const SIGNUP_ENDPOINT = AppConfig.SIGNUP_ENDPOINT;
 const SIGNUP_TIMEOUT_MS = 10000;
 
 /* ───── Color Tokens ───── */
@@ -414,7 +414,7 @@ function SeekerSignupForm({ source, onClose }) {
       if (err.name === "AbortError") {
         setErrorMsg("Request timed out. Please check your connection and try again.");
       } else {
-        setErrorMsg("Something went wrong. Please try again or contact us at info@educationministry.org.");
+        setErrorMsg("Something went wrong. Please try again or contact us at " + AppConfig.CONTACT_EMAIL + ".");
       }
       setStatus("error");
     });
@@ -597,7 +597,7 @@ function Nav() {
     </div>
     <div style={{display:"flex",gap:"12px",alignItems:"center"}}>
       <button onClick={()=>openSignup("header-begin-free")} style={{background:C.purple,color:C.white,padding:"9px 20px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"13px",letterSpacing:"0.5px",borderRadius:"2px",cursor:"pointer",border:"none"}}>Begin Free →</button>
-      <a href="https://platform.btpma.org/login" target="_blank" rel="noopener noreferrer" style={{background:"transparent",color:C.purple,border:`1.5px solid ${C.divider}`,padding:"9px 18px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"13px",borderRadius:"2px",cursor:"pointer",textDecoration:"none",display:"inline-block"}}>Login</a>
+      <a href={AppConfig.PLATFORM_LOGIN_URL} target="_blank" rel="noopener noreferrer" style={{background:"transparent",color:C.purple,border:`1.5px solid ${C.divider}`,padding:"9px 18px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"13px",borderRadius:"2px",cursor:"pointer",textDecoration:"none",display:"inline-block"}}>Login</a>
     </div>
   </nav>;
 }
@@ -652,7 +652,7 @@ function Footer() {
       ))}
     </div>
     <div style={{maxWidth:"920px",margin:"0 auto",borderTop:"1px solid rgba(255,255,255,0.1)",paddingTop:"24px",display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:"12px"}}>
-      <div style={{fontFamily:"Inter,sans-serif",color:"#7a6a9a",fontSize:"12px"}}>© 2025 BT Education Ministry · educationministry.org · All rights reserved</div>
+      <div style={{fontFamily:"Inter,sans-serif",color:"#7a6a9a",fontSize:"12px"}}>© {AppConfig.COPYRIGHT_YEAR} {AppConfig.ORG_NAME} · {AppConfig.ORG_DOMAIN} · All rights reserved</div>
       <div style={{fontFamily:"Inter,sans-serif",color:"#7a6a9a",fontSize:"12px"}}>508(c)(1)(a) · Faith-Based Nonprofit · Not Legal Advice</div>
     </div>
   </div>;
@@ -1664,9 +1664,9 @@ function CapstoneApplicationForm({ onClose }) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
       mode: "cors"
-    }).catch(function(err) { console.warn("[Capstone email error]", err); });
+    }).catch(function(err) { if (AppConfig.DEBUG) console.warn("[Capstone email]", err); });
 
-    var measureReq = fetch("https://api.educationministry.org/measure", {
+    var measureReq = fetch(AppConfig.MEASURE_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1685,13 +1685,13 @@ function CapstoneApplicationForm({ onClose }) {
         timestamp: new Date().toISOString()
       }),
       mode: "cors"
-    }).catch(function(err) { console.warn("[Capstone measure error]", err); });
+    }).catch(function(err) { if (AppConfig.DEBUG) console.warn("[Capstone measure]", err); });
 
     Promise.all([emailReq, measureReq])
       .then(function() { setStatus("success"); })
       .catch(function(err) {
         console.error("[Capstone submit error]", err);
-        setErrorMsg("Something went wrong. Please try again or contact us at info@educationministry.org.");
+        setErrorMsg("Something went wrong. Please try again or contact us at " + AppConfig.CONTACT_EMAIL + ".");
         setStatus("error");
       });
   }
@@ -1915,14 +1915,14 @@ function CapstoneApplicationForm({ onClose }) {
  *    - Steward: $599/mo  → price_steward_monthly
  * 5. For donations, use Stripe Payment Links or custom Checkout sessions
  */
-var STRIPE_PUBLISHABLE_KEY = ""; // TODO: Add your Stripe publishable key
+var STRIPE_PUBLISHABLE_KEY = AppConfig.STRIPE_PUBLISHABLE_KEY;
 
 function StripeCheckout({ tier, onClose }) {
   const [loading, setLoading] = useState(false);
 
   function handleCheckout() {
     if (!STRIPE_PUBLISHABLE_KEY) {
-      alert("Stripe integration coming soon! Our team is finalizing secure payment processing. For immediate assistance, contact us at info@educationministry.org.");
+      alert("Stripe integration coming soon! Our team is finalizing secure payment processing. For immediate assistance, contact us at " + AppConfig.CONTACT_EMAIL + ".");
       return;
     }
     setLoading(true);
