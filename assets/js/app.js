@@ -575,7 +575,7 @@ function Hero() {
     <img src="assets/images/vFinal Heritage Bodhi Tree Hero Image Only.png" alt="Heritage Bodhi Tree" style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center",zIndex:0}} />
     <div style={{position:"absolute",top:0,left:0,width:"60%",height:"100%",background:"linear-gradient(to right, rgba(20,10,30,0.72) 0%, rgba(20,10,30,0.55) 40%, rgba(20,10,30,0.25) 70%, transparent 100%)",zIndex:1}} />
     <div style={{position:"absolute",top:0,left:0,width:"55%",height:"100%",backdropFilter:"blur(2px)",WebkitBackdropFilter:"blur(2px)",maskImage:"linear-gradient(to right, black 0%, black 50%, transparent 100%)",WebkitMaskImage:"linear-gradient(to right, black 0%, black 50%, transparent 100%)",zIndex:1}} />
-    <div style={{position:"relative",zIndex:2,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"flex-start",padding:"100px 48px 80px 64px",minHeight:"600px",maxWidth:"600px"}}>
+    <div style={{position:"relative",zIndex:2,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"flex-start",padding:"100px 48px 80px 140px",minHeight:"600px",maxWidth:"680px"}}>
       <h1 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(40px,5.5vw,72px)",color:C.white,margin:"0 0 20px",lineHeight:1.05,fontWeight:700,textShadow:"0 2px 16px rgba(0,0,0,0.4)"}}>
         Faith-Grounded<br/>Civic Virtue.
       </h1>
