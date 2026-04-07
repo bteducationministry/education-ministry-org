@@ -241,7 +241,7 @@ function Modal({ isOpen, onClose, children }) {
   );
 }
 
-function Offer0SignupForm({ source, onClose }) {
+function SeekerSignupForm({ source, onClose }) {
   var _s = useState({ firstName: "", lastName: "", email: "", phone: "" });
   var form = _s[0], setForm = _s[1];
   var _e = useState({});
@@ -295,7 +295,7 @@ function Offer0SignupForm({ source, onClose }) {
       lastName: form.lastName.trim(),
       email: form.email.trim(),
       phone: form.phone.trim() || null,
-      source: source || "offer0"
+      source: source || "seeker"
     });
 
     // Timeout via AbortController
@@ -319,7 +319,7 @@ function Offer0SignupForm({ source, onClose }) {
     })
     .catch(function(err) {
       clearTimeout(timeoutId);
-      console.error("[Offer0 Signup Error]", err);
+      console.error("[Seeker Signup Error]", err);
       if (err.name === "AbortError") {
         setErrorMsg("Request timed out. Please check your connection and try again.");
       } else {
@@ -389,7 +389,7 @@ function Offer0SignupForm({ source, onClose }) {
   return React.createElement("div", { style: { padding: "0" } },
     // Header
     React.createElement("div", { style: { background: "linear-gradient(135deg, " + C.purple + " 0%, " + C.purpleMid + " 100%)", padding: "36px 40px 28px", textAlign: "center" } },
-      React.createElement("div", { style: { fontFamily: "Inter,sans-serif", fontSize: "10px", color: "#e8d5a0", letterSpacing: "2px", fontWeight: 700, marginBottom: "10px" } }, "FREE \u00B7 OFFER 0 \u00B7 CIVIC CHALLENGE"),
+      React.createElement("div", { style: { fontFamily: "Inter,sans-serif", fontSize: "10px", color: "#e8d5a0", letterSpacing: "2px", fontWeight: 700, marginBottom: "10px" } }, "FREE \u00B7 YOUNG CIVIC ENGAGEMENT CHALLENGE"),
       React.createElement("h3", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "24px", color: C.white, margin: "0 0 8px", lineHeight: 1.2 } }, "Begin the Young Civic Engagement Challenge"),
       React.createElement("p", { style: { fontFamily: "Inter,sans-serif", fontSize: "13px", color: "#c8b8e8", lineHeight: 1.5, margin: 0 } }, "Start your journey with structured civic education \u2014 completely free.")
     ),
@@ -493,25 +493,7 @@ function Nav() {
   ];
   return <nav style={{background:C.white,padding:"14px 48px",display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:`1px solid ${C.divider}`,position:"sticky",top:0,zIndex:100,boxShadow:"0 2px 12px rgba(45,27,78,0.07)"}}>
     <div style={{display:"flex",alignItems:"center",gap:"12px",cursor:"pointer"}} onClick={()=>navigate("/")}>
-      <div style={{width:"44px",height:"44px",position:"relative",flexShrink:0}}>
-        <svg viewBox="0 0 44 44" fill="none" xmlns="https://www.shutterstock.com/image-vector/stylized-leafy-branch-smooth-curves-600nw-2686681691.jpg" style={{width:"44px",height:"44px"}}>
-          <path d="M22 34 Q18 38 14 42" stroke="#5a8a3c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-          <path d="M22 34 Q22 39 22 43" stroke="#5a8a3c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-          <path d="M22 34 Q26 38 30 42" stroke="#5a8a3c" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-          <path d="M22 34 Q16 37 12 40" stroke="#5a8a3c" strokeWidth="1.2" strokeLinecap="round" fill="none"/>
-          <path d="M22 34 Q28 37 32 40" stroke="#5a8a3c" strokeWidth="1.2" strokeLinecap="round" fill="none"/>
-          <rect x="20.5" y="20" width="3" height="14" rx="1.5" fill="#5a8a3c"/>
-          <ellipse cx="22" cy="14" rx="10" ry="8" fill="#6aaa44" opacity="0.9"/>
-          <ellipse cx="14" cy="17" rx="7" ry="5.5" fill="#5a9a38" opacity="0.85"/>
-          <ellipse cx="30" cy="17" rx="7" ry="5.5" fill="#5a9a38" opacity="0.85"/>
-          <ellipse cx="22" cy="10" rx="7" ry="6" fill="#7aba54" opacity="0.9"/>
-          <ellipse cx="16" cy="13" rx="5" ry="4" fill="#6aaa44" opacity="0.8"/>
-          <ellipse cx="28" cy="13" rx="5" ry="4" fill="#6aaa44" opacity="0.8"/>
-          <circle cx="19" cy="11" r="1.5" fill="#9ad870" opacity="0.7"/>
-          <circle cx="25" cy="9" r="1.2" fill="#9ad870" opacity="0.6"/>
-          <circle cx="14" cy="16" r="1" fill="#9ad870" opacity="0.5"/>
-        </svg>
-      </div>
+      <img src="assets/images/bodhi-tree-logo-header.png" alt="Bodhi Tree Logo" style={{width:"54px",height:"54px",objectFit:"contain",flexShrink:0}} />
       <div>
         <div style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,fontSize:"15px",fontWeight:700,letterSpacing:"0.5px",lineHeight:1.1}}>BODHI TREE</div>
         <div style={{fontFamily:"Inter,sans-serif",color:C.textLight,fontSize:"10px",letterSpacing:"1.5px",fontWeight:600}}>EDUCATION MINISTRY</div>
@@ -592,39 +574,24 @@ function Footer() {
 
 function Hero() {
   const { open: openSignup } = useSignupModal();
-  return <div style={{background:`linear-gradient(170deg,#fffdf7 0%,${C.purplePale} 55%,#ede8f5 100%)`,padding:"110px 48px 90px",textAlign:"center",borderBottom:`2px solid ${C.goldBorder}`,position:"relative",overflow:"hidden"}}>
-    <div style={{position:"absolute",top:"10%",right:"5%",opacity:0.04,pointerEvents:"none"}}>
-      <svg viewBox="0 0 200 200" width="320" height="320" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <ellipse cx="100" cy="70" rx="60" ry="50" fill="#2d1b4e"/><ellipse cx="65" cy="90" rx="40" ry="30" fill="#2d1b4e"/><ellipse cx="135" cy="90" rx="40" ry="30" fill="#2d1b4e"/><rect x="94" y="110" width="12" height="60" rx="6" fill="#2d1b4e"/><path d="M100 170 Q85 185 70 195" stroke="#2d1b4e" strokeWidth="6" strokeLinecap="round" fill="none"/><path d="M100 170 Q100 185 100 198" stroke="#2d1b4e" strokeWidth="6" strokeLinecap="round" fill="none"/><path d="M100 170 Q115 185 130 195" stroke="#2d1b4e" strokeWidth="6" strokeLinecap="round" fill="none"/>
-      </svg>
-    </div>
-    <div style={{position:"relative",zIndex:1}}>
-      <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.textLight,letterSpacing:"3px",marginBottom:"28px",fontWeight:600}}>EDUCATIONMINISTRY.ORG · CIVIC FORMATION · ESTATE ORDER</div>
-      <div style={{background:C.white,border:`1px solid ${C.goldBorder}`,display:"inline-block",padding:"10px 24px",marginBottom:"32px",boxShadow:"0 2px 12px rgba(45,27,78,0.07)"}}>
-        <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"clamp(14px,1.8vw,18px)",margin:0,lineHeight:1.5}}>
-          "You were taught to be a good citizen.<br/>You were never taught to be a free people."
-        </p>
-      </div>
-      <h1 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(38px,6vw,76px)",color:C.purple,margin:"0 0 16px",lineHeight:1.08,fontWeight:700}}>
-        Faith Grounded<br/><span style={{color:C.gold}}>Civic Virtue</span>
+  return <div style={{position:"relative",width:"100%",minHeight:"600px",overflow:"hidden",borderBottom:`2px solid ${C.goldBorder}`}}>
+    <img src="assets/images/vFinal Heritage Bodhi Tree Hero Image Only.png" alt="Heritage Bodhi Tree" style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center",zIndex:0}} />
+    <div style={{position:"absolute",top:0,left:0,width:"55%",height:"100%",background:"linear-gradient(to right, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.25) 60%, transparent 100%)",zIndex:1}} />
+    <div style={{position:"relative",zIndex:2,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"flex-start",padding:"100px 48px 80px 64px",minHeight:"600px",maxWidth:"600px"}}>
+      <h1 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(40px,5.5vw,72px)",color:C.white,margin:"0 0 20px",lineHeight:1.05,fontWeight:700}}>
+        Faith-Grounded<br/>Civic Virtue
       </h1>
-      <p style={{fontFamily:"Inter,sans-serif",fontSize:"clamp(15px,1.6vw,19px)",color:C.textMid,maxWidth:"640px",margin:"0 auto 40px",lineHeight:1.8,fontWeight:400}}>
-        The civic education that builds and preserves families across generations —<br/>
-        <span style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.purple}}>grounded in scripture, hidden in plain view.</span>
+      <p style={{fontFamily:"Inter,sans-serif",fontSize:"clamp(15px,1.5vw,18px)",color:"rgba(255,255,255,0.9)",maxWidth:"520px",margin:"0 0 36px",lineHeight:1.7,fontWeight:400}}>
+        The civic education that builds and preserves families across generations<br/>
+        —grounded in scripture, hidden in plain view.
       </p>
-      <div style={{display:"flex",gap:"16px",justifyContent:"center",flexWrap:"wrap",marginBottom:"72px"}}>
-        <button onClick={()=>openSignup("hero-take-challenge")} style={{...S.btnPrimary,padding:"16px 36px",fontSize:"15px",display:"flex",alignItems:"center",gap:"10px"}}>
-          Take the Challenge <span style={{fontSize:"18px"}}>→</span>
+      <div style={{display:"flex",gap:"16px",flexWrap:"wrap"}}>
+        <button onClick={()=>openSignup("hero-start-challenge")} style={{background:C.gold,color:C.purple,padding:"16px 32px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"15px",letterSpacing:"0.3px",border:"none",cursor:"pointer",transition:"all 0.2s"}}>
+          Start The Challenge
         </button>
-        <button onClick={()=>navigate("/programs")} style={{...S.btnSecondary,padding:"16px 32px",fontSize:"15px"}}>View the Path</button>
-      </div>
-      <div style={{display:"flex",gap:"0",justifyContent:"center",flexWrap:"wrap",maxWidth:"700px",margin:"0 auto"}}>
-        {[{stat:"17%",label:"Public trust in institutions"},{stat:"22%",label:"Civic proficiency, U.S. adults"},{stat:"30%",label:"Religious attendance decline"}].map(({stat,label},i,arr)=>(
-          <div key={stat} style={{textAlign:"center",padding:"0 40px",borderRight:i<arr.length-1?`1px solid ${C.divider}`:"none"}}>
-            <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"44px",color:C.purple,fontWeight:700,lineHeight:1}}>{stat}</div>
-            <div style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.textLight,letterSpacing:"0.3px",maxWidth:"120px",margin:"6px auto 0",lineHeight:1.4}}>{label}</div>
-          </div>
-        ))}
+        <button onClick={()=>navigate("/programs")} style={{background:"transparent",color:C.white,padding:"16px 32px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"15px",letterSpacing:"0.3px",border:"2px solid rgba(255,255,255,0.8)",cursor:"pointer",transition:"all 0.2s"}}>
+          View The Path
+        </button>
       </div>
     </div>
   </div>;
@@ -979,7 +946,7 @@ function AboutPage() {
         <h2 style={S.h2}>A Clear Path Forward</h2>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:"16px",marginTop:"32px"}}>
           {[
-            {step:"01",title:"Start with Offer 0",desc:"Access free foundational education and begin building understanding."},
+            {step:"01",title:"Start with the Young Civic Engagement Challenge",desc:"Access free foundational education and begin building understanding."},
             {step:"02",title:"Structured Learning",desc:"Engage with courses, workshops, and guided materials designed for application."},
             {step:"03",title:"Implement with Support",desc:"Utilize tools, resources, and guidance to apply what you've learned in real-world situations."},
             {step:"04",title:"Grow with Community",desc:"Connect with a structured environment that supports ongoing development and accountability."},
@@ -2420,10 +2387,10 @@ function App() {
   const hash = useHash();
   const route = hash.replace("#","") || "/";
   const [signupOpen, setSignupOpen] = useState(false);
-  const [signupSource, setSignupSource] = useState("offer0");
+  const [signupSource, setSignupSource] = useState("seeker");
 
   const openSignup = useCallback(function(source) {
-    setSignupSource(source || "offer0");
+    setSignupSource(source || "seeker");
     setSignupOpen(true);
   }, []);
 
@@ -2451,7 +2418,7 @@ function App() {
       <Footer/>
     </div>
     <Modal isOpen={signupOpen} onClose={closeSignup}>
-      <Offer0SignupForm source={signupSource} onClose={closeSignup}/>
+      <SeekerSignupForm source={signupSource} onClose={closeSignup}/>
     </Modal>
   </SignupModalContext.Provider>;
 }
