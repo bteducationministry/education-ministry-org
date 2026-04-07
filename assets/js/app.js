@@ -162,19 +162,19 @@ const steps = [
     ot:"Deut. 4:5–8", nt:"Luke 14:28–30", civic:"Literacy & Foresight",
     otQ:"Observe them carefully, for this will show your wisdom and understanding to the nations.",
     ntQ:"Suppose one of you wants to build a tower. Will he not first sit down and estimate the cost?" },
-  { key:"operator", level:"02", title:"Operator", price:"$27/mo",
+  { key:"operator", level:"02", title:"Operator", price:"$97/mo",
     tagline:"Stewardship is proven in administration.",
     desc:"Faithfulness begins with competent handling of what is already entrusted. Household systems, records, budgets, and responsibilities — administered with integrity.",
     ot:"Deut. 19:14", nt:"Luke 16:10–12", civic:"Integrity & Administration",
     otQ:"Do not move your neighbor's boundary marker set up by your predecessors.",
     ntQ:"Whoever can be trusted with very little can also be trusted with much." },
-  { key:"architect", level:"03", title:"Architect", price:"$97/mo",
+  { key:"architect", level:"03", title:"Architect", price:"$298/mo",
     tagline:"Legacy requires design, not hope.",
     desc:"A mature household structures succession, witnesses transfers, and plans for continuity. The daughters of Zelophehad made a lawful claim. Ruth's redemption was witnessed at the gate.",
     ot:"Num. 27:1–11", nt:"Gal. 4:1–2", civic:"Lawful Succession",
     otQ:"Why should our father's name disappear from his clan? Give us property among our father's relatives.",
     ntQ:"The heir is subject to guardians and trustees until the time set by his father." },
-  { key:"steward", level:"04", title:"Steward", price:"$197/mo",
+  { key:"steward", level:"04", title:"Steward", price:"$599/mo",
     tagline:"Public trust is part of spiritual maturity.",
     desc:"Stewardship is fiduciary. It includes accountability before God and credibility before people. Govern for others, not only self.",
     ot:"Ruth 4:1–12", nt:"2 Cor. 8:20–21", civic:"Public Accountability",
@@ -597,7 +597,7 @@ function Nav() {
     </div>
     <div style={{display:"flex",gap:"12px",alignItems:"center"}}>
       <button onClick={()=>openSignup("header-begin-free")} style={{background:C.purple,color:C.white,padding:"9px 20px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"13px",letterSpacing:"0.5px",borderRadius:"2px",cursor:"pointer",border:"none"}}>Begin Free →</button>
-      <button style={{background:"transparent",color:C.purple,border:`1.5px solid ${C.divider}`,padding:"9px 18px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"13px",borderRadius:"2px",cursor:"pointer"}}>Login</button>
+      <a href="https://platform.btpma.org/login" target="_blank" rel="noopener noreferrer" style={{background:"transparent",color:C.purple,border:`1.5px solid ${C.divider}`,padding:"9px 18px",fontFamily:"Inter,sans-serif",fontWeight:600,fontSize:"13px",borderRadius:"2px",cursor:"pointer",textDecoration:"none",display:"inline-block"}}>Login</a>
     </div>
   </nav>;
 }
@@ -643,7 +643,7 @@ function Footer() {
       {[
         {title:"Programs",links:[{label:"Seeker",path:"/programs"},{label:"Operator",path:"/programs"},{label:"Architect",path:"/programs"},{label:"Steward",path:"/programs"},{label:"Capstone",path:"/programs"}]},
         {title:"Resources",links:[{label:"Civic Library",path:"/civic-library"},{label:"About",path:"/about"},{label:"Membership",path:"/membership"},{label:"Donate",path:"/donate"},{label:"AEMP",path:"/programs"}]},
-        {title:"Legal",links:[{label:"Privacy Policy"},{label:"Terms"},{label:"Disclaimer"},{label:"508(c)(1)(a) Status"}]}
+        {title:"Legal",links:[{label:"Privacy Policy",path:"/privacy-policy"},{label:"Terms",path:"/terms"},{label:"Disclaimer",path:"/disclaimer"},{label:"508(c)(1)(a) Status",path:"/508c1a-status"}]}
       ].map(({title,links})=>(
         <div key={title}>
           <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:"#e8d5a0",letterSpacing:"2px",marginBottom:"16px",fontWeight:700}}>{title.toUpperCase()}</div>
@@ -817,7 +817,7 @@ function ThePath() {
         <div style={{background:C.purplePale,padding:"36px",borderLeft:`4px solid ${C.gold}`,border:`1px solid ${C.purpleLight}`}}>
           <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"2px",marginBottom:"8px",fontWeight:700}}>LEVEL {s.level}</div>
           <h3 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"34px",color:C.purple,margin:"0 0 6px"}}>{s.title}</h3>
-          <div style={{fontFamily:"Inter,sans-serif",fontSize:"14px",color:C.gold,marginBottom:"20px",fontWeight:700}}>{s.price}</div>
+          
           <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"16px",lineHeight:1.6,marginBottom:"20px"}}>"{s.tagline}"</p>
           <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"14px",lineHeight:1.8,marginBottom:"28px"}}>{s.desc}</p>
           <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:C.gold,letterSpacing:"1px",marginBottom:"6px",fontWeight:700}}>CIVIC OUTCOME</div>
@@ -884,7 +884,6 @@ function Capstone() {
       <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"16px",marginBottom:"8px",lineHeight:1.6}}>"In the case of a will, it is necessary to prove the death of the one who made it, because a will is in force only when somebody has died."</p>
       <p style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.purpleMid,letterSpacing:"2px",marginBottom:"48px",fontWeight:600}}>— HEBREWS 9:16–17 · NT TRUST ORDER</p>
       <div style={{background:C.white,border:`1px solid ${C.goldBorder}`,padding:"48px",marginBottom:"40px",boxShadow:"0 4px 24px rgba(45,27,78,0.08)"}}>
-        <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(36px,6vw,64px)",color:C.purple,fontWeight:700,marginBottom:"8px"}}>$55,000</div>
         <div style={{fontFamily:"Inter,sans-serif",fontSize:"13px",color:C.textLight,letterSpacing:"2px",marginBottom:"32px"}}>ESTATE TRUST DIRECTIVE · QUALIFICATION REQUIRED</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"16px",marginBottom:"32px",textAlign:"left"}}>
           {[{ref:"Lev. 25:23–28",label:"Land & Redemption Order"},{ref:"Num. 36:1–12",label:"Inheritance Preservation"},{ref:"1 Cor. 4:1–2",label:"Faithful Administration"}].map(({ref,label})=>(
@@ -1201,7 +1200,7 @@ function ProgramsPage() {
             </thead>
             <tbody>
               {[
-                {feature:"Price",civic:"Free",aemp:"$27 – $197/mo"},
+                {feature:"Price",civic:"Free",aemp:"$97 – $599/mo"},
                 {feature:"Civic Literacy Modules",civic:"✓",aemp:"✓"},
                 {feature:"Scripture Integration",civic:"✓",aemp:"✓"},
                 {feature:"Gamified Challenges",civic:"✓",aemp:"—"},
@@ -1236,7 +1235,7 @@ function ProgramsPage() {
             <div key={i} onClick={()=>setActiveStep(i)} style={{background:activeStep===i?C.purple:C.white,padding:"28px",cursor:"pointer",boxShadow:"0 2px 12px rgba(45,27,78,0.06)",borderTop:`3px solid ${activeStep===i?C.goldBright:C.gold}`,transition:"all 0.2s"}}>
               <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"32px",color:activeStep===i?"#e8d5a0":C.goldBorder,fontWeight:700,marginBottom:"12px"}}>{s.level}</div>
               <h3 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"20px",color:activeStep===i?C.white:C.purple,margin:"0 0 6px"}}>{s.title}</h3>
-              <div style={{fontFamily:"Inter,sans-serif",fontSize:"13px",color:activeStep===i?"#e8d5a0":C.gold,fontWeight:700,marginBottom:"12px"}}>{s.price}</div>
+              
               <p style={{fontFamily:"Inter,sans-serif",color:activeStep===i?"#d8d0e8":C.textMid,fontSize:"13px",lineHeight:1.6,margin:0}}>{s.civic}</p>
             </div>
           ))}
@@ -1295,7 +1294,6 @@ function ProgramsPage() {
             </div>
           ))}
         </div>
-        <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"48px",color:C.purple,fontWeight:700,marginBottom:"8px"}}>$55,000</div>
         <div style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.textLight,letterSpacing:"2px",marginBottom:"28px"}}>QUALIFICATION REQUIRED</div>
         <button onClick={()=>setCapstoneModalOpen(true)} style={{...S.btnPrimary,padding:"18px 48px",fontSize:"16px"}}>Apply for Capstone Engagement →</button>
       </div>
@@ -1465,7 +1463,7 @@ const membershipTiers = [
     ],
   },
   {
-    key: "operator", level: "02", title: "Operator", price: "$47", period: "/month",
+    key: "operator", level: "02", title: "Operator", price: "$97", period: "/month",
     tagline: "Execute with competence. Administer with integrity.",
     iconName: "gear",
     popular: true, premium: false,
@@ -1481,7 +1479,7 @@ const membershipTiers = [
     ],
   },
   {
-    key: "architect", level: "03", title: "Architect", price: "$147", period: "/month",
+    key: "architect", level: "03", title: "Architect", price: "$298", period: "/month",
     tagline: "Design legacy structures that outlast you.",
     iconName: "penTool",
     popular: false, premium: false,
@@ -1497,7 +1495,7 @@ const membershipTiers = [
     ],
   },
   {
-    key: "steward", level: "04", title: "Steward", price: "$497", period: "/month",
+    key: "steward", level: "04", title: "Steward", price: "$599", period: "/month",
     tagline: "Govern for others. Steward with public accountability.",
     iconName: "landmark",
     popular: false, premium: true,
@@ -1516,7 +1514,7 @@ const membershipTiers = [
 ];
 
 const capstoneTier = {
-  key: "capstone", title: "Capstone", price: "$55,000", period: "one-time",
+  key: "capstone", title: "Capstone", price: "By Qualification", period: "",
   tagline: "The ultimate expression of ordered love — lawful transfer, protected inheritance, and intentional blessing across generations.",
   iconName: "crown",
   benefits: [
@@ -1557,7 +1555,7 @@ const membershipFAQ = [
   { q: "Can I start for free?", a: "Yes. The Seeker tier is completely free and gives you access to the Young Civic Engagement Challenge and foundational civic education resources. No credit card required." },
   { q: "How does the progression system work?", a: "Our membership follows a structured progression: Seeker → Operator → Architect → Steward → Capstone. Each level builds on the previous, moving you from learning to applying to building to governing. You advance when you're ready." },
   { q: "Can I upgrade or downgrade at any time?", a: "Yes. You can upgrade your membership tier at any time. When you upgrade, you immediately gain access to all benefits of the new tier. You can also downgrade at the end of any billing cycle." },
-  { q: "What is the Capstone tier?", a: "The Capstone ($55,000) is not a subscription — it's a one-time engagement for qualified members seeking comprehensive Estate Trust Directive services. It includes full estate trust design, fiduciary structuring, and custom governance architecture. Qualification is required." },
+  { q: "What is the Capstone tier?", a: "The Capstone is not a subscription — it's a private engagement for qualified members seeking comprehensive Estate Trust Directive services. It includes full estate trust design, fiduciary structuring, and custom governance architecture. Qualification is required." },
   { q: "Is this a religious organization?", a: "BT Education Ministry is a 508(c)(1)(a) faith-based nonprofit. Our education is grounded in scriptural principles of governance, stewardship, and civic virtue, applied practically to real-life civic and financial literacy." },
   { q: "Are payments tax-deductible?", a: "As a 508(c)(1)(a) organization, contributions and membership payments may be tax-deductible. Consult your tax advisor for guidance specific to your situation." },
   { q: "How do I qualify for Capstone?", a: "Capstone eligibility is available to Steward-level members who demonstrate readiness for comprehensive estate trust planning. An application and qualification review process is required." },
@@ -1912,9 +1910,9 @@ function CapstoneApplicationForm({ onClose }) {
  * 2. Create a backend endpoint to generate Stripe Checkout sessions
  * 3. Wire the StripeCheckout component to redirect to Stripe Checkout
  * 4. Subscription price IDs needed:
- *    - Operator: $27/mo  → price_operator_monthly
- *    - Architect: $97/mo → price_architect_monthly
- *    - Steward: $197/mo  → price_steward_monthly
+ *    - Operator: $97/mo  → price_operator_monthly
+ *    - Architect: $298/mo → price_architect_monthly
+ *    - Steward: $599/mo  → price_steward_monthly
  * 5. For donations, use Stripe Payment Links or custom Checkout sessions
  */
 var STRIPE_PUBLISHABLE_KEY = ""; // TODO: Add your Stripe publishable key
@@ -2272,17 +2270,17 @@ function DonatePage() {
         <h2 style={S.h2}>What Your Gift Accomplishes</h2>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px",marginTop:"32px"}}>
           {donationLevels.map((level,i)=>(
-            <div key={i} style={{background:C.white,padding:"28px",display:"flex",gap:"20px",alignItems:"center",boxShadow:"0 2px 12px rgba(45,27,78,0.06)",borderLeft:`4px solid ${C.gold}`}}>
-              <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"32px",color:C.purple,fontWeight:700,minWidth:"70px"}}>${level.amount}</div>
-              <div>
+            <div key={i} style={{background:C.white,padding:"28px",display:"flex",gap:"20px",alignItems:"flex-start",boxShadow:"0 2px 12px rgba(45,27,78,0.06)",borderLeft:`4px solid ${C.gold}`}}>
+              <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"32px",color:C.purple,fontWeight:700,minWidth:"90px",flexShrink:0}}>${level.amount}</div>
+              <div style={{flex:1,minWidth:0}}>
                 <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"16px",color:C.purple,fontWeight:700,marginBottom:"4px"}}>{level.label}</div>
                 <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"13px",lineHeight:1.6,margin:0}}>{level.desc}</p>
               </div>
             </div>
           ))}
-          <div style={{background:C.purplePale,padding:"28px",display:"flex",gap:"20px",alignItems:"center",border:`1px solid ${C.purpleLight}`,borderLeft:`4px solid ${C.purpleMid}`}}>
-            <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"28px",color:C.purple,fontWeight:700,minWidth:"70px"}}>Custom</div>
-            <div>
+          <div style={{background:C.purplePale,padding:"28px",display:"flex",gap:"20px",alignItems:"flex-start",border:`1px solid ${C.purpleLight}`,borderLeft:`4px solid ${C.purpleMid}`}}>
+            <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"28px",color:C.purple,fontWeight:700,minWidth:"90px",flexShrink:0}}>Custom</div>
+            <div style={{flex:1,minWidth:0}}>
               <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"16px",color:C.purple,fontWeight:700,marginBottom:"4px"}}>Your Choice</div>
               <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"13px",lineHeight:1.6,margin:0}}>Every gift — large or small — furthers our mission of civic education</p>
             </div>
@@ -2472,6 +2470,77 @@ function DonatePage() {
 
 
 /* ═══════ ROUTER + APP ═══════ */
+/* ═══════ LEGAL PAGES ═══════ */
+
+function LegalPage({ title, children }) {
+  return <div style={{background:C.bg,padding:"80px 48px",minHeight:"60vh"}}>
+    <div style={{maxWidth:"760px",margin:"0 auto"}}>
+      <div style={S.label}>LEGAL</div>
+      <h1 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,44px)",color:C.purple,margin:"0 0 24px",lineHeight:1.2}}>{title}</h1>
+      <div style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"15px",lineHeight:1.9}}>{children}</div>
+    </div>
+  </div>;
+}
+
+function PrivacyPolicyPage() {
+  return <LegalPage title="Privacy Policy">
+    <p style={{marginBottom:"20px"}}><strong>Effective Date:</strong> January 1, 2025</p>
+    <p style={{marginBottom:"20px"}}>BT Education Ministry ("we," "us," or "our") respects your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website educationministry.org.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>Information We Collect</h3>
+    <p style={{marginBottom:"20px"}}>We may collect personal information that you voluntarily provide to us when you register on the website, express interest in our programs, or otherwise contact us. This includes name, email address, and other contact details you provide through our signup forms.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>How We Use Your Information</h3>
+    <p style={{marginBottom:"20px"}}>We use the information we collect to provide, maintain, and improve our educational services; to communicate with you about programs, updates, and resources; and to comply with legal obligations.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>Data Security</h3>
+    <p style={{marginBottom:"20px"}}>We implement appropriate technical and organizational measures to protect your personal information. However, no electronic transmission over the Internet can be guaranteed to be 100% secure.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>Contact Us</h3>
+    <p>If you have questions about this Privacy Policy, please contact us at educationministry.org.</p>
+  </LegalPage>;
+}
+
+function TermsPage() {
+  return <LegalPage title="Terms & Conditions">
+    <p style={{marginBottom:"20px"}}><strong>Effective Date:</strong> January 1, 2025</p>
+    <p style={{marginBottom:"20px"}}>By accessing and using the BT Education Ministry website and services, you agree to be bound by these Terms & Conditions.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>Use of Services</h3>
+    <p style={{marginBottom:"20px"}}>Our programs and content are provided for educational and ministerial purposes only. You agree to use our services in accordance with all applicable laws and regulations.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>Intellectual Property</h3>
+    <p style={{marginBottom:"20px"}}>All content, materials, and resources provided through our programs are the intellectual property of BT Education Ministry. You may not reproduce, distribute, or create derivative works without our express written permission.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>Limitation of Liability</h3>
+    <p style={{marginBottom:"20px"}}>BT Education Ministry provides educational content and is not a substitute for professional legal, financial, or tax advice. We shall not be liable for any decisions made based on the information provided through our programs.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>Modifications</h3>
+    <p>We reserve the right to modify these Terms at any time. Continued use of our services constitutes acceptance of updated Terms.</p>
+  </LegalPage>;
+}
+
+function DisclaimerPage() {
+  return <LegalPage title="Disclaimer">
+    <p style={{marginBottom:"20px"}}><strong>Important Notice:</strong> The information provided by BT Education Ministry is for general educational and ministerial purposes only.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>Not Legal Advice</h3>
+    <p style={{marginBottom:"20px"}}>Nothing on this website or in our programs constitutes legal, tax, financial, or professional advice. The educational content regarding estate planning, trust structures, civic governance, and related topics is presented for informational and ministerial purposes only.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>Consult Qualified Professionals</h3>
+    <p style={{marginBottom:"20px"}}>You should consult with qualified legal counsel, tax advisors, and financial professionals before making any decisions related to estate planning, trust formation, or civic governance structures.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>No Warranties</h3>
+    <p style={{marginBottom:"20px"}}>We make no representations or warranties of any kind, express or implied, regarding the completeness, accuracy, reliability, or suitability of the information provided.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>Faith-Based Context</h3>
+    <p>Our educational content is grounded in scriptural principles and presented within a faith-based ministerial context. Interpretations and applications are educational in nature.</p>
+  </LegalPage>;
+}
+
+function Status508c1aPage() {
+  return <LegalPage title="508(c)(1)(a) Status">
+    <p style={{marginBottom:"20px"}}>BT Education Ministry operates as a 508(c)(1)(a) faith-based organization under the Internal Revenue Code.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>What Is a 508(c)(1)(a) Organization?</h3>
+    <p style={{marginBottom:"20px"}}>A 508(c)(1)(a) organization is a church or convention or association of churches that is mandatorily excepted from taxation under federal law. Unlike 501(c)(3) organizations, a 508(c)(1)(a) entity is not required to apply for tax-exempt status with the IRS — its authority comes from statute, not from the agency.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>Key Distinctions</h3>
+    <p style={{marginBottom:"12px"}}>• <strong>No IRS determination letter required</strong> — Recognition comes from statutory mandate, not IRS approval.</p>
+    <p style={{marginBottom:"12px"}}>• <strong>No Form 990 filing obligation</strong> — 508(c)(1)(a) organizations are exempt from annual reporting requirements.</p>
+    <p style={{marginBottom:"12px"}}>• <strong>Donor contributions may be tax-deductible</strong> — Consult your tax advisor for guidance specific to your situation.</p>
+    <p style={{marginBottom:"20px"}}>• <strong>Constitutional protections</strong> — First Amendment protections apply to the organization's ministerial activities.</p>
+    <h3 style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,margin:"28px 0 12px"}}>Our Mission</h3>
+    <p>As a 508(c)(1)(a) faith-based nonprofit, BT Education Ministry is dedicated to providing faith-grounded civic education for needy and low-income families, with a focus on civic virtue, stewardship, and generational inheritance.</p>
+  </LegalPage>;
+}
+
 function App() {
   const hash = useHash();
   const route = hash.replace("#","") || "/";
@@ -2496,6 +2565,10 @@ function App() {
     case "/civic-library": Page = CivicLibraryPage; break;
     case "/membership": Page = MembershipPage; break;
     case "/donate": Page = DonatePage; break;
+    case "/privacy-policy": Page = PrivacyPolicyPage; break;
+    case "/terms": Page = TermsPage; break;
+    case "/disclaimer": Page = DisclaimerPage; break;
+    case "/508c1a-status": Page = Status508c1aPage; break;
     default: Page = HomePage;
   }
 

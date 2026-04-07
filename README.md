@@ -102,9 +102,9 @@ In Stripe Dashboard, create:
 
 | Product | Price ID | Amount |
 |---------|----------|--------|
-| Operator Membership | `price_operator_monthly` | $27/mo |
-| Architect Membership | `price_architect_monthly` | $97/mo |
-| Steward Membership | `price_steward_monthly` | $197/mo |
+| Operator Membership | `price_operator_monthly` | $97/mo |
+| Architect Membership | `price_architect_monthly` | $298/mo |
+| Steward Membership | `price_steward_monthly` | $599/mo |
 
 ### 5. Donations
 For the Donate page, options include:
@@ -121,7 +121,7 @@ Set up a webhook endpoint to handle:
 
 ## Capstone Application
 
-The Capstone Application Form is a multi-step form (3 steps: Personal Info → Estate Details → Goals) for the $55,000 Estate Trust Directive service. On submission it:
+The Capstone Application Form is a multi-step form (3 steps: Personal Info → Estate Details → Goals) for the Estate Trust Directive service. On submission it:
 
 1. **POSTs to `/signup`** — Sends full application data for email notification
 2. **POSTs to `/measure`** — Sends event payload to AEMP tracking API
