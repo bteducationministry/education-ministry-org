@@ -63,6 +63,97 @@ const S = {
   breadcrumb: { fontFamily:"Inter,sans-serif", fontSize:"12px", color:C.textLight, marginBottom:"24px" },
 };
 
+
+/* ───── Professional SVG Icons ───── */
+function SvgIcon({path, size, color, viewBox}) {
+  size = size || 24; color = color || C.purple; viewBox = viewBox || "0 0 24 24";
+  return React.createElement("svg", {width:size, height:size, viewBox:viewBox, fill:"none", stroke:color, strokeWidth:"1.8", strokeLinecap:"round", strokeLinejoin:"round", style:{flexShrink:0}},
+    typeof path === "string"
+      ? React.createElement("path", {d:path})
+      : path
+  );
+}
+
+/* Filled variant for some icons */
+function SvgIconFilled({path, size, color, viewBox}) {
+  size = size || 24; color = color || C.purple; viewBox = viewBox || "0 0 24 24";
+  return React.createElement("svg", {width:size, height:size, viewBox:viewBox, fill:color, stroke:"none", style:{flexShrink:0}},
+    typeof path === "string"
+      ? React.createElement("path", {d:path})
+      : path
+  );
+}
+
+const IconPaths = {
+  // Scale/Justice (Civic Literacy)
+  scale: "M12 3v18M4 7l8-4 8 4M4 7v3a8 8 0 004 6.93M20 7v3a8 8 0 01-4 6.93",
+  // Building/Landmark (Financial Structure, Governance)
+  landmark: "M3 21h18M3 10h18M12 3l9 7H3l9-7zM5 10v8M9 10v8M15 10v8M19 10v8",
+  // Scroll/Document (Legal)
+  scroll: "M8 21h12a2 2 0 002-2V5a2 2 0 00-2-2H8M8 21a2 2 0 01-2-2V5a2 2 0 012-2M8 21V3M12 8h4M12 12h4M12 16h2",
+  // Leaf (Stewardship/Growth)
+  leaf: "M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 008 20c5 0 9.27-3.11 11-8 0 0-2.56 2-5 2a4 4 0 01-4-4c0-2 .5-3 2-5M12 2c0 0 5 2 5 10",
+  // Shield
+  shield: "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z",
+  // Users/Family
+  users: "M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75",
+  // BookOpen
+  bookOpen: "M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2V3zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7V3z",
+  // GraduationCap
+  graduationCap: "M22 10l-10-5L2 10l10 5 10-5zM6 12v5c0 0 2.5 3 6 3s6-3 6-3v-5",
+  // FileText (Document/Clipboard)
+  fileText: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8",
+  // Home
+  home: "M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z",
+  // Heart
+  heart: "M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z",
+  // Target/Award
+  award: "M12 15a7 7 0 100-14 7 7 0 000 14zM8.21 13.89L7 23l5-3 5 3-1.21-9.12",
+  // TrendingUp
+  trendingUp: "M23 6l-9.5 9.5-5-5L1 18",
+  // Compass (navigation/direction)
+  compass: "M12 22a10 10 0 100-20 10 10 0 000 20zM16.24 7.76l-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z",
+  // Wrench/Gear (Operator)
+  gear: "M12 15a3 3 0 100-6 3 3 0 000 6zM19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z",
+  // Drafting Compass / Architect
+  penTool: "M12 19l7-7 3 3-7 7-3-3zM18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5zM2 2l7.586 7.586M11 13a2 2 0 100-4 2 2 0 000 4z",
+  // Crown (Capstone)
+  crown: "M2 20h20L19 8l-5 5-2-7-2 7-5-5-3 12z",
+  // Lock
+  lock: "M19 11H5a2 2 0 00-2 2v7a2 2 0 002 2h14a2 2 0 002-2v-7a2 2 0 00-2-2zM7 11V7a5 5 0 0110 0v4",
+  // Construction/Hammer (First-Gen Builder)
+  hammer: "M15 12l-8.5 8.5a2.12 2.12 0 01-3-3L12 9M17.64 15L22 10.64M20.91 11.73l-1.25-1.25c-.6-.6-.93-1.4-.93-2.25V6.5a.5.5 0 00-.5-.5H16.5a3.17 3.17 0 01-2.24-.93L13 3.82",
+  // HardHat / Worker
+  hardHat: "M2 18a1 1 0 001 1h18a1 1 0 001-1v-2a8 8 0 00-16 0v0M12 2v8M2 18h20M4 16v-2a8 8 0 0116 0v2",
+  // Community/Houses
+  community: "M3 21h6v-7H3v7zM9 21h6V10H9v11zM15 21h6v-9h-6v9zM3 14l6-4M9 10l6-7M15 12l6-3",
+  // Seedling
+  seedling: "M7 20h10M12 20v-8M12 12C12 12 8 10 8 6c0-2 2-4 4-4s4 2 4 4c0 4-4 6-4 6z",
+  // Clipboard/Checklist
+  clipboard: "M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2M9 2h6a1 1 0 011 1v1a1 1 0 01-1 1H9a1 1 0 01-1-1V3a1 1 0 011-1zM9 14l2 2 4-4",
+  // Cross / Medical
+  medical: "M12 2v20M17 7H7v10h10V7z",
+  // Handshake (Charitable)
+  handshake: "M20.42 4.58a5.4 5.4 0 00-7.65 0l-.77.78-.77-.78a5.4 5.4 0 00-7.65 7.65l.78.77L12 20.64l7.64-7.64.78-.77a5.4 5.4 0 000-7.65z",
+  // AlertTriangle
+  alertTriangle: "M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01",
+  // Star (Bronze/Silver/Gold/Platinum)
+  star: "M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.27 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z",
+  // Diamond
+  diamond: "M6 3h12l4 6-10 13L2 9l4-6zM12 22V9M2 9h20",
+  // CreditCard
+  creditCard: "M1 4h22v16H1V4zM1 10h22",
+  // Check circle
+  checkCircle: "M22 11.08V12a10 10 0 11-5.93-9.14M22 4L12 14.01l-3-3",
+};
+
+/* Icon render helper - returns React SVG element */
+function Icon(name, size, color) {
+  size = size || 24; color = color || C.purple;
+  return SvgIcon({path: IconPaths[name], size: size, color: color});
+}
+
+
 /* ───── Data ───── */
 const steps = [
   { key:"seeker", level:"01", title:"Seeker", price:"Free",
@@ -92,17 +183,17 @@ const steps = [
 ];
 
 const personas = [
-  { label:"Overtime Worker", icon:"👷",
+  { label:"Overtime Worker", iconName:"hardHat",
     has:["Consistent income","Strong work ethic","Family responsibility"],
     lacks:["Legal map for assets","Succession plan","Civic framework"],
     ot:"1 Tim. 5:8", nt:"Titus 3:14",
     quote:"He provides. But provision without structure leaves the next generation exposed." },
-  { label:"Dual Income Family", icon:"👨\u200d👩\u200d👧",
+  { label:"Dual Income Family", iconName:"users",
     has:["Two incomes","High responsibility","Community presence"],
     lacks:["Transfer planning","Entity protection","Governance design"],
     ot:"Num. 36:1–12", nt:"Luke 16:10–12",
     quote:"They built together. But without order, what they built cannot be passed on intact." },
-  { label:"First-Gen Builder", icon:"🏗️",
+  { label:"First-Gen Builder", iconName:"hammer",
     has:["Asset growth","Entrepreneurial drive","Vision for legacy"],
     lacks:["Protection architecture","Legal literacy","Succession structure"],
     ot:"Ruth 4:1–12", nt:"Gal. 4:1–2",
@@ -110,19 +201,19 @@ const personas = [
 ];
 
 const pillars = [
-  { icon:"⚖️", title:"Civic Literacy", ot:"Deut. 4:5–8", nt:"Luke 14:28–30",
+  { iconName:"scale", title:"Civic Literacy", ot:"Deut. 4:5–8", nt:"Luke 14:28–30",
     quote:"Statutes and judgments as public wisdom before the nations.",
     body:"Understand how law, governance, and civic institutions function — not as abstract theory, but as the operating system of ordered community life.",
     modules:["Constitutional foundations","Local governance structures","Civic rights and duties","Public accountability systems"] },
-  { icon:"🏛️", title:"Financial Structure", ot:"Deut. 19:14", nt:"Luke 16:10–12",
+  { iconName:"landmark", title:"Financial Structure", ot:"Deut. 19:14", nt:"Luke 16:10–12",
     quote:"Do not move your neighbor's boundary marker.",
     body:"Boundaries are not metaphors. They are legal instruments. Learn to establish, protect, and transfer financial order across generations.",
     modules:["Household budgeting systems","Asset protection basics","Entity structures","Intergenerational transfer planning"] },
-  { icon:"📜", title:"Legal Foundations", ot:"Num. 27:1–11 · Ruth 4:1–12", nt:"Gal. 4:1–2",
+  { iconName:"scroll", title:"Legal Foundations", ot:"Num. 27:1–11 · Ruth 4:1–12", nt:"Gal. 4:1–2",
     quote:"Inheritance was ordered, witnessed, and law-shaped.",
     body:"The daughters of Zelophehad did not petition emotionally. They made a lawful claim. Ruth's redemption was witnessed at the gate. Legal literacy is biblical literacy.",
     modules:["Inheritance law basics","Trust instruments overview","Estate planning fundamentals","Witness and documentation standards"] },
-  { icon:"🌿", title:"Governance & Stewardship", ot:"Lev. 25:23–28", nt:"1 Cor. 4:1–2 · 2 Cor. 8:20–21",
+  { iconName:"leaf", title:"Governance & Stewardship", ot:"Lev. 25:23–28", nt:"1 Cor. 4:1–2 · 2 Cor. 8:20–21",
     quote:"Stewards must be found faithful — before God and before men.",
     body:"Governance is not management. It is accountable administration of what has been entrusted. Public integrity is part of spiritual maturity.",
     modules:["Family governance frameworks","Fiduciary responsibility","Charitable alignment","Legacy and succession design"] },
@@ -638,7 +729,7 @@ function RealLives() {
       <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.textMid,fontSize:"17px",marginBottom:"40px"}}>"Anyone who does not provide for their own household has denied the faith." — 1 Tim. 5:8</p>
       <div style={{display:"flex",gap:"12px",marginBottom:"32px",flexWrap:"wrap"}}>
         {personas.map((per,i)=>(
-          <button key={i} onClick={()=>setActive(i)} style={{background:active===i?C.purple:"transparent",color:active===i?C.white:C.purple,border:`1.5px solid ${C.purple}`,padding:"10px 20px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"13px",borderRadius:"2px",cursor:"pointer"}}>{per.icon} {per.label}</button>
+          <button key={i} onClick={()=>setActive(i)} style={{background:active===i?C.purple:"transparent",color:active===i?C.white:C.purple,border:`1.5px solid ${C.purple}`,padding:"10px 20px",fontFamily:"Inter,sans-serif",fontWeight:700,fontSize:"13px",borderRadius:"2px",cursor:"pointer"}}>{Icon(per.iconName, 16, active===i?C.white:C.purple)} {per.label}</button>
         ))}
       </div>
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px"}}>
@@ -654,7 +745,7 @@ function RealLives() {
         </div>
         <div style={{background:C.purplePale,padding:"36px",display:"flex",flexDirection:"column",justifyContent:"space-between",border:`1px solid ${C.purpleLight}`}}>
           <div>
-            <div style={{fontSize:"52px",marginBottom:"16px"}}>{p.icon}</div>
+            <div style={{marginBottom:"16px"}}>{Icon(p.iconName, 52, C.purple)}</div>
             <p style={{fontFamily:"Playfair Display,Georgia,serif",fontStyle:"italic",color:C.purple,fontSize:"19px",lineHeight:1.7,marginBottom:"32px"}}>"{p.quote}"</p>
           </div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"12px"}}>
@@ -763,7 +854,7 @@ function CompetencyPillars() {
       <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"16px"}}>
         {pillars.map((p,i)=>(
           <div key={i} onClick={()=>setActive(active===i?null:i)} style={{background:active===i?C.purple:C.white,padding:"28px",cursor:"pointer",borderLeft:`4px solid ${active===i?C.goldBright:C.gold}`,transition:"all 0.2s",boxShadow:"0 2px 12px rgba(45,27,78,0.07)"}}>
-            <div style={{fontSize:"28px",marginBottom:"12px"}}>{p.icon}</div>
+            <div style={{marginBottom:"12px"}}>{Icon(p.iconName, 28, active===i?C.goldBright:C.gold)}</div>
             <h3 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"20px",color:active===i?C.white:C.purple,margin:"0 0 8px"}}>{p.title}</h3>
             <div style={{display:"flex",gap:"12px",marginBottom:"12px",flexWrap:"wrap"}}>
               <span style={{fontFamily:"Inter,sans-serif",fontSize:"10px",color:active===i?"#e8d5a0":C.gold,letterSpacing:"1px",fontWeight:700}}>{p.ot}</span>
@@ -859,13 +950,13 @@ function AboutPage() {
         <p style={{...S.body,marginBottom:"32px"}}>A 508(c)(1)(a) organization is a faith-based nonprofit recognized under federal law. Unlike 501(c)(3) organizations, a 508(c)(1)(a) entity is not required to apply for tax-exempt status — it is mandatorily excepted from taxation by statute.</p>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px"}}>
           {[
-            {title:"Statutory Exception",icon:"📋",desc:"Tax-exempt by law — not by application. This means we operate under inherent religious and educational authority."},
-            {title:"No IRS Filing Required",icon:"🏛️",desc:"Unlike 501(c)(3)s, 508(c)(1)(a) organizations do not need IRS determination letters. Our authority comes from statute, not from the agency."},
-            {title:"First Amendment Protected",icon:"⚖️",desc:"Our mission is grounded in religious and educational liberty — protected by the First Amendment and codified in federal tax law."},
-            {title:"Charitable Purpose",icon:"🤝",desc:"We exist exclusively to provide ministry, education, and charitable services to needy and low-income families."},
+            {title:"Statutory Exception",iconName:"clipboard",desc:"Tax-exempt by law — not by application. This means we operate under inherent religious and educational authority."},
+            {title:"No IRS Filing Required",iconName:"landmark",desc:"Unlike 501(c)(3)s, 508(c)(1)(a) organizations do not need IRS determination letters. Our authority comes from statute, not from the agency."},
+            {title:"First Amendment Protected",iconName:"scale",desc:"Our mission is grounded in religious and educational liberty — protected by the First Amendment and codified in federal tax law."},
+            {title:"Charitable Purpose",iconName:"heart",desc:"We exist exclusively to provide ministry, education, and charitable services to needy and low-income families."},
           ].map(item=>(
             <div key={item.title} style={{...S.card,borderTop:`3px solid ${C.gold}`}}>
-              <div style={{fontSize:"28px",marginBottom:"12px"}}>{item.icon}</div>
+              <div style={{marginBottom:"12px"}}>{Icon(item.iconName, 28, C.gold)}</div>
               <h3 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"18px",color:C.purple,margin:"0 0 10px"}}>{item.title}</h3>
               <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"14px",lineHeight:1.7,margin:0}}>{item.desc}</p>
             </div>
@@ -922,13 +1013,13 @@ function AboutPage() {
         <h2 style={S.h2}>Families Seeking Clarity and Direction</h2>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"20px",marginTop:"32px"}}>
           {[
-            {icon:"👨‍👩‍👧‍👦",title:"Families in Need",desc:"Low-income and underserved families seeking structured education, civic knowledge, and practical tools for building stability."},
-            {icon:"📚",title:"Individuals Seeking Foundation",desc:"People who want foundational education in civic literacy, financial structure, and governance — grounded in faith-based principles."},
-            {icon:"🏘️",title:"Communities Underserved",desc:"Communities where financial and civic literacy are lacking — where people work hard but build without durable structure."},
-            {icon:"🌱",title:"Faith-Aligned Seekers",desc:"Those looking for guidance and structure rooted in scripture — not sentiment, but ordered principle applied to real life."},
+            {iconName:"users",title:"Families in Need",desc:"Low-income and underserved families seeking structured education, civic knowledge, and practical tools for building stability."},
+            {iconName:"bookOpen",title:"Individuals Seeking Foundation",desc:"People who want foundational education in civic literacy, financial structure, and governance — grounded in faith-based principles."},
+            {iconName:"community",title:"Communities Underserved",desc:"Communities where financial and civic literacy are lacking — where people work hard but build without durable structure."},
+            {iconName:"seedling",title:"Faith-Aligned Seekers",desc:"Those looking for guidance and structure rooted in scripture — not sentiment, but ordered principle applied to real life."},
           ].map(item=>(
             <div key={item.title} style={{...S.card,borderTop:`3px solid ${C.purpleMid}`}}>
-              <div style={{fontSize:"32px",marginBottom:"12px"}}>{item.icon}</div>
+              <div style={{marginBottom:"12px"}}>{Icon(item.iconName, 32, C.purpleMid)}</div>
               <h3 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"18px",color:C.purple,margin:"0 0 10px"}}>{item.title}</h3>
               <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"14px",lineHeight:1.7,margin:0}}>{item.desc}</p>
             </div>
@@ -1191,15 +1282,15 @@ function ProgramsPage() {
         <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"16px",lineHeight:1.8,maxWidth:"600px",margin:"0 auto 32px"}}>The capstone private engagement for qualified members seeking full life-cycle estate trust planning, fiduciary structuring, treasury alignment, beneficiary design, healthcare directives, and custom governance architecture.</p>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:"16px",marginBottom:"32px",textAlign:"left"}}>
           {[
-            {icon:"📋",label:"Full estate trust design"},
-            {icon:"⚖️",label:"Fiduciary structuring"},
-            {icon:"🏛️",label:"Treasury alignment"},
-            {icon:"👨‍👩‍👧‍👦",label:"Beneficiary planning"},
-            {icon:"🏥",label:"Healthcare directives"},
-            {icon:"🌿",label:"Custom governance architecture"},
+            {iconName:"fileText",label:"Full estate trust design"},
+            {iconName:"scale",label:"Fiduciary structuring"},
+            {iconName:"landmark",label:"Treasury alignment"},
+            {iconName:"users",label:"Beneficiary planning"},
+            {iconName:"medical",label:"Healthcare directives"},
+            {iconName:"leaf",label:"Custom governance architecture"},
           ].map(item=>(
             <div key={item.label} style={{background:C.white,padding:"20px",display:"flex",gap:"12px",alignItems:"center",boxShadow:"0 1px 6px rgba(45,27,78,0.06)"}}>
-              <span style={{fontSize:"20px"}}>{item.icon}</span>
+              <span>{Icon(item.iconName, 20, C.gold)}</span>
               <span style={{fontFamily:"Inter,sans-serif",color:C.text,fontSize:"13px",fontWeight:600}}>{item.label}</span>
             </div>
           ))}
@@ -1271,7 +1362,7 @@ function CivicLibraryPage() {
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr 1fr",gap:"16px",marginTop:"32px"}}>
           {pillars.map((p,i)=>(
             <div key={i} onClick={()=>setActiveFilter(p.title==="Governance & Stewardship"?"Civic Education":p.title==="Legal Foundations"?"Financial Literacy":p.title)} style={{background:C.white,padding:"28px",cursor:"pointer",boxShadow:"0 2px 12px rgba(45,27,78,0.06)",borderTop:`3px solid ${C.gold}`,transition:"all 0.2s",textAlign:"center"}}>
-              <div style={{fontSize:"36px",marginBottom:"12px"}}>{p.icon}</div>
+              <div style={{marginBottom:"12px"}}>{Icon(p.iconName, 36, C.gold)}</div>
               <h3 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"16px",color:C.purple,margin:"0 0 8px"}}>{p.title}</h3>
               <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"12px",lineHeight:1.6,margin:0}}>{p.quote}</p>
             </div>
@@ -1323,7 +1414,7 @@ function CivicLibraryPage() {
         </div>
 
         {filtered.length === 0 && <div style={{textAlign:"center",padding:"60px 0"}}>
-          <div style={{fontSize:"48px",marginBottom:"16px"}}>📚</div>
+          <div style={{marginBottom:"16px"}}>{Icon("bookOpen", 48, C.textLight)}</div>
           <p style={{fontFamily:"Inter,sans-serif",color:C.textLight,fontSize:"16px"}}>No resources match your search. Try a different term or filter.</p>
         </div>}
       </div>
@@ -1332,7 +1423,7 @@ function CivicLibraryPage() {
     {/* Locked Content */}
     <div style={S.sectionAlt}>
       <div style={{maxWidth:"700px",margin:"0 auto",textAlign:"center"}}>
-        <div style={{fontSize:"48px",marginBottom:"20px"}}>🔒</div>
+        <div style={{marginBottom:"20px"}}>{Icon("lock", 48, C.purple)}</div>
         <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(24px,3vw,36px)",color:C.purple,margin:"0 0 16px"}}>Access the Full Knowledge Vault</h2>
         <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"16px",lineHeight:1.8,marginBottom:"32px"}}>The Civic Library provides a limited selection of resources. Full access is available through our private learning platform — with advanced tools, structured learning paths, and guided implementation.</p>
         <div style={{display:"flex",gap:"16px",justifyContent:"center",flexWrap:"wrap"}}>
@@ -1362,7 +1453,7 @@ const membershipTiers = [
   {
     key: "seeker", level: "01", title: "Seeker", price: "Free", period: "",
     tagline: "Begin your journey with foundational civic education.",
-    icon: "🌱",
+    iconName: "seedling",
     popular: false, premium: false,
     benefits: [
       "Access to Young Civic Engagement Challenge",
@@ -1376,7 +1467,7 @@ const membershipTiers = [
   {
     key: "operator", level: "02", title: "Operator", price: "$47", period: "/month",
     tagline: "Execute with competence. Administer with integrity.",
-    icon: "⚙️",
+    iconName: "gear",
     popular: true, premium: false,
     benefits: [
       "Everything in Seeker, plus:",
@@ -1392,7 +1483,7 @@ const membershipTiers = [
   {
     key: "architect", level: "03", title: "Architect", price: "$147", period: "/month",
     tagline: "Design legacy structures that outlast you.",
-    icon: "📐",
+    iconName: "penTool",
     popular: false, premium: false,
     benefits: [
       "Everything in Operator, plus:",
@@ -1408,7 +1499,7 @@ const membershipTiers = [
   {
     key: "steward", level: "04", title: "Steward", price: "$497", period: "/month",
     tagline: "Govern for others. Steward with public accountability.",
-    icon: "🏛️",
+    iconName: "landmark",
     popular: false, premium: true,
     benefits: [
       "Everything in Architect, plus:",
@@ -1427,7 +1518,7 @@ const membershipTiers = [
 const capstoneTier = {
   key: "capstone", title: "Capstone", price: "$55,000", period: "one-time",
   tagline: "The ultimate expression of ordered love — lawful transfer, protected inheritance, and intentional blessing across generations.",
-  icon: "👑",
+  iconName: "crown",
   benefits: [
     "Full Estate Trust Directive service",
     "Complete fiduciary structuring",
@@ -1610,7 +1701,7 @@ function CapstoneApplicationForm({ onClose }) {
   // ── Success ──
   if (status === "success") {
     return React.createElement("div", { style: { padding: "48px 40px", textAlign: "center" } },
-      React.createElement("div", { style: { fontSize: "56px", marginBottom: "20px" } }, "👑"),
+      React.createElement("div", { style: { marginBottom: "20px" } }, Icon("crown", 56, C.gold)),
       React.createElement("h3", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "28px", color: C.purple, marginBottom: "12px" } }, "Application Received"),
       React.createElement("p", { style: { fontFamily: "Inter,sans-serif", color: C.textMid, fontSize: "15px", lineHeight: 1.8, marginBottom: "24px" } },
         "Thank you, " + form.firstName + ". Your Capstone Estate Trust Directive application has been submitted. Our team will review your information and reach out within 2 business days to discuss next steps."),
@@ -1636,7 +1727,7 @@ function CapstoneApplicationForm({ onClose }) {
   // ── Error ──
   if (status === "error") {
     return React.createElement("div", { style: { padding: "48px 40px", textAlign: "center" } },
-      React.createElement("div", { style: { fontSize: "48px", marginBottom: "16px" } }, "⚠️"),
+      React.createElement("div", { style: { marginBottom: "16px" } }, Icon("alertTriangle", 48, C.red)),
       React.createElement("h3", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "24px", color: C.purple, marginBottom: "12px" } }, "Submission Error"),
       React.createElement("p", { style: { fontFamily: "Inter,sans-serif", color: C.textMid, fontSize: "14px", lineHeight: 1.7, marginBottom: "24px" } }, errorMsg),
       React.createElement("div", { style: { display: "flex", gap: "12px", justifyContent: "center" } },
@@ -1845,7 +1936,7 @@ function StripeCheckout({ tier, onClose }) {
   }
 
   return React.createElement("div", { style: { padding: "48px 40px", textAlign: "center" } },
-    React.createElement("div", { style: { fontSize: "48px", marginBottom: "16px" } }, tier.icon || "💳"),
+    React.createElement("div", { style: { marginBottom: "16px" } }, Icon(tier.iconName || "creditCard", 48, C.purple)),
     React.createElement("h3", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "26px", color: C.purple, marginBottom: "8px" } },
       "Join " + tier.title),
     React.createElement("div", { style: { fontFamily: "Playfair Display,Georgia,serif", fontSize: "36px", color: C.gold, fontWeight: 700, marginBottom: "4px" } }, tier.price),
@@ -1861,7 +1952,7 @@ function StripeCheckout({ tier, onClose }) {
     ),
     React.createElement("div", { style: { background: C.bgAlt, padding: "16px 20px", marginBottom: "24px", borderRadius: "2px" } },
       React.createElement("div", { style: { display: "flex", alignItems: "center", gap: "8px", justifyContent: "center" } },
-        React.createElement("span", { style: { fontSize: "18px" } }, "🔒"),
+        React.createElement("span", null, Icon("lock", 18, C.textLight)),
         React.createElement("span", { style: { fontFamily: "Inter,sans-serif", fontSize: "13px", color: C.textMid } }, "Secure payment processing via Stripe — coming soon")
       )
     ),
@@ -1907,15 +1998,15 @@ function MembershipPage() {
         <p style={{...S.body,marginBottom:"40px"}}>Our membership system mirrors a structured journey: from awareness to execution, from design to governance. Each tier unlocks deeper tools, richer content, and more personal guidance.</p>
         <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"0",flexWrap:"wrap"}}>
           {[
-            {label:"Seeker",sub:"Awareness",icon:"🌱",color:C.gold},
-            {label:"Operator",sub:"Execution",icon:"⚙️",color:C.purpleMid},
-            {label:"Architect",sub:"Design",icon:"📐",color:C.purpleMid},
-            {label:"Steward",sub:"Governance",icon:"🏛️",color:C.gold},
-            {label:"Capstone",sub:"Legacy",icon:"👑",color:C.gold},
+            {label:"Seeker",sub:"Awareness",iconName:"seedling",color:C.gold},
+            {label:"Operator",sub:"Execution",iconName:"gear",color:C.purpleMid},
+            {label:"Architect",sub:"Design",iconName:"penTool",color:C.purpleMid},
+            {label:"Steward",sub:"Governance",iconName:"landmark",color:C.gold},
+            {label:"Capstone",sub:"Legacy",iconName:"crown",color:C.gold},
           ].map((item,i,arr)=>(
             <React.Fragment key={i}>
               <div style={{background:C.white,padding:"20px 24px",textAlign:"center",minWidth:"120px",boxShadow:"0 2px 12px rgba(45,27,78,0.06)",borderTop:`3px solid ${item.color}`,transition:"transform 0.2s"}}>
-                <div style={{fontSize:"28px",marginBottom:"8px"}}>{item.icon}</div>
+                <div style={{marginBottom:"8px"}}>{Icon(item.iconName, 28, item.color)}</div>
                 <div style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"15px",color:C.purple,fontWeight:700}}>{item.label}</div>
                 <div style={{fontFamily:"Inter,sans-serif",fontSize:"11px",color:item.color,fontWeight:700,marginTop:"4px",letterSpacing:"1px"}}>{item.sub.toUpperCase()}</div>
               </div>
@@ -1953,7 +2044,7 @@ function MembershipPage() {
               }}
             >
               {tier.popular && <div style={{position:"absolute",top:"-14px",left:"50%",transform:"translateX(-50)",background:C.goldBright,color:C.purple,padding:"4px 16px",fontFamily:"Inter,sans-serif",fontSize:"10px",fontWeight:700,letterSpacing:"1px"}}>MOST POPULAR</div>}
-              <div style={{fontSize:"36px",marginBottom:"12px"}}>{tier.icon}</div>
+              <div style={{marginBottom:"12px"}}>{Icon(tier.iconName, 36, isPremium?C.goldBright:C.purple)}</div>
               <div style={{fontFamily:"Inter,sans-serif",fontSize:"10px",color:isPremium?"#e8d5a0":C.gold,letterSpacing:"2px",fontWeight:700,marginBottom:"8px"}}>LEVEL {tier.level}</div>
               <h3 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"26px",color:isPremium?C.white:C.purple,margin:"0 0 8px"}}>{tier.title}</h3>
               <div style={{marginBottom:"16px"}}>
@@ -2111,10 +2202,10 @@ const donationLevels = [
 ];
 
 const donorRecognitionTiers = [
-  { name: "Bronze", min: 25, max: 99, icon: "🥉", color: "#cd7f32", perks: ["Name in monthly newsletter", "Digital thank-you certificate"] },
-  { name: "Silver", min: 100, max: 499, icon: "🥈", color: "#a8a8a8", perks: ["All Bronze benefits", "Quarterly impact report", "Donor badge on community profile"] },
-  { name: "Gold", min: 500, max: 2499, icon: "🥇", color: C.goldBright, perks: ["All Silver benefits", "Annual recognition event invite", "Direct line to leadership team"] },
-  { name: "Platinum", min: 2500, max: null, icon: "💎", color: C.purpleMid, perks: ["All Gold benefits", "Named scholarship sponsorship", "Private strategy session", "Legacy wall recognition"] },
+  { name: "Bronze", min: 25, max: 99, iconName: "star", color: "#cd7f32", perks: ["Name in monthly newsletter", "Digital thank-you certificate"] },
+  { name: "Silver", min: 100, max: 499, iconName: "star", color: "#a8a8a8", perks: ["All Bronze benefits", "Quarterly impact report", "Donor badge on community profile"] },
+  { name: "Gold", min: 500, max: 2499, iconName: "award", color: C.goldBright, perks: ["All Silver benefits", "Annual recognition event invite", "Direct line to leadership team"] },
+  { name: "Platinum", min: 2500, max: null, iconName: "diamond", color: C.purpleMid, perks: ["All Gold benefits", "Named scholarship sponsorship", "Private strategy session", "Legacy wall recognition"] },
 ];
 
 const impactStats = [
@@ -2255,7 +2346,7 @@ function DonatePage() {
 
             {/* Donor Tier Preview */}
             {currentDonorTier && <div style={{background:C.goldPale,padding:"16px 20px",marginBottom:"24px",border:`1px solid ${C.goldBorder}`,display:"flex",alignItems:"center",gap:"12px"}}>
-              <span style={{fontSize:"24px"}}>{currentDonorTier.icon}</span>
+              <span>{Icon(currentDonorTier.iconName, 24, currentDonorTier.color)}</span>
               <div>
                 <div style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.gold,fontWeight:700,letterSpacing:"1px"}}>{currentDonorTier.name.toUpperCase()} DONOR</div>
                 <div style={{fontFamily:"Inter,sans-serif",fontSize:"12px",color:C.textMid}}>Your {isMonthly?"monthly ":""}gift of ${effectiveAmount} qualifies you for {currentDonorTier.name} recognition</div>
@@ -2304,7 +2395,7 @@ function DonatePage() {
             </p>
           </div>
         </React.Fragment> : <div style={{textAlign:"center",maxWidth:"600px",margin:"0 auto"}}>
-          <div style={{fontSize:"64px",marginBottom:"20px"}}>🌿</div>
+          <div style={{marginBottom:"20px"}}>{Icon("leaf", 64, C.green)}</div>
           <h2 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(28px,4vw,40px)",color:C.purple,margin:"0 0 16px"}}>Thank You for Your Generosity</h2>
           <p style={{fontFamily:"Inter,sans-serif",color:C.textMid,fontSize:"16px",lineHeight:1.8,marginBottom:"24px"}}>Your {isMonthly?"monthly ":""}gift of ${effectiveAmount} will directly support civic education for families who need it most. A confirmation will be sent to your email.</p>
           <div style={{background:C.goldPale,padding:"20px",border:`1px solid ${C.goldBorder}`,marginBottom:"32px"}}>
@@ -2326,7 +2417,7 @@ function DonatePage() {
         <div style={{display:"grid",gridTemplateColumns:"repeat(4, 1fr)",gap:"16px"}}>
           {donorRecognitionTiers.map((tier,i)=>(
             <div key={i} style={{background:C.white,padding:"28px",boxShadow:"0 2px 12px rgba(45,27,78,0.06)",borderTop:`4px solid ${tier.color}`,textAlign:"center"}}>
-              <div style={{fontSize:"36px",marginBottom:"8px"}}>{tier.icon}</div>
+              <div style={{marginBottom:"8px"}}>{Icon(tier.iconName, 36, tier.color)}</div>
               <h3 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"20px",color:C.purple,margin:"0 0 6px"}}>{tier.name}</h3>
               <div style={{fontFamily:"Inter,sans-serif",fontSize:"13px",color:C.gold,fontWeight:700,marginBottom:"16px"}}>
                 ${tier.min}{tier.max ? `–$${tier.max}` : "+"}
