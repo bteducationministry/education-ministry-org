@@ -494,10 +494,7 @@ function Nav() {
   return <nav style={{background:C.white,padding:"14px 48px",display:"flex",justifyContent:"space-between",alignItems:"center",borderBottom:`1px solid ${C.divider}`,position:"sticky",top:0,zIndex:100,boxShadow:"0 2px 12px rgba(45,27,78,0.07)"}}>
     <div style={{display:"flex",alignItems:"center",gap:"12px",cursor:"pointer"}} onClick={()=>navigate("/")}>
       <img src="assets/images/bodhi-tree-logo-header.png" alt="Bodhi Tree Logo" style={{width:"54px",height:"54px",objectFit:"contain",flexShrink:0}} />
-      <div>
-        <div style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,fontSize:"15px",fontWeight:700,letterSpacing:"0.5px",lineHeight:1.1}}>BODHI TREE</div>
-        <div style={{fontFamily:"Inter,sans-serif",color:C.textLight,fontSize:"10px",letterSpacing:"1.5px",fontWeight:600}}>EDUCATION MINISTRY</div>
-      </div>
+      <div style={{fontFamily:"Playfair Display,Georgia,serif",color:C.purple,fontSize:"18px",fontWeight:700,letterSpacing:"0.5px",lineHeight:1.2}}>Education Ministry</div>
     </div>
     <div style={{display:"flex",gap:"28px",fontFamily:"Inter,sans-serif",fontSize:"13px",color:C.textMid,alignItems:"center"}}>
       {navItems.map(item=>{
@@ -576,12 +573,13 @@ function Hero() {
   const { open: openSignup } = useSignupModal();
   return <div style={{position:"relative",width:"100%",minHeight:"600px",overflow:"hidden",borderBottom:`2px solid ${C.goldBorder}`}}>
     <img src="assets/images/vFinal Heritage Bodhi Tree Hero Image Only.png" alt="Heritage Bodhi Tree" style={{position:"absolute",top:0,left:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center",zIndex:0}} />
-    <div style={{position:"absolute",top:0,left:0,width:"55%",height:"100%",background:"linear-gradient(to right, rgba(0,0,0,0.45) 0%, rgba(0,0,0,0.25) 60%, transparent 100%)",zIndex:1}} />
+    <div style={{position:"absolute",top:0,left:0,width:"60%",height:"100%",background:"linear-gradient(to right, rgba(20,10,30,0.72) 0%, rgba(20,10,30,0.55) 40%, rgba(20,10,30,0.25) 70%, transparent 100%)",zIndex:1}} />
+    <div style={{position:"absolute",top:0,left:0,width:"55%",height:"100%",backdropFilter:"blur(2px)",WebkitBackdropFilter:"blur(2px)",maskImage:"linear-gradient(to right, black 0%, black 50%, transparent 100%)",WebkitMaskImage:"linear-gradient(to right, black 0%, black 50%, transparent 100%)",zIndex:1}} />
     <div style={{position:"relative",zIndex:2,display:"flex",flexDirection:"column",justifyContent:"center",alignItems:"flex-start",padding:"100px 48px 80px 64px",minHeight:"600px",maxWidth:"600px"}}>
-      <h1 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(40px,5.5vw,72px)",color:C.white,margin:"0 0 20px",lineHeight:1.05,fontWeight:700}}>
-        Faith-Grounded<br/>Civic Virtue
+      <h1 style={{fontFamily:"Playfair Display,Georgia,serif",fontSize:"clamp(40px,5.5vw,72px)",color:C.white,margin:"0 0 20px",lineHeight:1.05,fontWeight:700,textShadow:"0 2px 16px rgba(0,0,0,0.4)"}}>
+        Faith-Grounded<br/>Civic Virtue.
       </h1>
-      <p style={{fontFamily:"Inter,sans-serif",fontSize:"clamp(15px,1.5vw,18px)",color:"rgba(255,255,255,0.9)",maxWidth:"520px",margin:"0 0 36px",lineHeight:1.7,fontWeight:400}}>
+      <p style={{fontFamily:"Inter,sans-serif",fontSize:"clamp(15px,1.5vw,18px)",color:"rgba(255,255,255,0.92)",maxWidth:"520px",margin:"0 0 36px",lineHeight:1.7,fontWeight:400,textShadow:"0 1px 8px rgba(0,0,0,0.3)"}}>
         The civic education that builds and preserves families across generations<br/>
         —grounded in scripture, hidden in plain view.
       </p>
