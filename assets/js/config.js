@@ -47,7 +47,14 @@
       ORG_NAME:           "BT Education Ministry",
       ORG_LEGAL:          "Bodhi Tree Education Ministry",
       ORG_DOMAIN:         "educationministry.org",
-      DEBUG:              false
+      DEBUG:              false,
+
+      /* ── Monitoring ── */
+      GA4_MEASUREMENT_ID: "",      // Set to G-XXXXXXXXXX after creating GA4 property
+      SENTRY_DSN:         "",      // Set to https://xxx@xxx.ingest.sentry.io/xxx after creating Sentry project
+      SENTRY_ENVIRONMENT: "production",
+      SENTRY_SAMPLE_RATE: 1.0,    // 100% of errors (free tier: 5k events/mo)
+      ENABLE_PERF_MONITORING: true
     },
     staging: {
       API_BASE_URL:       "https://staging-api.educationministry.org",
@@ -60,7 +67,14 @@
       ORG_NAME:           "BT Education Ministry",
       ORG_LEGAL:          "Bodhi Tree Education Ministry",
       ORG_DOMAIN:         "educationministry.org",
-      DEBUG:              true
+      DEBUG:              true,
+
+      /* ── Monitoring ── */
+      GA4_MEASUREMENT_ID: "",      // Optional: separate GA4 property for staging
+      SENTRY_DSN:         "",      // Same or separate Sentry DSN for staging
+      SENTRY_ENVIRONMENT: "staging",
+      SENTRY_SAMPLE_RATE: 1.0,
+      ENABLE_PERF_MONITORING: true
     },
     development: {
       API_BASE_URL:       "http://localhost:3001",
@@ -73,7 +87,14 @@
       ORG_NAME:           "BT Education Ministry",
       ORG_LEGAL:          "Bodhi Tree Education Ministry",
       ORG_DOMAIN:         "educationministry.org",
-      DEBUG:              true
+      DEBUG:              true,
+
+      /* ── Monitoring ── */
+      GA4_MEASUREMENT_ID: "",      // Usually empty for local dev
+      SENTRY_DSN:         "",      // Usually empty for local dev
+      SENTRY_ENVIRONMENT: "development",
+      SENTRY_SAMPLE_RATE: 1.0,
+      ENABLE_PERF_MONITORING: false
     }
   };
 

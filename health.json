@@ -1,0 +1,6 @@
+{
+  "status": "ok",
+  "service": "education-ministry-spa",
+  "version": "1.0.0",
+  "timestamp_note": "This is a static health check file. For dynamic checks, use the API health endpoint."
+}

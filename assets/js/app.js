@@ -407,10 +407,17 @@ function SeekerSignupForm({ source, onClose }) {
     })
     .then(function() {
       setStatus("success");
+      if (window.EMMonitoring) {
+        window.EMMonitoring.trackEvent("signup_success", { event_category: "Signup", signup_source: source });
+      }
     })
     .catch(function(err) {
       clearTimeout(timeoutId);
       console.error("[Seeker Signup Error]", err);
+      if (window.EMMonitoring) {
+        window.EMMonitoring.captureError(err, { signup_source: source });
+        window.EMMonitoring.trackEvent("signup_error", { event_category: "Signup", error_message: err.message });
+      }
       if (err.name === "AbortError") {
         setErrorMsg("Request timed out. Please check your connection and try again.");
       } else {
@@ -1688,9 +1695,17 @@ function CapstoneApplicationForm({ onClose }) {
     }).catch(function(err) { if (AppConfig.DEBUG) console.warn("[Capstone measure]", err); });
 
     Promise.all([emailReq, measureReq])
-      .then(function() { setStatus("success"); })
+      .then(function() {
+        setStatus("success");
+        if (window.EMMonitoring) {
+          window.EMMonitoring.trackEvent("capstone_application_success", { event_category: "Capstone" });
+        }
+      })
       .catch(function(err) {
         console.error("[Capstone submit error]", err);
+        if (window.EMMonitoring) {
+          window.EMMonitoring.captureError(err, { form: "capstone_application" });
+        }
         setErrorMsg("Something went wrong. Please try again or contact us at " + AppConfig.CONTACT_EMAIL + ".");
         setStatus("error");
       });
@@ -2550,6 +2565,9 @@ function App() {
   const openSignup = useCallback(function(source) {
     setSignupSource(source || "seeker");
     setSignupOpen(true);
+    if (window.EMMonitoring) {
+      window.EMMonitoring.trackEvent("signup_modal_open", { event_category: "Signup", signup_source: source || "seeker" });
+    }
   }, []);
 
   const closeSignup = useCallback(function() {
